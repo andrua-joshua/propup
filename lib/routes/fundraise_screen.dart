@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:propup/widgets/loan_screen_widgets.dart';
+import 'package:propup/widgets/fundraise_screen_widgets.dart';
 
+///this is where the fundraise route is created from
 ///
-///this class will be responsible for the loan page
-///
-//ignore:camel_case_types
-class loanScreen extends StatelessWidget {
-  const loanScreen({super.key});
+//ignore: camel_case_types
+class fundRaiseScreen extends StatelessWidget {
+  const fundRaiseScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +13,21 @@ class loanScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "LOAN",
+          "FUND RAISE",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: SafeArea(
-          child: SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(
+              height: 20,
+            ),
+            const Icon(
+              Icons.foundation,
+              size: 40,
+            ),
             const SizedBox(
               height: 20,
             ),
@@ -36,7 +41,7 @@ class loanScreen extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.all(20),
-              child: loanPurposeWidget(),
+              child: purposeWidget(),
             ),
             const Text(
               "Amount",
@@ -47,22 +52,7 @@ class loanScreen extends StatelessWidget {
             ),
             const Padding(
               padding: EdgeInsets.all(20),
-              child: loanAmountWidget(),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "Return Date (1% interest rate)",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: returnDateWidget(),
+              child: amountWidget(),
             ),
             TextButton(
                 onPressed: () {},
@@ -77,7 +67,7 @@ class loanScreen extends StatelessWidget {
                     )))
           ],
         ),
-      )),
+      ),
     );
   }
 }

@@ -36,14 +36,38 @@ class friendScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 100,
-            collapsedHeight: 80,
+            expandedHeight: 120,
+            collapsedHeight: 90,
             pinned: true,
             floating: true,
+            title: const Text(
+              "My Friends (580)",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             leading: IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.arrow_back)),
-            title: const friendsTitleWidget(),
+            flexibleSpace: FlexibleSpaceBar(
+              expandedTitleScale: 1.1,
+              title: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color.fromARGB(255, 68, 221, 255)),
+                padding: const EdgeInsets.fromLTRB(15, 3, 15, 5),
+                child: const Text(
+                  "Add friends",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                ),
+              ),
+              centerTitle: true,
+            ),
             actions: [
               IconButton(onPressed: () {}, icon: const Icon(Icons.menu_open))
             ],

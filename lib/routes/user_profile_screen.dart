@@ -1,49 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:propup/routes.dart';
-import 'package:propup/widgets/home_screen_widgets.dart';
 import 'package:propup/widgets/user_profile_screen_widgets.dart';
 
 ///
-///this class is where the home screen page shall be placed
+///the user profile screen where the user will be able to view his/her profile
 ///
 //ignore: camel_case_types
-class homeScreen extends StatelessWidget {
-  const homeScreen({super.key});
-
+class userProfileScreen extends StatelessWidget {
+  const userProfileScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const helloTitleWidget(),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.notification_add_outlined)),
-        ],
-      ),
-      body: const SafeArea(
-        //child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: accountBalanceWidget()),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-                child: Padding(
-                    padding: EdgeInsets.all(10), child: gridDataWidget()))
-          ],
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
         ),
+        backgroundColor: Colors.black,
       ),
-      drawer: SafeArea(
+      body: SafeArea(
           child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 40, 0),
               constraints: const BoxConstraints.expand(),
               decoration: const BoxDecoration(
                   image: DecorationImage(
@@ -54,9 +32,6 @@ class homeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 15,
-                    ),
                     profileImageWidget(),
                     Text(
                       "Anonymous user",

@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: RouteGenerator.homescreen,
+      initialRoute: RouteGenerator.welcomescreen,
       onGenerateRoute: RouteGenerator.generateRoute,
       //home: const friendsProfileScreen(name: "Anonymous"),
     );

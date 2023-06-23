@@ -82,9 +82,18 @@ class gridDataWidget extends StatelessWidget {
             title: "Friends",
             callBack: () =>
                 Navigator.pushNamed(context, RouteGenerator.friendscreen)),
-        gridData(title: "Fund Raise", callBack: () {}),
-        gridData(title: "Transactions", callBack: () {}),
-        gridData(title: "Loan", callBack: () {}),
+        gridData(
+            title: "Fund Raise",
+            callBack: () =>
+                Navigator.pushNamed(context, RouteGenerator.fundRaisescreen)),
+        gridData(
+            title: "Transactions",
+            callBack: () => Navigator.pushNamed(
+                context, RouteGenerator.transactionsscreen)),
+        gridData(
+            title: "Loan",
+            callBack: () =>
+                Navigator.pushNamed(context, RouteGenerator.loanscreen)),
         gridData(title: "LeaderBoard", callBack: () {}),
       ],
     );
