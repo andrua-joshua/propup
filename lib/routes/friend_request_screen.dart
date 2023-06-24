@@ -45,7 +45,7 @@ class friendRequestScreen extends StatelessWidget {
                   height: 30,
                 ),
                 Text(
-                  "Love pis like the wind, you can't see it but you can feel it.",
+                  "Love is like the wind, you can't see it but you can feel it.",
                   style: TextStyle(color: Colors.black, fontSize: 19),
                   textAlign: TextAlign.center,
                 ),

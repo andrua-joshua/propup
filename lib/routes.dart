@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:propup/routes/edit_profile_screen.dart';
 import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
@@ -32,6 +33,7 @@ class RouteGenerator {
   static const String supportscreen = "/supportscreen";
   static const String lendfriendscreen = "/lendfriendscreen";
   static const String friendrequestscreen = "/friendrequestscreen";
+  static const String editprofilescreen = "/editprofilescreen";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -51,6 +53,9 @@ class RouteGenerator {
       case notificationscreen:
         return MaterialPageRoute(
             builder: (context) => const notificationsScreen());
+      case editprofilescreen:
+        return MaterialPageRoute(
+            builder: (context) => const editProfileScreen());
       case friendrequestscreen:
         return MaterialPageRoute(
             builder: (context) => const friendRequestScreen());

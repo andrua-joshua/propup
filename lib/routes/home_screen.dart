@@ -14,7 +14,12 @@ class homeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const helloTitleWidget(),
+        centerTitle: true,
+        title: const Text(
+          "Prop-Up",
+          style: TextStyle(
+              color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
               onPressed: () => Navigator.pushNamed(
@@ -28,11 +33,20 @@ class homeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: helloTitleWidget()),
+            ),
+            SizedBox(
               height: 40,
             ),
             Padding(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: accountBalanceWidget()),
+                child: Center(child: accountBalanceWidget())),
             SizedBox(
               height: 30,
             ),

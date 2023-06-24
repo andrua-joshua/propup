@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes.dart';
 
 ///
 ///This is where all the user profile screen custom widgets will be defimed
@@ -32,17 +33,48 @@ class userInfoWidget extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: Colors.white),
       padding: const EdgeInsets.fromLTRB(10, 15, 10, 5),
-      child: const Column(
+      child: Column(
         children: [
           userDataTileWidget(
-              icon: Icons.account_box_outlined, title: "Account Info"),
-          userDataTileWidget(icon: Icons.account_balance, title: "Payments"),
-          userDataTileWidget(icon: Icons.settings, title: "Settings"),
-          userDataTileWidget(icon: Icons.help_center, title: "Help Center"),
-          userDataTileWidget(icon: Icons.contact_mail, title: "Contact Us"),
-          userDataTileWidget(icon: Icons.share, title: "Share App"),
-          userDataTileWidget(icon: Icons.star_rate, title: "Rate App"),
-          userDataTileWidget(icon: Icons.logout, title: "Logout")
+              icon: Icons.account_box_outlined,
+              title: "Account Info",
+              callback: () => Navigator.pushNamed(
+                  context, RouteGenerator.editprofilescreen)),
+          userDataTileWidget(
+            icon: Icons.account_balance,
+            title: "Payments",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.settings,
+            title: "Settings",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.help_center,
+            title: "Help Center",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.contact_mail,
+            title: "Contact Us",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.share,
+            title: "Share App",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.star_rate,
+            title: "Rate App",
+            callback: () {},
+          ),
+          userDataTileWidget(
+            icon: Icons.logout,
+            title: "Logout",
+            callback: () {},
+          )
         ],
       ),
     );
@@ -56,12 +88,17 @@ class userInfoWidget extends StatelessWidget {
 class userDataTileWidget extends StatelessWidget {
   final IconData icon;
   final String title;
+  final void Function() callback;
   const userDataTileWidget(
-      {required this.icon, required this.title, super.key});
+      {required this.icon,
+      required this.callback,
+      required this.title,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: callback,
       leading: Container(
         decoration: BoxDecoration(
           color: Colors.lightBlue,
