@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
 import 'package:propup/routes/fundraise_screen.dart';
 import 'package:propup/routes/home_screen.dart';
+import 'package:propup/routes/lend_friend_screen.dart';
 import 'package:propup/routes/loan_screen.dart';
 import 'package:propup/routes/login_screen.dart';
+import 'package:propup/routes/notifications_screen.dart';
+import 'package:propup/routes/support_friend_screen.dart';
 import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/routes/user_profile_screen.dart';
 import 'package:propup/routes/welcome_screen.dart';
@@ -24,6 +28,10 @@ class RouteGenerator {
   static const String fundRaisescreen = "/fundRaisescreen";
   static const String loanscreen = "/loanScreen";
   static const String userProfilescreen = "/userprofilescreen";
+  static const String notificationscreen = "/notificationscreen";
+  static const String supportscreen = "/supportscreen";
+  static const String lendfriendscreen = "/lendfriendscreen";
+  static const String friendrequestscreen = "/friendrequestscreen";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -40,6 +48,18 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const loanScreen());
       case loginscreen:
         return MaterialPageRoute(builder: (context) => const loginScreen());
+      case notificationscreen:
+        return MaterialPageRoute(
+            builder: (context) => const notificationsScreen());
+      case friendrequestscreen:
+        return MaterialPageRoute(
+            builder: (context) => const friendRequestScreen());
+      case supportscreen:
+        return MaterialPageRoute(
+            builder: (context) => const supportFriendScreen());
+      case lendfriendscreen:
+        return MaterialPageRoute(
+            builder: (context) => const lendFriendScreen());
       case userProfilescreen:
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());

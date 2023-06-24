@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes.dart';
 import 'package:propup/widgets/home_screen_widgets.dart';
 import 'package:propup/widgets/user_profile_screen_widgets.dart';
 
@@ -16,7 +17,8 @@ class homeScreen extends StatelessWidget {
         title: const helloTitleWidget(),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(
+                  context, RouteGenerator.notificationscreen),
               icon: const Icon(Icons.notification_add_outlined)),
         ],
       ),
@@ -26,13 +28,13 @@ class homeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 20,
+              height: 40,
             ),
             Padding(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                 child: accountBalanceWidget()),
             SizedBox(
-              height: 20,
+              height: 30,
             ),
             Expanded(
                 child: Padding(
