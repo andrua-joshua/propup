@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:propup/routes.dart';
 import 'package:propup/widgets/home_screen_widgets.dart';
 import 'package:propup/widgets/user_profile_screen_widgets.dart';
 

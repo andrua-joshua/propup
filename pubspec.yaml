@@ -62,6 +62,7 @@ flutter:
   assets:
      - assets/images/userbg.png
      - assets/images/welcomeImage.jpg
+     - assets/images/profile.jpg
      - assets/images/bg2.png
      - assets/images/bg3.png
      - assets/images/bg4.png

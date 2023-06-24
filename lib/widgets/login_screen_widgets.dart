@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/login_logic.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -6,106 +7,14 @@ import 'package:propup/routes.dart';
 ///
 
 //ignore:camel_case_types
-class userNameWidget extends StatefulWidget {
-  const userNameWidget({super.key});
-
-  @override
-  _userNameWidgetState createState() => _userNameWidgetState();
-}
-
-class _userNameWidgetState extends State<userNameWidget> {
-  late TextEditingController usernameController;
-
-  @override
-  void initState() {
-    super.initState();
-    usernameController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    usernameController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints.expand(height: 60),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color.fromARGB(255, 229, 228, 228)),
-      child: Row(
-        children: [
-          const Icon(Icons.account_circle),
-          Expanded(
-              child: TextField(
-            maxLines: 1,
-            controller: usernameController,
-          ))
-        ],
-      ),
-    );
-  }
-}
-
-//ignore:camel_case_types
-class userPasswordWidget extends StatefulWidget {
-  const userPasswordWidget({super.key});
-
-  @override
-  _userPasswordWidget createState() => _userPasswordWidget();
-}
-
-class _userPasswordWidget extends State<userPasswordWidget> {
-  late TextEditingController passwordController;
-
-  @override
-  void initState() {
-    super.initState();
-    passwordController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    passwordController.dispose();
-  }
-
-  @override
-  Widget build(BuildContext copntext) {
-    return Container(
-      constraints: const BoxConstraints.expand(height: 60),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color.fromARGB(255, 229, 228, 228)),
-      child: Row(
-        children: [
-          const Icon(Icons.lock),
-          Expanded(
-              child: TextField(
-            controller: passwordController,
-            maxLines: 1,
-            keyboardType: TextInputType.visiblePassword,
-            obscureText: true,
-          )),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.visibility_off))
-        ],
-      ),
-    );
-  }
-}
-
-//ignore:camel_case_types
 class signInButtonWidget extends StatelessWidget {
-  const signInButtonWidget({super.key});
+  final GlobalKey<FormState> key1;
+  const signInButtonWidget({required this.key1, super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => Navigator.pushNamed(context, RouteGenerator.homescreen),
+      onPressed: () => loginLogic.login(key1, context),
       child: Container(
         constraints: const BoxConstraints.expand(height: 50),
         decoration: BoxDecoration(
@@ -114,10 +23,170 @@ class signInButtonWidget extends StatelessWidget {
           child: Text(
             "SIGN IN",
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 21),
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 19),
           ),
         ),
       ),
+    );
+  }
+}
+
+///
+///this is for the login form
+///
+//ignore:camel_case_types
+class loginFormWidget extends StatefulWidget {
+  const loginFormWidget({super.key});
+
+  @override
+  _loginFormWidgetState createState() => _loginFormWidgetState();
+}
+
+//igonre: camel_case_types
+class _loginFormWidgetState extends State<loginFormWidget> {
+  late final TextEditingController usernameController;
+  late final TextEditingController passwordController;
+  final key = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        key: key,
+        child: Column(
+          children: [
+            const Text(
+              "Welcome Back",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            const Text(
+              "Thanks you for chosing Prop-up platform. The family you chose.",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 18,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 236, 235, 235),
+                    borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.all(2),
+                child: Center(
+                    child: TextFormField(
+                  controller: usernameController,
+                  decoration: const InputDecoration(
+                    hintText: "username",
+                    icon: Icon(Icons.account_circle),
+                  ),
+                  validator: loginLogic.usernameValidate,
+                ))),
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 236, 235, 235),
+                    borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.all(2),
+                child: Center(
+                    child: TextFormField(
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                      hintText: "password",
+                      icon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.visibility_off),
+                      )),
+                  obscureText: true,
+                  validator: loginLogic.passwordValidate,
+                ))),
+            const SizedBox(
+              height: 30,
+            ),
+            signInButtonWidget(
+              key1: key,
+            )
+          ],
+        ));
+  }
+}
+
+//ignore:camel_case_types
+class optionsRowWidget extends StatelessWidget {
+  const optionsRowWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          child: Row(
+            children: [
+              Checkbox(
+                value: true,
+                onChanged: (val) {},
+              ),
+              const Text(
+                "Keep Sign In",
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        ),
+        TextButton(
+            onPressed: () {},
+            child: const Text(
+              "Forgot password?",
+              style: TextStyle(color: Colors.black),
+            ))
+      ],
+    );
+  }
+}
+
+//ignore:camel_case_types
+class signUpOptionsRowWidget extends StatelessWidget {
+  const signUpOptionsRowWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "Don't have an account?",
+          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+        ),
+        TextButton(
+            onPressed: () {},
+            child: const Text(
+              "Sign Up",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ))
+      ],
     );
   }
 }

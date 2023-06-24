@@ -22,11 +22,11 @@ class salutationWidget extends StatelessWidget {
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30),
         ),
         const SizedBox(
-          height: 100,
+          height: 90,
         ),
         const switchesWidget(),
         const SizedBox(
-          height: 40,
+          height: 30,
         ),
         TextButton(
             onPressed: () =>
@@ -38,7 +38,7 @@ class salutationWidget extends StatelessWidget {
               child: const Center(
                 child: Text(
                   "NEXT",
-                    style: TextStyle(
+                  style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 21),
@@ -48,12 +48,6 @@ class salutationWidget extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        Container(
-          margin: const EdgeInsets.fromLTRB(100, 0, 100, 10),
-          constraints: const BoxConstraints.expand(height: 3),
-          decoration: BoxDecoration(
-              color: Colors.black, borderRadius: BorderRadius.circular(10)),
-        )
       ],
     );
   }
