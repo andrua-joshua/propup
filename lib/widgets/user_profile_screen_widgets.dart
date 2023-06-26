@@ -12,10 +12,10 @@ class profileImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CircleAvatar(
-      radius: 80,
+      radius: 75,
       backgroundColor: Colors.white,
       child: CircleAvatar(
-          radius: 77, backgroundImage: AssetImage("assets/images/profile.jpg")),
+          radius: 72, backgroundImage: AssetImage("assets/images/profile.jpg")),
     );
   }
 }
@@ -104,7 +104,7 @@ class userDataTileWidget extends StatelessWidget {
           color: Colors.lightBlue,
           borderRadius: BorderRadius.circular(10),
         ),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(6),
         child: Icon(
           icon,
           color: Colors.white,
@@ -112,7 +112,7 @@ class userDataTileWidget extends StatelessWidget {
       ),
       title: Text(title,
           style: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20)),
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
       trailing: const Icon(
         Icons.arrow_forward_ios,
         color: Colors.grey,

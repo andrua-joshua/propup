@@ -118,7 +118,7 @@ class transfersWidget extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30),
+                    fontSize: 26),
               ),
               Text(
                 "Recieved",
@@ -135,7 +135,7 @@ class transfersWidget extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 30),
+                    fontSize: 26),
               ),
               Text(
                 "Donated",

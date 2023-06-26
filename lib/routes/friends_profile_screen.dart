@@ -31,17 +31,16 @@ class friendsProfileScreen extends StatelessWidget {
               height: 15,
             ),
             const SizedBox(
-              height: 200,
-              width: 200,
               child: CircleAvatar(
-                backgroundColor: Colors.grey,
-                backgroundImage: AssetImage("assets/images/profile.jpg")),
+                  radius: 90,
+                  backgroundColor: Colors.grey,
+                  backgroundImage: AssetImage("assets/images/profile.jpg")),
             ),
             Text(
               name,
               style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 27,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
             locationWidget(location: flocation),

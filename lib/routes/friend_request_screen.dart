@@ -30,14 +30,14 @@ class friendRequestScreen extends StatelessWidget {
                 ),
                 CircleAvatar(
                   backgroundColor: Colors.grey,
-                  radius: 120,
+                  radius: 90,
                   backgroundImage: AssetImage("assets/images/profile.jpg"),
                 ),
                 Text(
                   "Tracy Zoe",
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 27,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold),
                 ),
                 friendLocationWidget(),

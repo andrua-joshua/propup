@@ -111,14 +111,19 @@ class _returnDateWidgetState extends State<returnDateWidget> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime date = DateTime.now();
     return Container(
-      decoration:
+        constraints: const BoxConstraints.expand(height: 35),
+        decoration:
             const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
-        child: TextField(
-          maxLines: 1,
-          keyboardType: TextInputType.datetime,
-          controller: _controller,
-        )
-    );
+        child: TextButton(
+          onPressed: () => showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime.fromMicrosecondsSinceEpoch(
+                  date.microsecondsSinceEpoch * 2)),
+          child: const Text("select date"),
+        ));
   }
 }

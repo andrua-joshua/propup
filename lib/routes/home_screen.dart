@@ -15,11 +15,7 @@ class homeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          "Prop-Up",
-          style: TextStyle(
-              color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
-        ),
+        title: const helloTitleWidget(),
         actions: [
           IconButton(
               onPressed: () => Navigator.pushNamed(
@@ -33,22 +29,13 @@ class homeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                  child: helloTitleWidget()),
-            ),
-            SizedBox(
-              height: 40,
+              height: 30,
             ),
             Padding(
                 padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Center(child: accountBalanceWidget())),
+                child: accountBalanceWidget()),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
             Expanded(
                 child: Padding(
@@ -78,14 +65,14 @@ class homeScreen extends StatelessWidget {
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 22),
+                          fontSize: 20),
                     ),
                     Text(
                       "anonymoususer@gmail.com",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 15,
                     ),
                     userInfoWidget()
                   ],

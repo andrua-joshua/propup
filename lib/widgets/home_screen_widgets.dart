@@ -51,7 +51,7 @@ class accountBalanceWidget extends StatelessWidget {
         Text(
           "\$5623.67",
           style: TextStyle(
-              color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+              color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
         ),
         Text(
           "July 01, 2022",
@@ -94,7 +94,10 @@ class gridDataWidget extends StatelessWidget {
             title: "Loan",
             callBack: () =>
                 Navigator.pushNamed(context, RouteGenerator.loanscreen)),
-        gridData(title: "LeaderBoard", callBack: () {}),
+        gridData(
+            title: "LeaderBoard",
+            callBack: () => Navigator.pushNamed(
+                context, RouteGenerator.leadersboardscreenportal)),
       ],
     );
   }

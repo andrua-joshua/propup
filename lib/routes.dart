@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:propup/routes/edit_profile_screen.dart';
 import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
 import 'package:propup/routes/fundraise_screen.dart';
 import 'package:propup/routes/home_screen.dart';
+import 'package:propup/routes/leaders_board_portal_screen.dart';
+import 'package:propup/routes/leaders_board_screen.dart';
 import 'package:propup/routes/lend_friend_screen.dart';
 import 'package:propup/routes/loan_screen.dart';
 import 'package:propup/routes/login_screen.dart';
@@ -34,6 +35,10 @@ class RouteGenerator {
   static const String lendfriendscreen = "/lendfriendscreen";
   static const String friendrequestscreen = "/friendrequestscreen";
   static const String editprofilescreen = "/editprofilescreen";
+  static const String leadersboardscreenportal = "/leadersboardscreenportal";
+  static const String leadersboardScreen = "leaderboardscreen";
+
+  static bool led = true;
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -72,6 +77,14 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) =>
                 const friendsProfileScreen(name: "Anonymous"));
+      case leadersboardscreenportal:
+        return MaterialPageRoute(
+            builder: (context) => const leardersBoardPortalScreen());
+      case leadersboardScreen:
+        return MaterialPageRoute(
+            builder: (context) =>  leadersBoardScreen(
+                  receivers: led,
+                ));
       default:
         return MaterialPageRoute(builder: (context) => const welcomeScreen());
     }

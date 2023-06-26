@@ -102,7 +102,7 @@ class customColumnWidget extends StatelessWidget {
         Text(
           mainData,
           style: const TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 30),
+              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
         Text(
           subData,

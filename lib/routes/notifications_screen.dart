@@ -50,7 +50,7 @@ class notificationsScreen extends StatelessWidget {
                 "Notifications",
                 style: TextStyle(
                     color: Colors.black,
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
               centerTitle: true,
