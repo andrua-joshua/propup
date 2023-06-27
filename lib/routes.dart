@@ -16,13 +16,17 @@ import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/routes/user_profile_screen.dart';
 import 'package:propup/routes/welcome_screen.dart';
 
+import 'routes/signup_screen.dart';
+
+
 ///
 ///this is for managing the routings through the application
 ///
 //ignore:camel_case_types
 class RouteGenerator {
   static const String welcomescreen = "/";
-  static const String loginscreen = "login";
+  static const String loginscreen = "/login";
+  static const String signupscreen = "/signupscreen";
   static const String homescreen = "/home";
   static const String friendscreen = "/friendscreen";
   static const String friendprofilescreen = "/friendprofilescreen";
@@ -55,6 +59,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (context) => const loanScreen());
       case loginscreen:
         return MaterialPageRoute(builder: (context) => const loginScreen());
+      case signupscreen:
+        return MaterialPageRoute(builder: (context) => const signUpScreen());
       case notificationscreen:
         return MaterialPageRoute(
             builder: (context) => const notificationsScreen());

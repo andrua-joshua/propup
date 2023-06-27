@@ -180,7 +180,7 @@ class signUpOptionsRowWidget extends StatelessWidget {
           style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
         ),
         TextButton(
-            onPressed: () {},
+            onPressed: ()=> Navigator.pushNamed(context, RouteGenerator.signupscreen),
             child: const Text(
               "Sign Up",
               style:

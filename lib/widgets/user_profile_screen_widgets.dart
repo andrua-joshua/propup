@@ -73,7 +73,8 @@ class userInfoWidget extends StatelessWidget {
           userDataTileWidget(
             icon: Icons.logout,
             title: "Logout",
-            callback: () {},
+            callback: () =>
+                Navigator.pushNamed(context, RouteGenerator.welcomescreen),
           )
         ],
       ),

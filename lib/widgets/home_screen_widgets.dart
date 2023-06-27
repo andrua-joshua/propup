@@ -22,7 +22,7 @@ class helloTitleWidget extends StatelessWidget {
             height: 10,
           ),
           Text(
-            "Hello, Jacobz",
+            "Hello, Jacob",
             style: TextStyle(
                 color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
           ),

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
-import 'package:propup/routes/friends_profile_screen.dart';
-import 'package:propup/routes/friends_screen.dart';
-import 'package:propup/routes/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
