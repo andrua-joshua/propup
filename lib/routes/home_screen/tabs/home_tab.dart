@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:propup/routes.dart';
 import 'package:propup/widgets/home_screen_widgets.dart';
 import 'package:propup/widgets/user_profile_screen_widgets.dart';
 
+import '../../../routes.dart';
+
 ///
-///this class is where the home screen page shall be placed
-///
-//ignore: camel_case_types
-class homeScreen extends StatelessWidget {
-  const homeScreen({super.key});
+///for the home optin of the tab
+//ignore:camel_case_types
+class homeTab extends StatelessWidget{
+  const homeTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -52,7 +52,7 @@ class homeScreen extends StatelessWidget {
                       image: AssetImage("assets/images/userbg.png"),
                       fit: BoxFit.cover)),
               padding: const EdgeInsets.fromLTRB(25, 0, 25, 5),
-              child: const SingleChildScrollView(
+              child: const  SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

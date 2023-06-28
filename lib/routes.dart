@@ -4,7 +4,7 @@ import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
 import 'package:propup/routes/fundraise_screen.dart';
-import 'package:propup/routes/home_screen.dart';
+import 'package:propup/routes/home_screen/home_screen.dart';
 import 'package:propup/routes/leaders_board_portal_screen.dart';
 import 'package:propup/routes/leaders_board_screen.dart';
 import 'package:propup/routes/lend_friend_screen.dart';
