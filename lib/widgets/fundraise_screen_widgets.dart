@@ -60,11 +60,14 @@ class _purposeWidgetState extends State<purposeWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:
-            const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 5,
           controller: _controller,
+          decoration: const InputDecoration(
+              border: InputBorder.none, hintText: "Enter purpose of funds"),
         ));
   }
 }
@@ -97,13 +100,20 @@ class _amountWidgetState extends State<amountWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:
-            const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 1,
           keyboardType: TextInputType.number,
           maxLength: 9,
           controller: controller,
+          textAlign: TextAlign.center,
+          decoration: const InputDecoration(
+            counterText: "",
+            hintText: "Enter Amount",
+            border: InputBorder.none,
+          ),
         ));
   }
 }

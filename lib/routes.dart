@@ -10,6 +10,7 @@ import 'package:propup/routes/leaders_board_screen.dart';
 import 'package:propup/routes/lend_friend_screen.dart';
 import 'package:propup/routes/loan_screen.dart';
 import 'package:propup/routes/login_screen.dart';
+import 'package:propup/routes/messaging_screen.dart';
 import 'package:propup/routes/notifications_screen.dart';
 import 'package:propup/routes/support_friend_screen.dart';
 import 'package:propup/routes/transactions_screen.dart';
@@ -40,7 +41,8 @@ class RouteGenerator {
   static const String friendrequestscreen = "/friendrequestscreen";
   static const String editprofilescreen = "/editprofilescreen";
   static const String leadersboardscreenportal = "/leadersboardscreenportal";
-  static const String leadersboardScreen = "leaderboardscreen";
+  static const String leadersboardScreen = "/leaderboardscreen";
+  static const String messagingscreen = "/messagingscreen";
 
   static bool led = true;
 
@@ -79,6 +81,9 @@ class RouteGenerator {
       case userProfilescreen:
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());
+      case messagingscreen:
+        return MaterialPageRoute(
+            builder: (context) => const messagingScreen());
       case friendprofilescreen:
         return MaterialPageRoute(
             builder: (context) =>

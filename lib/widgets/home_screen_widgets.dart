@@ -202,7 +202,7 @@ class postsTabPostWidget extends StatelessWidget {
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return Container(
-        constraints: BoxConstraints.expand(height: 0.9 * width),
+        constraints: BoxConstraints.expand(height: 0.95 * width),
         decoration: BoxDecoration(
             image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
             borderRadius: BorderRadius.circular(15),
@@ -211,7 +211,8 @@ class postsTabPostWidget extends StatelessWidget {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            postOwnerWidget(name: "Drillox", image: "assets/images/profile.jpg"),
+            postOwnerWidget(
+                name: "Drillox", image: "assets/images/profile.jpg"),
             Expanded(child: SizedBox()),
             reactionOptionsWidget()
           ],
@@ -231,7 +232,8 @@ class postOwnerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () =>Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
+      onTap: () =>
+          Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
       leading: CircleAvatar(
         backgroundColor: Colors.grey,
         backgroundImage: AssetImage(image),
@@ -336,5 +338,95 @@ class reactionOptionsWidget extends StatelessWidget {
         ],
       );
     });
+  }
+}
+
+////
+///this is where the chat tab widgets are created from
+///
+class chatSearchWidget extends StatefulWidget {
+  const chatSearchWidget({super.key});
+
+  @override
+  _chatSearchWidgetState createState() => _chatSearchWidgetState();
+}
+
+//ignore:camel_case_types
+class _chatSearchWidgetState extends State<chatSearchWidget> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color.fromARGB(255, 241, 241, 241)),
+        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        child: TextFormField(
+          controller: _controller,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            isDense: true,
+            hintText: "Search",
+              prefixIcon: Icon(
+            Icons.search,
+            color: Colors.black,
+          )),
+        ));
+  }
+}
+
+///
+///this is for the user view
+///
+//ignore:camel_case_types
+class chatUserWidget extends StatelessWidget {
+  final String image;
+  final String name;
+  final String message;
+  const chatUserWidget(
+      {required this.message,
+      required this.name,
+      required this.image,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () => Navigator.pushNamed(context, RouteGenerator.messagingscreen),
+      leading: CircleAvatar(
+        backgroundColor: Colors.black,
+        radius: 24,
+        child: CircleAvatar(
+          radius: 22,
+          backgroundColor: Colors.grey,
+          backgroundImage: AssetImage(image),
+        ),
+      ),
+      title: Text(
+        name,
+        style: const TextStyle(
+            color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        message,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+            color: Colors.grey,),
+      ),
+    );
   }
 }

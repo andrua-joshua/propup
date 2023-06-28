@@ -63,6 +63,7 @@ class _signUpFormWidgetState extends State<signUpFormWidget> {
                 controller: usernameController,
                 validator: signUpLogic.usernameValidate,
                 decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: "Enter username",
                     icon: Icon(Icons.account_circle)),
               ),
@@ -83,7 +84,9 @@ class _signUpFormWidgetState extends State<signUpFormWidget> {
                 controller: gmailController,
                 validator: signUpLogic.gmailValidate,
                 decoration: const InputDecoration(
-                    hintText: "Email", icon: Icon(Icons.email)),
+                    border: InputBorder.none,
+                    hintText: "Email",
+                    icon: Icon(Icons.email)),
               ),
             ),
             const SizedBox(
@@ -103,6 +106,7 @@ class _signUpFormWidgetState extends State<signUpFormWidget> {
                 obscureText: true,
                 validator: signUpLogic.passwordValidate,
                 decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: "password",
                     icon: Icon(Icons.lock),
                     suffixIcon: Icon(
@@ -127,6 +131,7 @@ class _signUpFormWidgetState extends State<signUpFormWidget> {
                 obscureText: true,
                 validator: signUpLogic.passwordConfirmValidate,
                 decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: "confirm password",
                     icon: Icon(Icons.lock),
                     suffixIcon: Icon(Icons.visibility)),
@@ -167,28 +172,33 @@ class termsAndConditionsRowWidget extends StatelessWidget {
         Checkbox(value: true, onChanged: (val) {}),
         const Expanded(
             child: Text(
-                "By tapping \"register\" you accept our terms and conditons.",
-                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),))
+          "By tapping \"register\" you accept our terms and conditons.",
+          style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+        ))
       ],
     );
   }
 }
 
-
-
 //ignore:camel_case_types
-class logInOptionRowWidget extends StatelessWidget{
+class logInOptionRowWidget extends StatelessWidget {
   const logInOptionRowWidget({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Already have account?", style: TextStyle(color: Colors.grey),),
+        const Text(
+          "Already have account?",
+          style: TextStyle(color: Colors.grey),
+        ),
         TextButton(
-          onPressed: ()=>Navigator.pop(context), 
-          child: const Text("Login", style: TextStyle(color: Colors.orange),))
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Login",
+              style: TextStyle(color: Colors.orange),
+            ))
       ],
     );
   }
