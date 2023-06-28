@@ -133,3 +133,208 @@ class gridData extends StatelessWidget {
     );
   }
 }
+
+////
+///this is where all the postsTab widgets are
+
+///
+///posts top row widget here
+///
+//ignore:camel_case_types
+class postsTopWidget extends StatelessWidget {
+  const postsTopWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 60,
+        child: Row(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: [
+                    Color.fromARGB(255, 156, 236, 247),
+                    Color.fromARGB(255, 182, 236, 243),
+                    Color.fromARGB(255, 253, 216, 247),
+                    Color.fromARGB(255, 245, 177, 241),
+                  ])),
+              padding: const EdgeInsets.all(6),
+              child: const Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Expanded(
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 8,
+                    itemBuilder: (context, index) => const Padding(
+                        padding: EdgeInsets.all(4),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.cyanAccent,
+                          radius: 25,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 22,
+                            backgroundImage:
+                                AssetImage("assets/images/profile.jpg"),
+                          ),
+                        ))))
+          ],
+        ));
+  }
+}
+
+///
+///post widget where the exact post shall be placed
+///
+//ignore:camel_case_types
+class postsTabPostWidget extends StatelessWidget {
+  final String image;
+  const postsTabPostWidget({required this.image, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, dimensions) {
+      double width = dimensions.maxWidth;
+      return Container(
+        constraints: BoxConstraints.expand(height: 0.9 * width),
+        decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
+            borderRadius: BorderRadius.circular(15),
+            color: const Color.fromARGB(255, 224, 221, 221)),
+        padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            postOwnerWidget(name: "Drillox", image: "assets/images/profile.jpg"),
+            Expanded(child: SizedBox()),
+            reactionOptionsWidget()
+          ],
+        ),
+      );
+    });
+  }
+}
+
+///this is for showing the user who had posted the image
+//ignore:camel_case_types
+class postOwnerWidget extends StatelessWidget {
+  final String image;
+  final String name;
+  const postOwnerWidget({required this.name, required this.image, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () =>Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
+      leading: CircleAvatar(
+        backgroundColor: Colors.grey,
+        backgroundImage: AssetImage(image),
+      ),
+      title: Text(
+        name,
+        style: const TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+      ),
+      subtitle: const Text(
+        "2 hrs ago",
+        style: TextStyle(color: Colors.white),
+      ),
+      trailing: const Icon(
+        Icons.more_vert,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
+///
+///this is for showing reaction options about the post
+///
+//ignore:camel_case_types
+class reactionOptionsWidget extends StatelessWidget {
+  const reactionOptionsWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, dimensions) {
+      double width = dimensions.maxWidth;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(
+              onPressed: () {},
+              child: Container(
+                width: width * 0.3,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color.fromARGB(180, 240, 239, 239)),
+                padding: const EdgeInsets.all(2),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Icon(
+                      Icons.heart_broken_outlined,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "5.2k",
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
+              )),
+          TextButton(
+              onPressed: () {},
+              child: Container(
+                width: width * 0.3,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color.fromARGB(180, 240, 239, 239)),
+                padding: const EdgeInsets.all(2),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Icon(
+                      Icons.message,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "1.2k",
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
+              )),
+          TextButton(
+              onPressed: () {},
+              child: Container(
+                width: width * 0.3,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color.fromARGB(180, 240, 239, 239)),
+                padding: const EdgeInsets.all(2),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Icon(
+                      Icons.save,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      "365",
+                      style: TextStyle(color: Colors.white),
+                    )
+                  ],
+                ),
+              ))
+        ],
+      );
+    });
+  }
+}
