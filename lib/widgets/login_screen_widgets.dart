@@ -94,6 +94,7 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                     child: TextFormField(
                   controller: usernameController,
                   decoration: const InputDecoration(
+                    border: InputBorder.none,
                     hintText: "username",
                     icon: Icon(Icons.account_circle),
                   ),
@@ -111,6 +112,7 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                     child: TextFormField(
                   controller: passwordController,
                   decoration: InputDecoration(
+                    border: InputBorder.none,
                       hintText: "password",
                       icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(

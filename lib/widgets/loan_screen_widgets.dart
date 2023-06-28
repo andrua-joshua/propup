@@ -34,10 +34,14 @@ class _loanPurposeWidgetState extends State<loanPurposeWidget> {
   Widget build(BuildContext context) {
     return Container(
         decoration:
-            const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
+            BoxDecoration(color:const Color.fromARGB(255, 241, 240, 240), borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 5,
           controller: _controller,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            hintText: "Enter purpose"
+          ),
         ));
   }
 }
@@ -72,12 +76,19 @@ class _loanAmountWidgetState extends State<loanAmountWidget> {
   Widget build(BuildContext context) {
     return Container(
         decoration:
-            const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
+          BoxDecoration(color:const Color.fromARGB(255, 241, 240, 240), borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 1,
           keyboardType: TextInputType.number,
           maxLength: 9,
           controller: controller,
+          textAlign: TextAlign.center,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            hintText: "Enter amount",
+            counterText: ""
+          ),
+          
         ));
   }
 }

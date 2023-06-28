@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes/home_screen/tabs/chatsTab.dart';
 import 'package:propup/routes/home_screen/tabs/home_tab.dart';
 import 'package:propup/routes/home_screen/tabs/postsTab.dart';
 import 'package:propup/state_managers/home_tabs_state.dart';
@@ -20,6 +21,8 @@ class homeScreen extends StatelessWidget {
           builder: (context,value,child){
             if(value.currentIndex == 0){
               return const postsTab();
+            }else if(value.currentIndex ==2){
+              return const chatTab();
             }
             return const homeTab();
           }),

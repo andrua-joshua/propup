@@ -15,7 +15,7 @@ class postsTab extends StatelessWidget{
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-            const postsTopWidget(),
+            const Padding(padding: EdgeInsets.fromLTRB(5, 5, 0, 5),child:postsTopWidget()),
             Expanded(
               child: ListView.builder(
                 itemCount: 4,
