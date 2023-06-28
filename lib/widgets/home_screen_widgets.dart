@@ -270,7 +270,7 @@ class reactionOptionsWidget extends StatelessWidget {
           TextButton(
               onPressed: () {},
               child: Container(
-                width: width * 0.3,
+                width: width * 0.25,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(180, 240, 239, 239)),
@@ -292,7 +292,7 @@ class reactionOptionsWidget extends StatelessWidget {
           TextButton(
               onPressed: () {},
               child: Container(
-                width: width * 0.3,
+                width: width * 0.25,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(180, 240, 239, 239)),
@@ -314,7 +314,7 @@ class reactionOptionsWidget extends StatelessWidget {
           TextButton(
               onPressed: () {},
               child: Container(
-                width: width * 0.3,
+                width: width * 0.25,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(180, 240, 239, 239)),
