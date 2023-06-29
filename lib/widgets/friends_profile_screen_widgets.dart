@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ///
 ///this is where all the custom widgets of the friends screen will be defined
@@ -146,5 +149,168 @@ class transfersWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+///
+///summary of the friend
+///
+//ignore:camel_case_types
+class friendSummaryWidget extends StatelessWidget {
+  const friendSummaryWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("122",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "followers",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("67",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "friends",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("122",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "following",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+///
+///this is for the add friend btn
+//ignore:camel_case_types
+class addFriendBtnWidget extends StatelessWidget {
+  const addFriendBtnWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 5, 38, 65), borderRadius: BorderRadius.circular(10)),
+      child: TextButton(
+          onPressed: () {},
+          child: const Text(
+            "Add friend",
+            style: TextStyle(color: Colors.white),
+          )),
+    );
+  }
+}
+
+
+///
+///this is for showning the images in the user or friends profile
+//ignore:camel_case_types
+class friendPostWidget extends StatelessWidget{
+  final String image;
+  const friendPostWidget({required this.image,super.key});
+
+  @override
+  Widget build(BuildContext context){
+    return LayoutBuilder(builder: (context, dimensions) {
+      double width = dimensions.maxWidth;
+      return FutureBuilder<ImageDescriptor>(
+        future: rootBundle.load(image)
+         .then((value) => value.buffer.asUint8List())
+          .then((value) => ImmutableBuffer.fromUint8List(value))
+            .then((value) => ImageDescriptor.encoded(value)),
+        builder: (context, snap){
+          if(snap.hasError){
+            return const Center(child: Text("there occurred some error"),);
+          }
+          if(snap.hasData==false){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+          int h=0;
+          int w = 0;
+
+          if(snap.hasData){
+            h = snap.data?.height??1;
+            w = snap.data?.width??1;
+          }
+          return Container(
+        constraints: BoxConstraints.expand(
+          height: width/(w/h)),
+        decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
+            borderRadius: BorderRadius.circular(15),
+            color: const Color.fromARGB(255, 224, 221, 221)),
+        padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+        
+      );
+        });
+    });
+  }
+}
+
+///
+///this is for the showing of all the images
+///
+//ignore: camel_case_types
+class friendPostsWidget extends StatelessWidget{
+  const friendPostsWidget({super.key});
+
+
+  final images = const <String>[
+    "assets/images/profile.jpg",
+    "assets/images/pp.jpg",
+    "assets/images/pic1.jpg",
+    "assets/images/pic2.jpg",
+    "assets/images/pp2.jpg",
+  ];
+
+  @override
+  Widget build(BuildContext context){
+    return GridView(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 10
+      ),
+      children: List.generate(images.length, 
+      (index) => friendPostWidget(image: images[index])),
+      );
   }
 }

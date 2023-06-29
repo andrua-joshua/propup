@@ -51,7 +51,7 @@ class leadersBoardeHeadsWidget extends StatelessWidget {
         ],
       );
     });
-  } 
+  }
 }
 
 //ignore:camel_case_types
@@ -109,26 +109,42 @@ class leadersBoardListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          format(position),
-          style: const TextStyle(
-              color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          name,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          amount,
-          style: const TextStyle(
-              color: Colors.black, fontSize: 17, fontWeight: FontWeight.bold),
-        )
-      ],
-    );
+    return LayoutBuilder(builder: (context, dimensions) {
+      double width = dimensions.maxWidth;
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+              width: 0.30 * width,
+              child: Text(
+                format(position),
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              )),
+          SizedBox(
+              width: 0.40 * width,
+              child: Text(
+                name,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              )),
+          SizedBox(
+              width: 0.25 * width,
+              child: Text(
+                amount,
+                //textAlign: TextAlign.end,
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold),
+              ))
+        ],
+      );
+    });
   }
 
   String format(int pos) {

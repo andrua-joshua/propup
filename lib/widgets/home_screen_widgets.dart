@@ -101,6 +101,9 @@ class gridDataWidget extends StatelessWidget {
             title: "LeaderBoard",
             callBack: () => Navigator.pushNamed(
                 context, RouteGenerator.leadersboardscreenportal)),
+        gridData(title: "Overview", callBack: () {} //=> Navigator.pushNamed(
+            //context, RouteGenerator.leadersboardscreenportal)
+            ),
       ],
     );
   }
@@ -205,62 +208,50 @@ class postsTabPostWidget extends StatelessWidget {
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return FutureBuilder<ImageDescriptor>(
-        future: rootBundle.load(image)
-         .then((value) => value.buffer.asUint8List())
-          .then((value) => ImmutableBuffer.fromUint8List(value))
-            .then((value) => ImageDescriptor.encoded(value)),
-        builder: (context, snap){
-          if(snap.hasError){
-            return const Center(child: Text("there occurred some error"),);
-          }
-          if(snap.hasData==false){
-            return const Center(child: CircularProgressIndicator(),);
-          }
-          int h=0;
-          int w = 0;
+          future: rootBundle
+              .load(image)
+              .then((value) => value.buffer.asUint8List())
+              .then((value) => ImmutableBuffer.fromUint8List(value))
+              .then((value) => ImageDescriptor.encoded(value)),
+          builder: (context, snap) {
+            if (snap.hasError) {
+              return const Center(
+                child: Text("there occurred some error"),
+              );
+            }
+            if (snap.hasData == false) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            int h = 0;
+            int w = 0;
 
-          if(snap.hasData){
-            h = snap.data?.height??1;
-            w = snap.data?.width??1;
-          }
-          return Container(
-        constraints: BoxConstraints.expand(
-          height: width/(w/h)),
-        decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
-            borderRadius: BorderRadius.circular(15),
-            color: const Color.fromARGB(255, 224, 221, 221)),
-        padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            postOwnerWidget(
-                name: "Drillox", image: "assets/images/profile.jpg"),
-            Expanded(child: SizedBox()),
-            reactionOptionsWidget()
-          ],
-        ),
-      );
-        });
+            if (snap.hasData) {
+              h = snap.data?.height ?? 1;
+              w = snap.data?.width ?? 1;
+            }
+            return Container(
+              constraints: BoxConstraints.expand(height: width / (w / h)),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage(image), fit: BoxFit.fill),
+                  borderRadius: BorderRadius.circular(15),
+                  color: const Color.fromARGB(255, 224, 221, 221)),
+              padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  postOwnerWidget(
+                      name: "Drillox", image: "assets/images/profile.jpg"),
+                  Expanded(child: SizedBox()),
+                  reactionOptionsWidget()
+                ],
+              ),
+            );
+          });
     });
   }
-
-  Future<int> getImageSize(String asset) async{
-        final byteData = await rootBundle.load(asset);
-	      final bytes = byteData.buffer.asUint8List();
-        final buffer = await ImmutableBuffer.fromUint8List(bytes);
-        final descriptor = await ImageDescriptor.encoded(buffer);
-         
-        rootBundle.load(asset)
-         .then((value) => value.buffer.asUint8List())
-          .then((value) => ImmutableBuffer.fromUint8List(value))
-            .then((value) => ImageDescriptor.encoded(value));
-
-
-       //double asp =descriptor.width/descriptor.height;      
-       return 1;
-  }
-  
 }
 
 ///this is for showing the user who had posted the image
@@ -333,7 +324,8 @@ class reactionOptionsWidget extends StatelessWidget {
                 ),
               )),
           TextButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(
+                  context, RouteGenerator.postsCommentscreen),
               child: Container(
                 width: width * 0.25,
                 decoration: BoxDecoration(
@@ -405,26 +397,26 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
   @override
   void dispose() {
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: const Color.fromARGB(255, 241, 241, 241)),
-        margin: const EdgeInsets.fromLTRB(15,10,15,10),
+        margin: const EdgeInsets.fromLTRB(15, 10, 15, 10),
         child: TextFormField(
           controller: _controller,
           decoration: const InputDecoration(
-            border: InputBorder.none,
-            isDense: true,
-            hintText: "Search",
+              border: InputBorder.none,
+              isDense: true,
+              hintText: "Search",
               prefixIcon: Icon(
-            Icons.search,
-            color: Colors.black,
-          )),
+                Icons.search,
+                color: Colors.black,
+              )),
         ));
   }
 }
@@ -466,8 +458,146 @@ class chatUserWidget extends StatelessWidget {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-            color: Colors.grey,),
+          color: Colors.grey,
+        ),
       ),
     );
+  }
+}
+
+//ignore:camel_case_types
+class postsCommentWidget extends StatelessWidget {
+  final String image;
+  final String name;
+  final String comment;
+  const postsCommentWidget(
+      {required this.image,
+      required this.comment,
+      required this.name,
+      super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.grey,
+                backgroundImage: AssetImage(image),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+              Text(
+                name,
+                style: const TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                width: 4,
+              ),
+              const Text(
+                "1 month ago",
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
+        ),
+        Text(comment),
+        SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.heart_broken_outlined)),
+              // const SizedBox(
+              //   width: 4,
+              // ),
+              const Text(
+                "23",
+                style: TextStyle(color: Colors.blueGrey),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}
+
+//ignore:camel_case_types
+class commentingAreaWidget extends StatefulWidget {
+  const commentingAreaWidget({super.key});
+
+  @override
+  _commentingAreaWidgetState createState() => _commentingAreaWidgetState();
+}
+
+//ignore:camel_case_types
+class _commentingAreaWidgetState extends State<commentingAreaWidget> {
+  late final TextEditingController _commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        child: Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey, width: 1)),
+          padding: const EdgeInsets.all(3),
+          child: TextFormField(
+            maxLines: 3,
+            decoration: const InputDecoration(
+                border: InputBorder.none, hintText: "Add a comment...."),
+          ),
+        ),
+        const SizedBox(height: 10,),
+        SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.grey,
+                backgroundImage: AssetImage("assets/images/profile.jpg"),
+              ),
+              GestureDetector(
+                child: Container(
+                  ///width: 100,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromARGB(255, 11, 70, 119)),
+                  padding: const EdgeInsets.all(5),
+                  child: const Text(
+                    "SEND",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            ],
+          ),
+        )
+      ],
+    ));
   }
 }

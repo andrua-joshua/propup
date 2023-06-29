@@ -15,7 +15,10 @@ class supportReasonWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 237, 236, 236)),
+              BoxDecoration(
+                color: Color.fromARGB(255, 237, 236, 236),
+                borderRadius: BorderRadius.circular(10)
+                ),
           child: Text(
             message,
             style: const TextStyle(color: Colors.grey),
@@ -54,13 +57,18 @@ class _amountEntryWidgetState extends State<amountEntryWidget> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(2),
-        color: const Color.fromARGB(255, 218, 216, 216),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: const Color.fromARGB(255, 218, 216, 216),
+        ),
         child: TextFormField(
           keyboardType: TextInputType.number,
           maxLength: 9,
           maxLines: 1,
+          textAlign: TextAlign.center,
           controller: _controller,
           decoration: const InputDecoration(
+            border: InputBorder.none,
               counterText: "",
               hintText: "ENTER AMOUNT",
               semanticCounterText: ""),
