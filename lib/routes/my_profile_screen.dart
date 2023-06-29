@@ -13,6 +13,7 @@ class myProfileScreen extends StatelessWidget {
     "assets/images/pic1.jpg",
     "assets/images/pic2.jpg",
     "assets/images/pp2.jpg",
+    "assets/images/profile.jpg",
   ];
 
   @override
@@ -85,10 +86,17 @@ class myProfileScreen extends StatelessWidget {
             ])),
             SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10),
+                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10,
+                  mainAxisExtent: 150),
               delegate: SliverChildListDelegate.fixed(List.generate(
                   images.length,
-                  (index) => friendPostWidget(image: images[index]))),
+                  (index) => Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(image: AssetImage(images[index]))
+                    ),
+                  ))),
             )
           ],
         ),

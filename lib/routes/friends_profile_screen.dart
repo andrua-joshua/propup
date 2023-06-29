@@ -104,10 +104,16 @@ class friendsProfileScreen extends StatelessWidget {
             ])),
             SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10),
+                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10,mainAxisExtent: 150),
               delegate: SliverChildListDelegate.fixed(List.generate(
                   images.length,
-                  (index) => friendPostWidget(image: images[index]))),
+                  (index) => Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(image: AssetImage(images[index]))
+                    ),
+                  ))),
             )
           ],
         ),

@@ -56,11 +56,11 @@ class friendRequestScreen extends StatelessWidget {
               SizedBox(
                 height: 30,
               ),
-              Text(
+              Padding(padding: EdgeInsets.fromLTRB(15, 0, 15, 0) ,child:Text(
                 "Love is like the wind, you can't see it but you can feel it.",
                 style: TextStyle(color: Colors.black, fontSize: 19),
                 textAlign: TextAlign.center,
-              ),
+              )),
               SizedBox(
                 height: 30,
               ),
@@ -88,10 +88,16 @@ class friendRequestScreen extends StatelessWidget {
             ])),
             SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10),
+                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10,mainAxisExtent: 150),
               delegate: SliverChildListDelegate.fixed(List.generate(
                   images.length,
-                  (index) => friendPostWidget(image: images[index]))),
+                  (index) => Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(image: AssetImage(images[index]))
+                    ),
+                  ))),
             )
           ],
         ),
