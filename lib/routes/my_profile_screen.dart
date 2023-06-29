@@ -92,7 +92,7 @@ class myProfileScreen extends StatelessWidget {
                   images.length,
                   (index) => Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      //color: Colors.grey,
                       borderRadius: BorderRadius.circular(10),
                       image: DecorationImage(image: AssetImage(images[index]))
                     ),
