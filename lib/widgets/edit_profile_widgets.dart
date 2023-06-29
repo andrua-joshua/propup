@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes.dart';
 
 ///
 ///this is where all the custom widgets of the edit profile screen will be created from
@@ -261,5 +262,112 @@ class saveBtnWidget extends StatelessWidget {
             ),
           ),
         ));
+  }
+}
+
+//ignore:camel_case_types
+class mySummaryWidget extends StatelessWidget {
+  const mySummaryWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("122",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "followers",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("67",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "friends",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+        SizedBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("122",
+                  style: TextStyle(
+                      color: Color.fromARGB(255, 9, 14, 17),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold)),
+              Text(
+                "following",
+                style: TextStyle(),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+///
+///editing options row
+///
+//ignore:camel_case_types
+class editOptionsWidget extends StatelessWidget {
+  const editOptionsWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          width: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color.fromARGB(255, 27, 48, 66)),
+          child: TextButton(
+              onPressed: () => Navigator.pushNamed(
+                  context, RouteGenerator.editprofilescreen),
+              child: const Text(
+                "Edit profile",
+                style: TextStyle(color: Colors.white),
+              )),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Container(
+          width: 100,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: const Color.fromARGB(255, 27, 48, 66)),
+          child: TextButton(
+              onPressed: ()=> Navigator.pushNamed(context, RouteGenerator.addFriendsscreen),
+              child: const Text(
+                "Add friends",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              )),
+        ),
+      ],
+    );
   }
 }

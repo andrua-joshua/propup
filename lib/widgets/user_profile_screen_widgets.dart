@@ -15,7 +15,7 @@ class profileImageWidget extends StatelessWidget {
       radius: 75,
       backgroundColor: Colors.white,
       child: CircleAvatar(
-          radius: 72, backgroundImage: AssetImage("c")),
+          radius: 72, backgroundImage: AssetImage("assets/images/pp.jpg")),
     );
   }
 }
@@ -38,12 +38,13 @@ class userInfoWidget extends StatelessWidget {
           userDataTileWidget(
               icon: Icons.account_box_outlined,
               title: "Account Info",
-              callback: () => Navigator.pushNamed(
-                  context, RouteGenerator.editprofilescreen)),
+              callback: () =>
+                  Navigator.pushNamed(context, RouteGenerator.myProfilescreen)),
           userDataTileWidget(
             icon: Icons.account_balance,
             title: "Payments",
-            callback: () {},
+            callback: () => Navigator.pushNamed(
+                context, RouteGenerator.paymentOptionsscreen),
           ),
           userDataTileWidget(
             icon: Icons.settings,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:propup/routes/home_screen/tabs/chatsTab.dart';
 import 'package:propup/routes/home_screen/tabs/home_tab.dart';
-import 'package:propup/routes/home_screen/tabs/postsTab.dart';
+import 'package:propup/routes/home_screen/tabs/postsTab/postsTab.dart';
 import 'package:propup/state_managers/home_tabs_state.dart';
 import 'package:provider/provider.dart';
 

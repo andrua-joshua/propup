@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes/add_friends_screen.dart';
 import 'package:propup/routes/edit_profile_screen.dart';
 import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
 import 'package:propup/routes/fundraise_screen.dart';
 import 'package:propup/routes/home_screen/home_screen.dart';
+import 'package:propup/routes/home_screen/tabs/postsTab/posts_comments_screen.dart';
 import 'package:propup/routes/leaders_board_portal_screen.dart';
 import 'package:propup/routes/leaders_board_screen.dart';
 import 'package:propup/routes/lend_friend_screen.dart';
@@ -12,6 +14,10 @@ import 'package:propup/routes/loan_screen.dart';
 import 'package:propup/routes/login_screen.dart';
 import 'package:propup/routes/messaging_screen.dart';
 import 'package:propup/routes/notifications_screen.dart';
+import 'package:propup/routes/my_profile_screen.dart';
+import 'package:propup/routes/payments_screen/deposit_option_screen.dart';
+import 'package:propup/routes/payments_screen/payment_options_screen.dart';
+import 'package:propup/routes/payments_screen/withdraw_option_screen.dart';
 import 'package:propup/routes/support_friend_screen.dart';
 import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/routes/user_profile_screen.dart';
@@ -40,9 +46,15 @@ class RouteGenerator {
   static const String lendfriendscreen = "/lendfriendscreen";
   static const String friendrequestscreen = "/friendrequestscreen";
   static const String editprofilescreen = "/editprofilescreen";
+  static const String myProfilescreen = "/myProfilescreen";
   static const String leadersboardscreenportal = "/leadersboardscreenportal";
   static const String leadersboardScreen = "/leaderboardscreen";
   static const String messagingscreen = "/messagingscreen";
+  static const String addFriendsscreen = "/addFriendsScreen";
+  static const String paymentOptionsscreen = "/paymentOptionsScreen";
+  static const String depositOptionscreen = "/deposteOptionScreen";
+  static const String withdrawOptionscreen = "/withdrawOptionScreen";
+  static const String postsCommentscreen ="/postsCommentscreen";
 
   static bool led = true;
 
@@ -69,6 +81,9 @@ class RouteGenerator {
       case editprofilescreen:
         return MaterialPageRoute(
             builder: (context) => const editProfileScreen());
+      case myProfilescreen:
+        return MaterialPageRoute(
+            builder: (context) => const myProfileScreen());
       case friendrequestscreen:
         return MaterialPageRoute(
             builder: (context) => const friendRequestScreen());
@@ -88,9 +103,25 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) =>
                 const friendsProfileScreen(name: "Anonymous"));
+      case addFriendsscreen:
+        return MaterialPageRoute(
+            builder: (context) =>
+                const addFriendsScreen());
       case leadersboardscreenportal:
         return MaterialPageRoute(
             builder: (context) => const leardersBoardPortalScreen());
+      case paymentOptionsscreen:
+        return MaterialPageRoute(
+            builder: (context) => const paymentOptionsScreen());
+      case depositOptionscreen:
+        return MaterialPageRoute(
+            builder: (context) => const depositOptionScreen());
+      case postsCommentscreen:
+        return MaterialPageRoute(
+            builder: (context) => const postsCommentScreen());
+      case withdrawOptionscreen:
+        return MaterialPageRoute(
+            builder: (context) => const withdrawOptionScreen());
       case leadersboardScreen:
         return MaterialPageRoute(
             builder: (context) =>  leadersBoardScreen(

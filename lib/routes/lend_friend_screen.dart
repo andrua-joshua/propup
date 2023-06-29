@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:propup/widgets/lpend_friend_widget.dart';
+import 'package:propup/widgets/lend_friend_widget.dart';
 
 ///
 ///this is where the code for implementing the lending a friends widget shall be

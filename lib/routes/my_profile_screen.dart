@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:propup/widgets/edit_profile_widgets.dart';
 import 'package:propup/widgets/friend_request_widgets.dart';
 import 'package:propup/widgets/friends_profile_screen_widgets.dart';
 
-///
-///this is where friend request is declared
-///
-//ignore: camel_case_types
-class friendRequestScreen extends StatelessWidget {
-  const friendRequestScreen({super.key});
+//ignore:camel_case_types
+class myProfileScreen extends StatelessWidget {
+  const myProfileScreen({super.key});
 
   final images = const <String>[
     "assets/images/profile.jpg",
@@ -16,6 +14,7 @@ class friendRequestScreen extends StatelessWidget {
     "assets/images/pic2.jpg",
     "assets/images/pp2.jpg",
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +25,7 @@ class friendRequestScreen extends StatelessWidget {
               centerTitle: true,
               pinned: true,
               title: Text(
-                "Profile",
+                "My profile",
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -35,40 +34,38 @@ class friendRequestScreen extends StatelessWidget {
             ),
             const SliverList(
                 delegate: SliverChildListDelegate.fixed([
-              SizedBox(
-                height: 20,
-              ),
-              Center(
-                  child: CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 90,
-                backgroundImage: AssetImage("assets/images/profile.jpg"),
-              )),
-              Center(
-                  child: Text(
-                "Tracy Zoe",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
-              )),
-              friendLocationWidget(),
-              SizedBox(
-                height: 30,
-              ),
-              Text(
-                "Love is like the wind, you can't see it but you can feel it.",
-                style: TextStyle(color: Colors.black, fontSize: 19),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              requestOptionsRowWidget(),
-              SizedBox(
-                height: 30,
-              ),
-              friendDetailsRowWidget(),
+               SizedBox(
+                  height: 20,
+                ),
+                Center(child:CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  radius: 90,
+                  backgroundImage: AssetImage("assets/images/profile.jpg"),
+                )),
+                Center(child:Text(
+                  "Tracy Zoe",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
+                )),
+                friendLocationWidget(),
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(padding: EdgeInsets.fromLTRB(15,0,15,0),child:Text(
+                  "Love is like the wind, you can't see it but you can feel it.",
+                  style: TextStyle(color: Colors.black, fontSize: 19),
+                  textAlign: TextAlign.center,
+                )),
+                SizedBox(
+                  height: 30,
+                ),
+                // requestOptionsRowWidget(),
+                mySummaryWidget(),
+                SizedBox(height: 10,),
+                editOptionsWidget(),
+                
               SizedBox(
                 height: 20,
               ),

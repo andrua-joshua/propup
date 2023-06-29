@@ -14,8 +14,9 @@ class lendReasonWidget extends StatelessWidget {
         elevation: 7,
         child: Container(
           padding: const EdgeInsets.all(10),
-          decoration:
-              const BoxDecoration(color: Color.fromARGB(255, 237, 236, 236)),
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 237, 236, 236),
+              borderRadius: BorderRadius.circular(10)),
           child: Text(
             message,
             style: const TextStyle(color: Colors.grey),
@@ -55,13 +56,17 @@ class _lendAmountEntryWidgetState extends State<lendAmountEntryWidget> {
     return Column(children: [
       Container(
           padding: const EdgeInsets.all(2),
-          color: const Color.fromARGB(255, 218, 216, 216),
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 218, 216, 216),
+              borderRadius: BorderRadius.circular(10)),
           child: TextFormField(
             keyboardType: TextInputType.number,
             maxLength: 9,
             maxLines: 1,
             controller: _controller,
+            textAlign: TextAlign.center,
             decoration: const InputDecoration(
+                border: InputBorder.none,
                 counterText: "",
                 hintText: "ENTER AMOUNT",
                 semanticCounterText: ""),
