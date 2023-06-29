@@ -66,6 +66,8 @@ flutter:
      - assets/images/profile.jpg
      - assets/images/pp.jpg
      - assets/images/pp2.jpg
+     - assets/images/pic1.jpg
+     - assets/images/pic2.jpg
      - assets/images/bg2.png
      - assets/images/bg3.png
      - assets/images/bg4.png
