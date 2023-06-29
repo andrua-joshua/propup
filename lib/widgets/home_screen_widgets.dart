@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -201,8 +204,28 @@ class postsTabPostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
-      return Container(
-        constraints: BoxConstraints.expand(height: 0.95 * width),
+      return FutureBuilder<ImageDescriptor>(
+        future: rootBundle.load(image)
+         .then((value) => value.buffer.asUint8List())
+          .then((value) => ImmutableBuffer.fromUint8List(value))
+            .then((value) => ImageDescriptor.encoded(value)),
+        builder: (context, snap){
+          if(snap.hasError){
+            return const Center(child: Text("there occurred some error"),);
+          }
+          if(snap.hasData==false){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+          int h=0;
+          int w = 0;
+
+          if(snap.hasData){
+            h = snap.data?.height??1;
+            w = snap.data?.width??1;
+          }
+          return Container(
+        constraints: BoxConstraints.expand(
+          height: width/(w/h)),
         decoration: BoxDecoration(
             image: DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
             borderRadius: BorderRadius.circular(15),
@@ -218,8 +241,26 @@ class postsTabPostWidget extends StatelessWidget {
           ],
         ),
       );
+        });
     });
   }
+
+  Future<int> getImageSize(String asset) async{
+        final byteData = await rootBundle.load(asset);
+	      final bytes = byteData.buffer.asUint8List();
+        final buffer = await ImmutableBuffer.fromUint8List(bytes);
+        final descriptor = await ImageDescriptor.encoded(buffer);
+         
+        rootBundle.load(asset)
+         .then((value) => value.buffer.asUint8List())
+          .then((value) => ImmutableBuffer.fromUint8List(value))
+            .then((value) => ImageDescriptor.encoded(value));
+
+
+       //double asp =descriptor.width/descriptor.height;      
+       return 1;
+  }
+  
 }
 
 ///this is for showing the user who had posted the image
