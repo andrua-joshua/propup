@@ -94,10 +94,12 @@ class _depositFormWidgetState extends State<depositFormWidget> {
             const Text(
               "Enter Amount (UGX)",
               style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Container(
-              height: 30,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(255, 240, 238, 238)),
@@ -116,16 +118,18 @@ class _depositFormWidgetState extends State<depositFormWidget> {
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             const Text(
               "Mobile Money number",
               style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Container(
               width: 150,
-              height: 30,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(255, 240, 238, 238)),
@@ -142,7 +146,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 40,
             ),
             GestureDetector(
                 onTap: () {},
