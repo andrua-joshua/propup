@@ -38,6 +38,15 @@ class EmailUser implements userRepository<UserCredential> {
   Future<void> signOut() async {
     FirebaseAuth.instance.signOut();
   }
+
+  static Future<void> validateUser(String code) async{
+    try{
+      await FirebaseAuth.instance.checkActionCode(code);
+      await FirebaseAuth.instance.applyActionCode(code);
+
+      await FirebaseAuth.instance.currentUser?.reload();
+    }catch(e){}
+  }
 }
 
 //ignore:camel_case_types

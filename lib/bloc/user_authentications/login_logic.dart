@@ -37,9 +37,16 @@ class loginLogic {
       String password) {
     if (ky.currentState?.validate() ?? false) {
       try {
-        (DrilloxGoogleUsers().signIn() != null)
-            ? Navigator.pushNamed(context, RouteGenerator.homescreen)
-            : null;
+        final provider = EmailUser(email: email, password: password);
+        final user = provider.signIn();
+        user.then((value) {
+          if (value.user?.emailVerified ?? false) {
+            Navigator.pushNamed(context, RouteGenerator.homescreen);
+          } else {
+            value.user?.sendEmailVerification().then((value) =>
+                Navigator.pushNamed(context, RouteGenerator.emailVerificationscreen));
+          }
+        });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ///task in case of week password

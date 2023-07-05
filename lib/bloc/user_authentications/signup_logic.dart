@@ -53,14 +53,27 @@ class signUpLogic {
     return null;
   }
 
-  static void signUp(GlobalKey<FormState> ky, BuildContext context,
-      String email, String password, String username,) {
+  static void signUp(
+    GlobalKey<FormState> ky,
+    BuildContext context,
+    String email,
+    String password,
+    String username,
+  ) {
     if (ky.currentState?.validate() ?? false) {
       try {
         final provider = EmailUser(email: email, password: password);
         final user = provider.register();
-        user.then(
-            (value) => Navigator.pushNamed(context, RouteGenerator.homescreen));
+        user.then((value) {
+          if (value.user != null) {
+            if (value.user?.emailVerified ?? false) {
+              Navigator.pushNamed(context, RouteGenerator.homescreen);
+            } else {
+              value.user?.sendEmailVerification().then((value) =>
+                  Navigator.pushNamed(context, RouteGenerator.emailVerificationscreen));
+            }
+          }
+        });
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ///task in case of week password

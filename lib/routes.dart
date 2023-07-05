@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:propup/routes/add_friends_screen.dart';
 import 'package:propup/routes/edit_profile_screen.dart';
+import 'package:propup/routes/email_verification_screen.dart';
 import 'package:propup/routes/friend_request_screen.dart';
 import 'package:propup/routes/friends_profile_screen.dart';
 import 'package:propup/routes/friends_screen.dart';
@@ -55,6 +56,7 @@ class RouteGenerator {
   static const String depositOptionscreen = "/deposteOptionScreen";
   static const String withdrawOptionscreen = "/withdrawOptionScreen";
   static const String postsCommentscreen ="/postsCommentscreen";
+  static const String emailVerificationscreen = "/emailVerification";
 
   static bool led = true;
 
@@ -122,6 +124,9 @@ class RouteGenerator {
       case withdrawOptionscreen:
         return MaterialPageRoute(
             builder: (context) => const withdrawOptionScreen());
+      case emailVerificationscreen:
+        return MaterialPageRoute(
+            builder: (context) => const emailVerificationScreen());
       case leadersboardScreen:
         return MaterialPageRoute(
             builder: (context) =>  leadersBoardScreen(
