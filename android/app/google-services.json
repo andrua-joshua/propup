@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "735495916641",
+    "project_id": "propup-715a1",
+    "storage_bucket": "propup-715a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735495916641:android:b790310cd769e75556ee20",
+        "android_client_info": {
+          "package_name": "com.example.propup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735495916641-o2f9tilo1fdcrcu059kv9d4j8hc3slff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYm97SGRA-Pykjt_x0Jlz7PDmYKdKUlBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735495916641-o2f9tilo1fdcrcu059kv9d4j8hc3slff.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "735495916641-j11nb1r5qknf4e2tmv9dag0fqklg5nuk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.propup"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

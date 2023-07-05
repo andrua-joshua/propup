@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 
@@ -40,11 +41,12 @@ class profilePicWidget extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10), color: Colors.white),
               padding: const EdgeInsets.all(10),
-              child: const Center(
+              child: Center(
                 child: CircleAvatar(
                   radius: 35,
                   backgroundColor: Colors.grey,
-                  backgroundImage: AssetImage("assets/images/profile.jpg"),
+                  backgroundImage: NetworkImage(
+                      FirebaseAuth.instance.currentUser?.photoURL ?? ""),
                 ),
               ),
             )),
@@ -361,7 +363,8 @@ class editOptionsWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               color: const Color.fromARGB(255, 27, 48, 66)),
           child: TextButton(
-              onPressed: ()=> Navigator.pushNamed(context, RouteGenerator.addFriendsscreen),
+              onPressed: () =>
+                  Navigator.pushNamed(context, RouteGenerator.addFriendsscreen),
               child: const Text(
                 "Add friends",
                 style: TextStyle(color: Colors.white, fontSize: 14),

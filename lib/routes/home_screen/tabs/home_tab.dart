@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/home_screen_widgets.dart';
 import 'package:propup/widgets/user_profile_screen_widgets.dart';
@@ -52,29 +53,29 @@ class homeTab extends StatelessWidget{
                       image: AssetImage("assets/images/userbg.png"),
                       fit: BoxFit.cover)),
               padding: const EdgeInsets.fromLTRB(25, 0, 25, 5),
-              child: const  SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    profileImageWidget(),
+                    const profileImageWidget(),
                     Text(
-                      "Anonymous user",
-                      style: TextStyle(
+                      FirebaseAuth.instance.currentUser?.displayName??"unknown",
+                      style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20),
                     ),
                     Text(
-                      "anonymoususer@gmail.com",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      FirebaseAuth.instance.currentUser?.email??"unknown",
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
-                    userInfoWidget()
+                    const userInfoWidget()
                   ],
                 ),
               ))),

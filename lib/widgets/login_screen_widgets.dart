@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:propup/bloc/login_logic.dart';
+import 'package:propup/bloc/user_authentications/login_logic.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -9,12 +9,14 @@ import 'package:propup/routes.dart';
 //ignore:camel_case_types
 class signInButtonWidget extends StatelessWidget {
   final GlobalKey<FormState> key1;
-  const signInButtonWidget({required this.key1, super.key});
+  final String email;
+  final String password;
+  const signInButtonWidget({required this.key1, required this.email, required this.password, super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () => loginLogic.login(key1, context),
+      onPressed: () => loginLogic.login(key1, context, email, password),
       child: Container(
         constraints: const BoxConstraints.expand(height: 50),
         decoration: BoxDecoration(
@@ -44,20 +46,20 @@ class loginFormWidget extends StatefulWidget {
 
 //igonre: camel_case_types
 class _loginFormWidgetState extends State<loginFormWidget> {
-  late final TextEditingController usernameController;
+  late final TextEditingController emailController;
   late final TextEditingController passwordController;
   final key = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    usernameController = TextEditingController();
+    emailController = TextEditingController();
     passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -92,13 +94,13 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                 padding: const EdgeInsets.all(2),
                 child: Center(
                     child: TextFormField(
-                  controller: usernameController,
+                  controller: emailController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: "username",
+                    hintText: "Enter email",
                     icon: Icon(Icons.account_circle),
                   ),
-                  validator: loginLogic.usernameValidate,
+                  validator: loginLogic.emailValidate,
                 ))),
             const SizedBox(
               height: 20,
@@ -127,6 +129,8 @@ class _loginFormWidgetState extends State<loginFormWidget> {
             ),
             signInButtonWidget(
               key1: key,
+              email: emailController.text,
+              password: passwordController.text,
             )
           ],
         ));

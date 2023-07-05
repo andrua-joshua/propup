@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:propup/bloc/sidnup_logic.dart';
+import 'package:propup/bloc/user_authentications/signup_logic.dart';
 
 ///
 ///this is where all the custom widgets of the signUp screen
@@ -141,7 +141,13 @@ class _signUpFormWidgetState extends State<signUpFormWidget> {
               height: 15,
             ),
             TextButton(
-                onPressed: () => signUpLogic.signUp(_key, context),
+                onPressed: () => signUpLogic.signUp(
+                  _key, 
+                  context,
+                  gmailController.text,
+                  passwordController.text,
+                  usernameController.text
+                  ),
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
