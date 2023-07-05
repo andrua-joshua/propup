@@ -37,10 +37,9 @@ class loginLogic {
       String password) {
     if (ky.currentState?.validate() ?? false) {
       try {
-        final provider = EmailUser(email: email, password: password);
-        final user = provider.signIn();
-        user.then(
-            (value) => Navigator.pushNamed(context, RouteGenerator.homescreen));
+        (DrilloxGoogleUsers().signIn() != null)
+            ? Navigator.pushNamed(context, RouteGenerator.homescreen)
+            : null;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           ///task in case of week password
