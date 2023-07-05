@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/home_screen_widgets.dart';
@@ -8,11 +9,14 @@ import '../../../routes.dart';
 ///
 ///for the home optin of the tab
 //ignore:camel_case_types
-class homeTab extends StatelessWidget{
+class homeTab extends StatelessWidget {
   const homeTab({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final auth = FirebaseAuth.instance;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -61,15 +65,34 @@ class homeTab extends StatelessWidget{
                       height: 15,
                     ),
                     const profileImageWidget(),
+                    StreamBuilder(
+                        stream:
+                            usersStore.doc(auth.currentUser?.uid).snapshots(),
+                        builder: (context, snap) {
+                          if (snap.hasError) {
+                            return const Text(
+                              "Error retriving info",
+                              style: TextStyle(color: Colors.red),
+                            );
+                          }
+                          if (snap.hasData) {
+                            if (snap.data != null) {
+                              return Text(
+                                snap.data?.get("username"),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              );
+                            }
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }),
                     Text(
-                      FirebaseAuth.instance.currentUser?.displayName??"unknown",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                    Text(
-                      FirebaseAuth.instance.currentUser?.email??"unknown",
+                      FirebaseAuth.instance.currentUser?.email ?? "unknown",
                       style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     const SizedBox(
