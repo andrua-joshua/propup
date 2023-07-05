@@ -18,8 +18,9 @@ class profileImageWidget extends StatelessWidget {
       backgroundColor: Colors.white,
       child: CircleAvatar(
           radius: 72,
-          backgroundImage:
-              NetworkImage(FirebaseAuth.instance.currentUser?.photoURL ?? "")),
+          backgroundImage: NetworkImage(FirebaseAuth
+                  .instance.currentUser?.photoURL ??
+              "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
     );
   }
 }
