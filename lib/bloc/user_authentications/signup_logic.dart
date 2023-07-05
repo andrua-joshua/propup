@@ -1,12 +1,13 @@
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/user_authentications/user_repository.dart';
+import 'package:propup/routes.dart';
 
 ///
 ///this is where the orking logic of the signup page will be done from
 ///
 //ignore:camel_case_types
-class signUpLogic{
+class signUpLogic {
   static String? pswd;
   static String? passwordValidate(String? txt) {
     int length = txt?.length ?? 0;
@@ -22,7 +23,9 @@ class signUpLogic{
     if (length < 8) {
       return "password should be atleast 8 characters long";
     }
-    if(pswd != txt){ return "password doesn't much!";}
+    if (pswd != txt) {
+      return "password doesn't much!";
+    }
     return null;
   }
 
@@ -37,12 +40,12 @@ class signUpLogic{
   static String? gmailValidate(String? txt) {
     if (txt?.isEmpty ?? true) {
       return "enter your Email please";
-    }else {
+    } else {
       String suffix = "@gmail.com";
-      int lng = txt?.length??0;
-      String sub = txt?.substring((lng>10)?(lng-suffix.length):0)??"";
+      int lng = txt?.length ?? 0;
+      String sub = txt?.substring((lng > 10) ? (lng - suffix.length) : 0) ?? "";
 
-      if(sub!=suffix){
+      if (sub != suffix) {
         return "please enter a valid gmail.";
       }
     }
@@ -50,11 +53,26 @@ class signUpLogic{
     return null;
   }
 
-  static void signUp(GlobalKey<FormState> ky, BuildContext context) {
+  static void signUp(GlobalKey<FormState> ky, BuildContext context,
+      String email, String password, String username,) {
     if (ky.currentState?.validate() ?? false) {
+      try {
+        final provider = EmailUser(email: email, password: password);
+        final user = provider.register();
+        user.then(
+            (value) => Navigator.pushNamed(context, RouteGenerator.homescreen));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          ///task in case of week password
+        }
+        if (e.code == 'email-alread-in-use') {
+          ///task in case of week password
+        }
+      } catch (e) {
+        ///task in case something different is wrong
+      }
+
       //Navigator.pushNamed(context, RouteGenerator.homescreen);
     }
   }
-
-
 }

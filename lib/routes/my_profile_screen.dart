@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
 import 'package:propup/widgets/friend_request_widgets.dart';
@@ -33,44 +34,51 @@ class myProfileScreen extends StatelessWidget {
                     fontSize: 23),
               ),
             ),
-            const SliverList(
+            SliverList(
                 delegate: SliverChildListDelegate.fixed([
-               SizedBox(
-                  height: 20,
-                ),
-                Center(child:CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  radius: 90,
-                  backgroundImage: AssetImage("assets/images/profile.jpg"),
-                )),
-                Center(child:Text(
-                  "Tracy Zoe",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold),
-                )),
-                friendLocationWidget(),
-                SizedBox(
-                  height: 30,
-                ),
-                Padding(padding: EdgeInsets.fromLTRB(15,0,15,0),child:Text(
-                  "Love is like the wind, you can't see it but you can feel it.",
-                  style: TextStyle(color: Colors.black, fontSize: 19),
-                  textAlign: TextAlign.center,
-                )),
-                SizedBox(
-                  height: 30,
-                ),
-                // requestOptionsRowWidget(),
-                mySummaryWidget(),
-                SizedBox(height: 10,),
-                editOptionsWidget(),
-                
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Center(
+                  child: CircleAvatar(
+                backgroundColor: Colors.grey,
+                radius: 90,
+                backgroundImage: NetworkImage(
+                    FirebaseAuth.instance.currentUser?.photoURL ?? ""),
+              )),
+              Center(
+                  child: Text(
+                FirebaseAuth.instance.currentUser?.displayName??"unknown",
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              )),
+              const friendLocationWidget(),
+              const SizedBox(
+                height: 30,
+              ),
+              const Padding(
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Text(
+                    "Love is like the wind, you can't see it but you can feel it.",
+                    style: TextStyle(color: Colors.black, fontSize: 19),
+                    textAlign: TextAlign.center,
+                  )),
+              const SizedBox(
+                height: 30,
+              ),
+              // requestOptionsRowWidget(),
+              const mySummaryWidget(),
+              const SizedBox(
+                height: 10,
+              ),
+              const editOptionsWidget(),
+
+              const SizedBox(
+                height: 20,
+              ),
+              const Center(
                   child: Text(
                 "Photos",
                 style: TextStyle(
@@ -78,7 +86,7 @@ class myProfileScreen extends StatelessWidget {
                     fontSize: 15,
                     fontWeight: FontWeight.bold),
               )),
-              Padding(
+              const Padding(
                   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: Divider(
                     thickness: 1,
@@ -86,17 +94,19 @@ class myProfileScreen extends StatelessWidget {
             ])),
             SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, crossAxisSpacing: 5, mainAxisSpacing: 10,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 10,
                   mainAxisExtent: 150),
               delegate: SliverChildListDelegate.fixed(List.generate(
                   images.length,
                   (index) => Container(
-                    decoration: BoxDecoration(
-                      //color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(image: AssetImage(images[index]))
-                    ),
-                  ))),
+                        decoration: BoxDecoration(
+                            //color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                                image: AssetImage(images[index]))),
+                      ))),
             )
           ],
         ),

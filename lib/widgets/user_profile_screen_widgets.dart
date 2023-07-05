@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 
@@ -11,11 +13,13 @@ class profileImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CircleAvatar(
+    return CircleAvatar(
       radius: 75,
       backgroundColor: Colors.white,
       child: CircleAvatar(
-          radius: 72, backgroundImage: AssetImage("assets/images/pp.jpg")),
+          radius: 72,
+          backgroundImage:
+              NetworkImage(FirebaseAuth.instance.currentUser?.photoURL ?? "")),
     );
   }
 }
@@ -74,8 +78,8 @@ class userInfoWidget extends StatelessWidget {
           userDataTileWidget(
             icon: Icons.logout,
             title: "Logout",
-            callback: () =>
-                Navigator.pushNamed(context, RouteGenerator.welcomescreen),
+            callback: () => FirebaseAuth.instance.signOut().then((value) =>
+                Navigator.pushNamed(context, RouteGenerator.welcomescreen)),
           )
         ],
       ),
