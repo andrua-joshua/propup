@@ -15,6 +15,7 @@ class homeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usersStore = FirebaseFirestore.instance.collection("users");
+    
     final auth = FirebaseAuth.instance;
 
     return Scaffold(
