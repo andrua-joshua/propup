@@ -11,7 +11,11 @@ class signInButtonWidget extends StatelessWidget {
   final GlobalKey<FormState> key1;
   final String email;
   final String password;
-  const signInButtonWidget({required this.key1, required this.email, required this.password, super.key});
+  const signInButtonWidget(
+      {required this.key1,
+      required this.email,
+      required this.password,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +118,7 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                     child: TextFormField(
                   controller: passwordController,
                   decoration: InputDecoration(
-                    border: InputBorder.none,
+                      border: InputBorder.none,
                       hintText: "password",
                       icon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
@@ -127,10 +131,32 @@ class _loginFormWidgetState extends State<loginFormWidget> {
             const SizedBox(
               height: 30,
             ),
-            signInButtonWidget(
-              key1: key,
-              email: emailController.text,
-              password: passwordController.text,
+            // signInButtonWidget(
+            //   key1: key,
+            //   email: emailController.text,
+            //   password: passwordController.text,
+            // )
+
+            SizedBox(
+              child: TextButton(
+                onPressed: () => loginLogic.login(key, context,
+                    emailController.text, passwordController.text),
+                child: Container(
+                  constraints: const BoxConstraints.expand(height: 50),
+                  decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: const Center(
+                    child: Text(
+                      "SIGN IN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 19),
+                    ),
+                  ),
+                ),
+              ),
             )
           ],
         ));
@@ -186,7 +212,8 @@ class signUpOptionsRowWidget extends StatelessWidget {
           style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
         ),
         TextButton(
-            onPressed: ()=> Navigator.pushNamed(context, RouteGenerator.signupscreen),
+            onPressed: () =>
+                Navigator.pushNamed(context, RouteGenerator.signupscreen),
             child: const Text(
               "Sign Up",
               style:

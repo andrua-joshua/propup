@@ -44,10 +44,16 @@ class loginLogic {
             Navigator.pushNamed(context, RouteGenerator.homescreen);
           } else {
             value.user?.sendEmailVerification().then((value) =>
-                Navigator.pushNamed(context, RouteGenerator.emailVerificationscreen));
+                Navigator.pushNamed(
+                    context, RouteGenerator.emailVerificationscreen));
           }
         });
       } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          "Error: " + e.code,
+          style: const TextStyle(color: Colors.redAccent),
+        )));
         if (e.code == 'weak-password') {
           ///task in case of week password
         }

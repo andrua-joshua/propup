@@ -75,6 +75,11 @@ class signUpLogic {
           }
         });
       } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          "Error: " + e.code,
+          style: const TextStyle(color: Colors.redAccent),
+        )));
         if (e.code == 'weak-password') {
           ///task in case of week password
         }
