@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_authentications/user_repository.dart';
@@ -67,10 +68,22 @@ class signUpLogic {
         user.then((value) {
           if (value.user != null) {
             if (value.user?.emailVerified ?? false) {
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(value.user?.uid)
+                  .set({"username": username, "email": email});
+
               Navigator.pushNamed(context, RouteGenerator.homescreen);
             } else {
-              value.user?.sendEmailVerification().then((value) =>
-                  Navigator.pushNamed(context, RouteGenerator.emailVerificationscreen));
+              value.user?.sendEmailVerification().then((value) {
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(FirebaseAuth.instance.currentUser?.uid)
+                    .set({"username": username, "email": email});
+
+                Navigator.pushNamed(
+                    context, RouteGenerator.emailVerificationscreen);
+              });
             }
           }
         });

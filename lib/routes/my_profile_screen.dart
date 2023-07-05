@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
@@ -19,6 +20,9 @@ class myProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final auth = FirebaseAuth.instance;
+
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
@@ -43,16 +47,35 @@ class myProfileScreen extends StatelessWidget {
                   child: CircleAvatar(
                 backgroundColor: Colors.grey,
                 radius: 90,
-                backgroundImage: NetworkImage(
-                    FirebaseAuth.instance.currentUser?.photoURL ?? ""),
+                backgroundImage: NetworkImage(FirebaseAuth
+                        .instance.currentUser?.photoURL ??
+                    "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
               )),
               Center(
-                  child: Text(
-                FirebaseAuth.instance.currentUser?.displayName??"unknown",
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
+                  child: StreamBuilder(
+                stream: usersStore.doc(auth.currentUser?.uid).snapshots(),
+                builder: (context, snap) {
+                  if (snap.hasError) {
+                    return const Text(
+                      "Error retriving data",
+                      style: TextStyle(color: Colors.red),
+                    );
+                  }
+                  if (snap.hasData) {
+                    if (snap.data != null) {
+                      return Text(
+                        snap.data?.get("username"),
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
+                      );
+                    }
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               )),
               const friendLocationWidget(),
               const SizedBox(
