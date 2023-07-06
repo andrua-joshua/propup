@@ -5,8 +5,37 @@ import 'package:propup/widgets/edit_profile_widgets.dart';
 ///this is for defining the screen for editing the user profile
 ///
 //ignore: camel_case_types
-class editProfileScreen extends StatelessWidget {
+class editProfileScreen extends StatefulWidget {
   const editProfileScreen({super.key});
+
+  @override
+  _editProfileScreenState createState() => _editProfileScreenState();
+}
+
+class _editProfileScreenState extends State<editProfileScreen> {
+  late final TextEditingController _firstNameController;
+  late final TextEditingController _lastNameController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    _locationController = TextEditingController();
+    _descriptionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _locationController.dispose();
+    _descriptionController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,55 +48,67 @@ class editProfileScreen extends StatelessWidget {
               color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
         ),
       ),
-      body: const SafeArea(
+      body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
-                profilePicRowWidget(),
-                SizedBox(
+                const profilePicRowWidget(),
+                const SizedBox(
                   height: 20,
                 ),
-                Text(
+                const Text(
                   "Full name",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
-                fullNameRowWidget(),
-                SizedBox(
+                fullNameRowWidget(
+                  firstNameController: _firstNameController,
+                  lastNameController: _lastNameController,
+                ),
+                const SizedBox(
                   height: 30,
                 ),
-                Text(
+                const Text(
                   "District",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
-                locationRowWidget(),
-                SizedBox(
+                locationRowWidget(
+                  controller: _locationController,
+                ),
+                const SizedBox(
                   height: 30,
                 ),
-                Text(
+                const Text(
                   "About you",
                   style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
-                aboutRowWidget(),
-                SizedBox(
+                aboutRowWidget(
+                  controller: _descriptionController,
+                ),
+                const SizedBox(
                   height: 30,
                 ),
                 Center(
-                  child: saveBtnWidget(),
+                  child: saveBtnWidget(
+                    firstName: _firstNameController.text,
+                    lastName: _lastNameController.text,
+                    location: _locationController.text,
+                    description: _descriptionController.text,
+                  ),
                 )
               ],
             )),
