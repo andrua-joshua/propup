@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_cache_manager/src/cache_manager.dart';
+import 'package:flutter_cache_manager/src/config/config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -281,7 +283,17 @@ class postsTabPostWidget extends StatelessWidget {
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image:
-                                  CachedNetworkImageProvider(snap.data ?? ""),
+                                  CachedNetworkImageProvider(
+                                    snap.data ?? "",
+                                    cacheKey: "customcache",
+                                    cacheManager: CacheManager(
+                                      Config(
+                                        "customcache",
+                                        stalePeriod: const Duration(days: 7),
+                                        maxNrOfCacheObjects: 200
+                                      )
+                                    )
+                                    ),
                               fit: BoxFit.fill),
                           borderRadius: BorderRadius.circular(15),
                           color: const Color.fromARGB(255, 224, 221, 221)),
