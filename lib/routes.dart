@@ -19,6 +19,7 @@ import 'package:propup/routes/my_profile_screen.dart';
 import 'package:propup/routes/payments_screen/deposit_option_screen.dart';
 import 'package:propup/routes/payments_screen/payment_options_screen.dart';
 import 'package:propup/routes/payments_screen/withdraw_option_screen.dart';
+import 'package:propup/routes/personal_posts_review.dart';
 import 'package:propup/routes/support_friend_screen.dart';
 import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/routes/user_profile_screen.dart';
@@ -57,8 +58,10 @@ class RouteGenerator {
   static const String withdrawOptionscreen = "/withdrawOptionScreen";
   static const String postsCommentscreen ="/postsCommentscreen";
   static const String emailVerificationscreen = "/emailVerification";
+  static const String personalPostsReviewscreen = "/personalPostsReviewPage";
 
   static bool led = true;
+  static String src = "";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -127,6 +130,9 @@ class RouteGenerator {
       case emailVerificationscreen:
         return MaterialPageRoute(
             builder: (context) => const emailVerificationScreen());
+      case personalPostsReviewscreen:
+        return MaterialPageRoute(
+            builder: (context) => personalPostsReview(src: src,));
       case leadersboardScreen:
         return MaterialPageRoute(
             builder: (context) =>  leadersBoardScreen(

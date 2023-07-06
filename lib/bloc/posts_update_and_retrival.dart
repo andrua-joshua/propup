@@ -12,6 +12,7 @@ class postsUpdateAndRetrival{
   static final user = FirebaseAuth.instance.currentUser;
   static final postsStore = FirebaseFirestore.instance.collection("posts");
   static final storageRf = FirebaseStorage.instance.ref();
+  static String post_Name="";
 
   static Future<UploadTask> addPost() async{
     final imagePicker = ImagePicker();
@@ -21,15 +22,16 @@ class postsUpdateAndRetrival{
 
             final extStart = file.path.lastIndexOf('.');
             final ext = file.path.substring(extStart);
-            String postName = DateTime.now().second.toString()+ext;
+            String postName = DateTime.now().microsecondsSinceEpoch.toString()+ext;
+            post_Name = postName;
             final fileRef = storageRf.child("posts/"+postName);
 
             final task = fileRef.putFile(file);
 
-            postsStore.doc(postName).set({
-              "owner":user?.uid,
-              "likes":0
-            });
+            // postsStore.doc(postName).set({
+            //   "owner":user?.uid,
+            //   "likes":0
+            // });
 
             return task;
   }
