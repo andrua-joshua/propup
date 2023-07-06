@@ -1,8 +1,11 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:propup/routes.dart';
+import 'package:http/http.dart' as http;
 
 ///
 ///this is where all the custome widgets of the home screen are to be created from
@@ -17,19 +20,40 @@ class helloTitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
+    final user = FirebaseAuth.instance.currentUser;
+    final usersStore =
+        FirebaseFirestore.instance.collection("users").doc(user?.uid);
+
     return Container(
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text(
-            "Hello, Jacob",
-            style: TextStyle(
-                color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
-          ),
-          Text(
+          StreamBuilder(
+              stream: usersStore.snapshots(),
+              builder: (context, snap) {
+                if (snap.hasError) {
+                  return const Text("Error retriving the info",
+                      style: TextStyle(color: Colors.red));
+                }
+
+                if (snap.hasData) {
+                  if (snap.data != null) {
+                    return Text(
+                      snap.data?.get("username"),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
+                    );
+                  }
+                }
+
+                return const Center(child: CircularProgressIndicator());
+              }),
+          const Text(
             "Good morning",
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
@@ -208,15 +232,18 @@ class postsTabPostWidget extends StatelessWidget {
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return FutureBuilder<ImageDescriptor>(
-          future: rootBundle
-              .load(image)
-              .then((value) => value.buffer.asUint8List())
+          future: http
+              .get(Uri.parse(image))
+              .then((value) => value.bodyBytes)
               .then((value) => ImmutableBuffer.fromUint8List(value))
               .then((value) => ImageDescriptor.encoded(value)),
           builder: (context, snap) {
             if (snap.hasError) {
               return const Center(
-                child: Text("there occurred some error"),
+                child: Text(
+                  "there occurred some error",
+                  style: TextStyle(color: Colors.redAccent),
+                ),
               );
             }
             if (snap.hasData == false) {
@@ -235,7 +262,7 @@ class postsTabPostWidget extends StatelessWidget {
               constraints: BoxConstraints.expand(height: width / (w / h)),
               decoration: BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage(image), fit: BoxFit.fill),
+                      image: NetworkImage(image), fit: BoxFit.fill),
                   borderRadius: BorderRadius.circular(15),
                   color: const Color.fromARGB(255, 224, 221, 221)),
               padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
@@ -513,7 +540,8 @@ class postsCommentWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.heart_broken_outlined)),
+                  onPressed: () {},
+                  icon: const Icon(Icons.heart_broken_outlined)),
               // const SizedBox(
               //   width: 4,
               // ),
@@ -569,7 +597,9 @@ class _commentingAreaWidgetState extends State<commentingAreaWidget> {
                 border: InputBorder.none, hintText: "Add a comment...."),
           ),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -589,8 +619,7 @@ class _commentingAreaWidgetState extends State<commentingAreaWidget> {
                   child: const Text(
                     "SEND",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               )
