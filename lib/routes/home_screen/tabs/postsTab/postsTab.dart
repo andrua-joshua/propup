@@ -45,11 +45,11 @@ class postsTab extends StatelessWidget {
                   }
 
                   if(snap.hasError){
-                    return const Center(child: CircularProgressIndicator(),);
+                    return const Center(child: Text("(*_*)", style: TextStyle(color:Colors.red),),);
                   }
 
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    //child: CircularProgressIndicator(),
                   );
                 }))
       ],

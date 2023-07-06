@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -236,51 +237,51 @@ class postsTabPostWidget extends StatelessWidget {
 
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
-      return FutureBuilder<ImageDescriptor>(
-          future: http
-              .get(Uri.parse(image))
-              .then((value) => value.bodyBytes)
-              .then((value) => ImmutableBuffer.fromUint8List(value))
-              .then((value) => ImageDescriptor.encoded(value)),
+      return FutureBuilder<String>(
+          future: storageRf.child("posts/" + image).getDownloadURL(),
           builder: (context, snap) {
             if (snap.hasError) {
               return const Center(
-                child: Text(
-                  "there occurred some error",
-                  style: TextStyle(color: Colors.redAccent),
-                ),
+                child: Text("(*_*)",
+                    style: TextStyle(
+                        color: Colors.redAccent, fontWeight: FontWeight.bold)),
               );
             }
-            if (snap.hasData == false) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            int h = 0;
-            int w = 0;
-
             if (snap.hasData) {
-              h = snap.data?.height ?? 1;
-              w = snap.data?.width ?? 1;
-            }
-            return FutureBuilder<String>(
-                future: storageRf.child("posts/" + image).getDownloadURL(),
-                builder: (context, snap) {
-                  if (snap.hasError) {
-                    return const Center(
-                      child: Text("(*_*)",
-                          style: TextStyle(
-                              color: Colors.redAccent,
-                              fontWeight: FontWeight.bold)),
-                    );
-                  }
-                  if (snap.hasData) {
+              return FutureBuilder<ImageDescriptor>(
+                  future: http
+                      .get(Uri.parse(snap.data ?? ""))
+                      .then((value) => value.bodyBytes)
+                      .then((value) => ImmutableBuffer.fromUint8List(value))
+                      .then((value) => ImageDescriptor.encoded(value)),
+                  builder: (context, value) {
+                    if (value.hasError) {
+                      return const Center(
+                        child: Text(
+                          "there occurred some error",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      );
+                    }
+                    if (value.hasData == false) {
+                      return const Center(
+                          //child: CircularProgressIndicator(),
+                          );
+                    }
+                    int h = 0;
+                    int w = 0;
+
+                    if (value.hasData) {
+                      h = value.data?.height ?? 1;
+                      w = value.data?.width ?? 1;
+                    }
                     return Container(
                       constraints:
                           BoxConstraints.expand(height: width / (w / h)),
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: NetworkImage(snap.data ?? ""),
+                              image:
+                                  CachedNetworkImageProvider(snap.data ?? ""),
                               fit: BoxFit.fill),
                           borderRadius: BorderRadius.circular(15),
                           color: const Color.fromARGB(255, 224, 221, 221)),
@@ -298,16 +299,42 @@ class postsTabPostWidget extends StatelessWidget {
                         ],
                       ),
                     );
-                  }
+                  });
+            }
 
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                });
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           });
     });
   }
 }
+
+/**
+ * Container(
+                      constraints:
+                          BoxConstraints.expand(height: width / (w / h)),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(snap.data ?? ""),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(15),
+                          color: const Color.fromARGB(255, 224, 221, 221)),
+                      padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          postOwnerWidget(
+                            postId: image,
+                          ),
+                          const Expanded(child: SizedBox()),
+                          reactionOptionsWidget(
+                            postId: image,
+                          )
+                        ],
+                      ),
+                    )
+ */
 
 ///this is for showing the user who had posted the image
 //ignore:camel_case_types
@@ -356,8 +383,8 @@ class postOwnerWidget extends StatelessWidget {
                   }
 
                   return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                      //child: CircularProgressIndicator(),
+                      );
                 },
               ),
               subtitle: const Text(
@@ -442,8 +469,8 @@ class reactionOptionsWidget extends StatelessWidget {
                           }
 
                           return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                              //child: CircularProgressIndicator(),
+                              );
                         })
                   ],
                 ),
