@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:propup/routes.dart';
@@ -229,6 +230,10 @@ class postsTabPostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final storageRf = FirebaseStorage.instance.ref();
+
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return FutureBuilder<ImageDescriptor>(
@@ -258,24 +263,47 @@ class postsTabPostWidget extends StatelessWidget {
               h = snap.data?.height ?? 1;
               w = snap.data?.width ?? 1;
             }
-            return Container(
-              constraints: BoxConstraints.expand(height: width / (w / h)),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(image), fit: BoxFit.fill),
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color.fromARGB(255, 224, 221, 221)),
-              padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  postOwnerWidget(
-                      name: "Drillox", image: "assets/images/profile.jpg"),
-                  Expanded(child: SizedBox()),
-                  reactionOptionsWidget()
-                ],
-              ),
-            );
+            return FutureBuilder<String>(
+                future: storageRf.child("posts/" + image).getDownloadURL(),
+                builder: (context, snap) {
+                  if (snap.hasError) {
+                    return const Center(
+                      child: Text("(*_*)",
+                          style: TextStyle(
+                              color: Colors.redAccent,
+                              fontWeight: FontWeight.bold)),
+                    );
+                  }
+                  if (snap.hasData) {
+                    return Container(
+                      constraints:
+                          BoxConstraints.expand(height: width / (w / h)),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: NetworkImage(snap.data ?? ""),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(15),
+                          color: const Color.fromARGB(255, 224, 221, 221)),
+                      padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          postOwnerWidget(
+                            postId: image,
+                          ),
+                          const Expanded(child: SizedBox()),
+                          reactionOptionsWidget(
+                            postId: image,
+                          )
+                        ],
+                      ),
+                    );
+                  }
+
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                });
           });
     });
   }
@@ -284,33 +312,78 @@ class postsTabPostWidget extends StatelessWidget {
 ///this is for showing the user who had posted the image
 //ignore:camel_case_types
 class postOwnerWidget extends StatelessWidget {
-  final String image;
-  final String name;
-  const postOwnerWidget({required this.name, required this.image, super.key});
+  final String postId;
+  const postOwnerWidget({required this.postId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey,
-        backgroundImage: AssetImage(image),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-      ),
-      subtitle: const Text(
-        "2 hrs ago",
-        style: TextStyle(color: Colors.white),
-      ),
-      trailing: const Icon(
-        Icons.more_vert,
-        color: Colors.white,
-      ),
-    );
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+    final usersStore = FirebaseFirestore.instance.collection("users");
+
+    return FutureBuilder<DocumentSnapshot>(
+        future: postsStore.doc(postId).get(),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return ListTile(
+              onTap: () => Navigator.pushNamed(
+                  context, RouteGenerator.friendprofilescreen),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.grey,
+                backgroundImage: NetworkImage(
+                    "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+              ),
+              title: FutureBuilder<DocumentSnapshot>(
+                future: usersStore.doc(snap.data?.get("owner")).get(),
+                builder: (context, value) {
+                  if (value.hasData) {
+                    return Text(
+                      value.data?.get("username"),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    );
+                  }
+
+                  if (value.hasError) {
+                    return const Center(
+                      child: Text(
+                        "(*_*)",
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+              subtitle: const Text(
+                "2 hrs ago",
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: const Icon(
+                Icons.more_vert,
+                color: Colors.white,
+              ),
+            );
+          }
+
+          if (snap.hasError) {
+            return const Center(
+                child: Text(
+              "(*_*)",
+              style: TextStyle(
+                  color: Colors.redAccent, fontWeight: FontWeight.bold),
+            ));
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }
 
@@ -319,10 +392,14 @@ class postOwnerWidget extends StatelessWidget {
 ///
 //ignore:camel_case_types
 class reactionOptionsWidget extends StatelessWidget {
-  const reactionOptionsWidget({super.key});
+  final String postId;
+
+  const reactionOptionsWidget({required this.postId, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return Row(
@@ -336,17 +413,38 @@ class reactionOptionsWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(180, 240, 239, 239)),
                 padding: const EdgeInsets.all(2),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.heart_broken_outlined,
                       color: Colors.white,
                     ),
-                    Text(
-                      "5.2k",
-                      style: TextStyle(color: Colors.white),
-                    )
+                    StreamBuilder(
+                        stream: postsStore.doc(postId).snapshots(),
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            return Text(
+                              snap.data?.get("likes"),
+                              style: const TextStyle(color: Colors.white),
+                            );
+                          }
+
+                          if (snap.hasError) {
+                            return const Center(
+                              child: Text(
+                                "(*_*)",
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        })
                   ],
                 ),
               )),
