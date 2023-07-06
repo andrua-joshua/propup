@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 ///
@@ -10,14 +12,35 @@ class friendLocationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final user = FirebaseAuth.instance.currentUser;
+
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.location_on),
-        Text(
-          "unknown",
-          style: TextStyle(color: Colors.grey, fontSize: 22),
-        )
+        const Icon(Icons.location_on),
+        StreamBuilder(
+            stream: usersStore.doc(user?.uid).snapshots(),
+            builder: (context, snap) {
+              if (snap.hasError) {
+                return const Text(
+                  "Error retriving info",
+                  style: TextStyle(color: Colors.redAccent),
+                );
+              }
+              if (snap.hasData) {
+                if (snap.data != null) {
+                  return Text(
+                    snap.data?.get("location"),
+                    style: const TextStyle(color: Colors.grey, fontSize: 22),
+                  );
+                }
+              }
+
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            })
       ],
     );
   }

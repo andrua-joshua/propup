@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/user_data_update.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -45,8 +47,9 @@ class profilePicWidget extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 35,
                   backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(
-                      FirebaseAuth.instance.currentUser?.photoURL ?? ""),
+                  backgroundImage: NetworkImage(FirebaseAuth
+                          .instance.currentUser?.photoURL ??
+                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
                 ),
               ),
             )),
@@ -64,31 +67,14 @@ class profilePicWidget extends StatelessWidget {
 ///
 ///this is for the full name entry
 //ignore:camel_case_types
-class fullNameRowWidget extends StatefulWidget {
-  const fullNameRowWidget({super.key});
+class fullNameRowWidget extends StatelessWidget {
+  final firstNameController;
+  final lastNameController;
 
-  @override
-  _fullNameRowWidgetState createState() => _fullNameRowWidgetState();
-}
-
-//ignore:camel_case_types
-class _fullNameRowWidgetState extends State<fullNameRowWidget> {
-  late final firstNameController;
-  late final lastNameController;
-
-  @override
-  void initState() {
-    super.initState();
-    firstNameController = TextEditingController();
-    lastNameController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    super.dispose();
-  }
+  const fullNameRowWidget(
+      {required this.firstNameController,
+      required this.lastNameController,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -145,28 +131,9 @@ class _fullNameRowWidgetState extends State<fullNameRowWidget> {
 ///for entering the distric or loaction of the user
 ///
 //ignore:camel_case_types
-class locationRowWidget extends StatefulWidget {
-  const locationRowWidget({super.key});
-
-  @override
-  _locationRowWidgetState createState() => _locationRowWidgetState();
-}
-
-//ignore:camel_case_types
-class _locationRowWidgetState extends State<locationRowWidget> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class locationRowWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const locationRowWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +146,7 @@ class _locationRowWidgetState extends State<locationRowWidget> {
         padding: const EdgeInsets.all(10),
         child: Center(
           child: TextFormField(
-              controller: _controller,
+              controller: controller,
               maxLines: 1,
               decoration: const InputDecoration(
                 hintText: "District",
@@ -194,28 +161,9 @@ class _locationRowWidgetState extends State<locationRowWidget> {
 ///for entering the distric or loaction of the user
 ///
 //ignore:camel_case_types
-class aboutRowWidget extends StatefulWidget {
-  const aboutRowWidget({super.key});
-
-  @override
-  _aboutRowWidgetState createState() => _aboutRowWidgetState();
-}
-
-//ignore:camel_case_types
-class _aboutRowWidgetState extends State<aboutRowWidget> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class aboutRowWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const aboutRowWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +176,7 @@ class _aboutRowWidgetState extends State<aboutRowWidget> {
         padding: const EdgeInsets.all(10),
         child: Center(
           child: TextFormField(
-              controller: _controller,
+              controller: controller,
               maxLines: 5,
               decoration: const InputDecoration(
                 hintText: "Description",
@@ -241,14 +189,27 @@ class _aboutRowWidgetState extends State<aboutRowWidget> {
 
 //ignore:camel_case_types
 class saveBtnWidget extends StatelessWidget {
-  const saveBtnWidget({super.key});
+  final String firstName;
+  final String lastName;
+  final String location;
+  final String description;
+  const saveBtnWidget(
+      {required this.firstName,
+      required this.lastName,
+      required this.description,
+      required this.location,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: 100,
         child: TextButton(
-          onPressed: () {},
+          onPressed: () => userDataUpdate.editMyAccount(
+              firstName: firstName,
+              lastName: lastName,
+              location: location,
+              description: description),
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10), color: Colors.blue),
@@ -273,59 +234,78 @@ class mySummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("122",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 9, 14, 17),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold)),
-              Text(
-                "followers",
-                style: TextStyle(),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("67",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 9, 14, 17),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold)),
-              Text(
-                "friends",
-                style: TextStyle(),
-              )
-            ],
-          ),
-        ),
-        SizedBox(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("122",
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 9, 14, 17),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold)),
-              Text(
-                "following",
-                style: TextStyle(),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final user = FirebaseAuth.instance.currentUser;
+
+    return StreamBuilder(
+        stream: usersStore.doc(user?.uid).snapshots(),
+        builder: (context, snap) {
+          if (snap.hasError) {
+            return const Text(
+              "Error retriving info",
+              style: TextStyle(color: Colors.red),
+            );
+          }
+          if (snap.hasData) {
+            if (snap.data != null) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(snap.data?.get("followers"),
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 9, 14, 17),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        const Text(
+                          "followers",
+                          style: TextStyle(),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(snap.data?.get("friends"),
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 9, 14, 17),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        const Text(
+                          "friends",
+                          style: TextStyle(),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(snap.data?.get("following"),
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 9, 14, 17),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold)),
+                        const Text(
+                          "following",
+                          style: TextStyle(),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 }
 

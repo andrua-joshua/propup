@@ -71,7 +71,15 @@ class signUpLogic {
               FirebaseFirestore.instance
                   .collection("users")
                   .doc(value.user?.uid)
-                  .set({"username": username, "email": email});
+                  .set({
+                "username": username,
+                "email": email,
+                "location": "",
+                "description": "",
+                "followers": 0,
+                "friends": 0,
+                "following": 0
+              });
 
               Navigator.pushNamed(context, RouteGenerator.homescreen);
             } else {
@@ -79,7 +87,15 @@ class signUpLogic {
                 FirebaseFirestore.instance
                     .collection("users")
                     .doc(FirebaseAuth.instance.currentUser?.uid)
-                    .set({"username": username, "email": email});
+                    .set({
+                  "username": username,
+                  "email": email,
+                  "location": "",
+                  "description": "",
+                  "followers": 0,
+                  "friends": 0,
+                  "following": 0
+                });
 
                 Navigator.pushNamed(
                     context, RouteGenerator.emailVerificationscreen);

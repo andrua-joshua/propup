@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
 import 'package:propup/widgets/friend_request_widgets.dart';
 import 'package:propup/widgets/friends_profile_screen_widgets.dart';
@@ -81,13 +84,32 @@ class myProfileScreen extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              const Padding(
-                  padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Text(
-                    "Love is like the wind, you can't see it but you can feel it.",
-                    style: TextStyle(color: Colors.black, fontSize: 19),
-                    textAlign: TextAlign.center,
-                  )),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: StreamBuilder(
+                      stream: usersStore.doc(auth.currentUser?.uid).snapshots(),
+                      builder: (context, snap) {
+                        if (snap.hasError) {
+                          return const Text(
+                            "Error retriving info",
+                            style: TextStyle(color: Colors.red),
+                          );
+                        }
+                        if (snap.hasData) {
+                          if (snap.data != null) {
+                            return Text(
+                              snap.data?.get("description"),
+                              style: const TextStyle(
+                                  color: Colors.black, fontSize: 19),
+                              textAlign: TextAlign.center,
+                            );
+                          }
+                        }
+
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      })),
               const SizedBox(
                 height: 30,
               ),
@@ -132,6 +154,22 @@ class myProfileScreen extends StatelessWidget {
                       ))),
             )
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        elevation: 4,
+        onPressed: () async{
+          final imagePicker = ImagePicker();
+          final imageFile = await imagePicker.pickImage(
+            source: ImageSource.gallery);
+
+            final file = File(imageFile!.path);
+        },
+        child: Container(
+          decoration:
+              const BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
+              padding: const EdgeInsets.all(3),
+              child: const Icon(Icons.add, color: Colors.black,),
         ),
       ),
     );
