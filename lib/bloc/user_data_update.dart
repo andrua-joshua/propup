@@ -14,7 +14,7 @@ class userDataUpdate {
         .get();
     final fire = FirebaseFirestore.instance;
 
-    if (firstName.isNotEmpty) {
+    if (firstName!="") {
       fire.runTransaction((transaction) async {
         final secureSnap = await transaction.get(usersStore.reference);
 
@@ -22,7 +22,7 @@ class userDataUpdate {
             secureSnap.reference, {"username": firstName + "" + lastName});
       });
     }
-    if (location.isNotEmpty) {
+    if (location!="") {
       fire.runTransaction((transaction) async {
         final secureSnap = await transaction.get(usersStore.reference);
 
@@ -30,7 +30,7 @@ class userDataUpdate {
             secureSnap.reference, {"location": location});
       });
     }
-    if (description.isNotEmpty) {
+    if (description!="") { 
       fire.runTransaction((transaction) async {
         final secureSnap = await transaction.get(usersStore.reference);
 

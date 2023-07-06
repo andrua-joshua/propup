@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/user_data_update.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
 
 ///
@@ -103,12 +104,33 @@ class _editProfileScreenState extends State<editProfileScreen> {
                   height: 30,
                 ),
                 Center(
-                  child: saveBtnWidget(
-                    firstName: _firstNameController.text,
-                    lastName: _lastNameController.text,
-                    location: _locationController.text,
-                    description: _descriptionController.text,
-                  ),
+                  child: SizedBox(
+        width: 100,
+        child: TextButton(
+          onPressed: (){
+            userDataUpdate.editMyAccount(
+              firstName: _firstNameController.text,
+              lastName: _lastNameController.text,
+              location: _locationController.text,
+              description: _descriptionController.text);
+
+              Navigator.pop(context);
+              },
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.blue),
+            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+            child: const Center(
+              child: Text(
+                "Save",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        )),
                 )
               ],
             )),
