@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:propup/bloc/posts_update_and_retrival.dart';
+import 'package:propup/routes.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
 import 'package:propup/widgets/friend_request_widgets.dart';
 import 'package:propup/widgets/friends_profile_screen_widgets.dart';
@@ -169,12 +170,18 @@ class myProfileScreen extends StatelessWidget {
                                     .getDownloadURL(),
                                 builder: (context, value) {
                                   if (value.hasData) {
-                                    return Container(
+                                    return GestureDetector(
+                                      onTap: (){
+                                        RouteGenerator.src = snap.data!.docs[index].id;
+
+                                        Navigator.pushNamed(context, RouteGenerator.personalPostsReviewscreen);
+                                      },
+                                        child: Container(
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image: NetworkImage(
                                                   value.data ?? ""))),
-                                    );
+                                    ));
                                   }
                                   if (value.hasError) {
                                     return const Text(
@@ -222,13 +229,28 @@ class myProfileScreen extends StatelessWidget {
                             );
                           }
 
-                          return Center(
-                              child: CircularProgressIndicator(
-                            value: (snap.data?.bytesTransferred ?? 0) /
-                                (snap.data?.totalBytes ?? 1),
-                            color: Colors.lightGreen,
-                            backgroundColor: Colors.grey,
-                          ));
+                          if (((snap.data?.bytesTransferred ?? 0) /
+                                  (snap.data?.totalBytes ?? 1)) ==
+                              1) {
+                            postsStore
+                                .doc(postsUpdateAndRetrival.post_Name)
+                                .set({
+                              "owner": postsUpdateAndRetrival.user?.uid,
+                              "likes": 0
+                            });
+                            Navigator.pop(context);
+                          }
+
+                          return SizedBox(
+                              height: 200,
+                              width: 200,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                value: (snap.data?.bytesTransferred ?? 0) /
+                                    (snap.data?.totalBytes ?? 1),
+                                color: Colors.lightGreen,
+                                backgroundColor: Colors.grey,
+                              )));
                         }),
                   );
                 });
