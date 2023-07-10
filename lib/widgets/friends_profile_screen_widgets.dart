@@ -3,6 +3,10 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:propup/bloc/follows_update.dart';
+import 'package:provider/provider.dart';
+
+import '../state_managers/following_state.dart';
 
 ///
 ///this is where all the custom widgets of the friends screen will be defined
@@ -137,7 +141,7 @@ class transfersWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     snap.hasData
-                        ? Text(snap.data?.get("recieved").toString()??"0",
+                        ? Text(snap.data?.get("recieved").toString() ?? "0",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 26,
@@ -163,7 +167,7 @@ class transfersWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     snap.hasData
-                        ? Text(snap.data?.get("donated").toString()??"0",
+                        ? Text(snap.data?.get("donated").toString() ?? "0",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 26,
@@ -212,7 +216,7 @@ class friendSummaryWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     snap.hasData
-                        ? Text(snap.data?.get("followers").toString()??"0",
+                        ? Text(snap.data?.get("followers").toString() ?? "0",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,
@@ -239,7 +243,7 @@ class friendSummaryWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     snap.hasData
-                        ? Text(snap.data?.get("friends").toString()??"0",
+                        ? Text(snap.data?.get("friends").toString() ?? "0",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,
@@ -266,7 +270,7 @@ class friendSummaryWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     snap.hasData
-                        ? Text(snap.data?.get("following").toString()??"0",
+                        ? Text(snap.data?.get("following").toString() ?? "0",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,
@@ -298,21 +302,33 @@ class friendSummaryWidget extends StatelessWidget {
 ///this is for the add friend btn
 //ignore:camel_case_types
 class addFriendBtnWidget extends StatelessWidget {
-  const addFriendBtnWidget({super.key});
+  final String uid;
+  const addFriendBtnWidget({required this.uid, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 5, 38, 65),
-          borderRadius: BorderRadius.circular(10)),
-      child: TextButton(
-          onPressed: () {},
-          child: const Text(
-            "Follow",
-            style: TextStyle(color: Colors.white),
-          )),
+    return ChangeNotifierProvider(
+      create: (context) => followStateNotifier(),
+      builder: (context, child) {
+        return Container(
+          width: 100,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 5, 38, 65),
+              borderRadius: BorderRadius.circular(10)),
+          child: Consumer<followStateNotifier>(builder: (context, val, child) {
+            return TextButton(
+                onPressed: () {
+                  val.followingCurrentUser
+                      ? followsUpdateBloc.unfollow(uid: "uid")
+                      : followsUpdateBloc.follow(uid: "uid");
+                },
+                child: Text(
+                  val.followingCurrentUser ? "Unfollow" : "Follow",
+                  style: TextStyle(color: Colors.white),
+                ));
+          }),
+        );
+      },
     );
   }
 }

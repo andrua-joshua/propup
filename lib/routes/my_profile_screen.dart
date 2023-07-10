@@ -233,7 +233,7 @@ class myProfileScreen extends StatelessWidget {
                                   (snap.data?.totalBytes ?? 1)) ==
                               1) {
                             postsStore
-                                .doc(postsUpdateAndRetrival.post_Name)
+                                .     doc(postsUpdateAndRetrival.post_Name)
                                 .set({
                               "owner": postsUpdateAndRetrival.user?.uid,
                               "likes": 0

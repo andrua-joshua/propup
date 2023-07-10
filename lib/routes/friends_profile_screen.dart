@@ -122,7 +122,7 @@ class friendsProfileScreen extends StatelessWidget {
                       Padding(
                           padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
                           child: transfersWidget(user: user,)),
-                      const Center(child: addFriendBtnWidget()),
+                      Center(child: addFriendBtnWidget(uid: userID,)),
                       const SizedBox(
                         height: 20,
                       ),
