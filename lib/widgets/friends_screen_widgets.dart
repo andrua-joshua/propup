@@ -52,18 +52,20 @@ class gridDataWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseFirestore.instance.collection("users").doc("user");
+    final fuser = FirebaseFirestore.instance.collection("users").doc(user);
 
     return StreamBuilder(
-        stream: user.snapshots(),
+        stream: fuser.snapshots(),
         builder: (context, snap) {
           return Card(
               elevation: 10,
               //color: Colors.white,
               child: snap.hasData
                   ? GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                          context, RouteGenerator.friendprofilescreen),
+                      onTap: (){
+                        RouteGenerator.user=user;
+                        Navigator.pushNamed(
+                          context, RouteGenerator.friendprofilescreen);},
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),

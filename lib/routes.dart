@@ -62,6 +62,7 @@ class RouteGenerator {
 
   static bool led = true;
   static String src = "";
+  static String user = "";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -107,7 +108,7 @@ class RouteGenerator {
       case friendprofilescreen:
         return MaterialPageRoute(
             builder: (context) =>
-                const friendsProfileScreen(userID: "Anonymous"));
+                friendsProfileScreen(userID: user));
       case addFriendsscreen:
         return MaterialPageRoute(
             builder: (context) =>
