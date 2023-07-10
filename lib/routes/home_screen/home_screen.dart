@@ -19,9 +19,9 @@ class homeScreen extends StatelessWidget {
       builder: (context, child)=>Scaffold(
         body: Consumer<homeTabsChange>(
           builder: (context,value,child){
-            if(value.currentIndex == 0){
-              return const postsTab();
-            }else if(value.currentIndex ==2){
+            // if(value.currentIndex == 0){
+            //   return const postsTab();}
+            if(value.currentIndex ==1){
               return const chatTab();
             }
             return const homeTab();
@@ -32,9 +32,9 @@ class homeScreen extends StatelessWidget {
               onTap: (val)=>value.ChangeIndex(val),
           currentIndex: value.currentIndex,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.photo_album),
-              label: "Posts"),
+            // BottomNavigationBarItem(
+            //   icon: Icon(Icons.photo_album),
+            //   label: "Posts"),
               BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: "Home"),
