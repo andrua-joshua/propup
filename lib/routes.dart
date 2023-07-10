@@ -61,6 +61,7 @@ class RouteGenerator {
   static const String personalPostsReviewscreen = "/personalPostsReviewPage";
 
   static bool led = true;
+  static bool isFollowing = false;
   static String src = "";
   static String user = "";
 

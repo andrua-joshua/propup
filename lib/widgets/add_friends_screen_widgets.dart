@@ -79,8 +79,8 @@ class possibleFriendWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
+      onTap: () {},
+          //Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
       leading: CircleAvatar(
           radius: 35,
           child: Center(

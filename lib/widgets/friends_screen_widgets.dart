@@ -79,7 +79,7 @@ class gridDataWidget extends StatelessWidget {
                               child: const CircleAvatar(
                                   backgroundColor: Colors.grey,
                                   backgroundImage:
-                                      AssetImage("assets/images/profile.jpg")),
+                                      NetworkImage("https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
                             ), // for holding the profile pic
 
                             const SizedBox(
