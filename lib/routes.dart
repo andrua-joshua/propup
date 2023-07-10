@@ -107,7 +107,7 @@ class RouteGenerator {
       case friendprofilescreen:
         return MaterialPageRoute(
             builder: (context) =>
-                const friendsProfileScreen(name: "Anonymous"));
+                const friendsProfileScreen(userID: "Anonymous"));
       case addFriendsscreen:
         return MaterialPageRoute(
             builder: (context) =>

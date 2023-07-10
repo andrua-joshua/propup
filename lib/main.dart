@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/paymen_gateway.dart';
 import 'package:propup/routes.dart';
 
 void main() {
