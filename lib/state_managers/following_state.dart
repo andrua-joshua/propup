@@ -21,3 +21,21 @@ class followStateNotifier with ChangeNotifier{
 
   
 } 
+
+
+//ignore:camel_case_types
+class followStateNotifier2 with ChangeNotifier{
+
+  bool _followingCurrentUser2 = followStateNotifier().followingCurrentUser;
+
+
+
+  bool get followingCurrentUser2 => _followingCurrentUser2;
+
+  void editFollow2(bool fl){
+    _followingCurrentUser2 = fl;
+    notifyListeners();
+  }
+
+
+}

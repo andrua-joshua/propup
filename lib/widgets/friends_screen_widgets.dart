@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/state_managers/following_state.dart';
 
 ///
 ///this is where all the custom widgets of the friends screen are to be defined
@@ -64,6 +65,7 @@ class gridDataWidget extends StatelessWidget {
                   ? GestureDetector(
                       onTap: (){
                         RouteGenerator.user=user;
+                        followStateNotifier().editFollow(true);
                         Navigator.pushNamed(
                           context, RouteGenerator.friendprofilescreen);},
                       child: Container(
