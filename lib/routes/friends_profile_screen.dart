@@ -14,13 +14,6 @@ class friendsProfileScreen extends StatelessWidget {
 
   const friendsProfileScreen({required this.userID, super.key});
 
-  final images = const <String>[
-    "assets/images/profile.jpg",
-    "assets/images/pp.jpg",
-    "assets/images/pic1.jpg",
-    "assets/images/pic2.jpg",
-    "assets/images/pp2.jpg",
-  ];
 
   @override
   Widget build(BuildContext context) {

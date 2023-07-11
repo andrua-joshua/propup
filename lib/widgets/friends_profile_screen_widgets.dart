@@ -308,23 +308,32 @@ class addFriendBtnWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => followStateNotifier(),
+      create: (context) => followStateNotifier2(),
       builder: (context, child) {
         return Container(
           width: 100,
           decoration: BoxDecoration(
               color: const Color.fromARGB(255, 5, 38, 65),
               borderRadius: BorderRadius.circular(10)),
-          child: Consumer<followStateNotifier>(builder: (context, val, child) {
+          child: Consumer<followStateNotifier2>(builder: (context, val, child) {
             return TextButton(
                 onPressed: () {
-                  val.followingCurrentUser
+                  val.followingCurrentUser2
                       ? followsUpdateBloc.unfollow(uid: "uid")
                       : followsUpdateBloc.follow(uid: "uid");
+
+
+                      if(val.followingCurrentUser2){
+                          followsUpdateBloc.unfollow(uid: "uid").then(
+                            (value) => val.editFollow2(followStateNotifier().followingCurrentUser));
+                      }else{
+                        followsUpdateBloc.follow(uid: "uid").then(
+                            (value) => val.editFollow2(followStateNotifier().followingCurrentUser));
+                      }
                 },
                 child: Text(
-                  val.followingCurrentUser ? "Unfollow" : "Follow",
-                  style: TextStyle(color: Colors.white),
+                  val.followingCurrentUser2 ? "Unfollow" : "Follow",
+                  style: const TextStyle(color: Colors.white),
                 ));
           }),
         );

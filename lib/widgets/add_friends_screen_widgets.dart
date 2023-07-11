@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 
+import '../state_managers/following_state.dart';
+
 //ignore:camel_case_types
 class searchFriendWidget extends StatelessWidget {
   const searchFriendWidget({super.key});
@@ -30,7 +32,7 @@ class possibleFriendsWidget extends StatelessWidget {
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
     final allUsers = FirebaseFirestore.instance.collection("users");
-    // List saveList = [];
+    List saveList = [];
 
     return StreamBuilder(
       stream: currentUser.snapshots(),
@@ -42,23 +44,36 @@ class possibleFriendsWidget extends StatelessWidget {
                 return Column(
                   children: List.generate(
                       snapd.data?.docs
-                              .where((element) =>
-                                  (snap.data?.get("followingList") as List)
-                                      .contains(element.id))
+                              .where((element) {
+                                bool val =
+                                    (snap.data?.get("followingList") as List)
+                                            .contains(element.id)
+                                        ? false
+                                        : true;
+
+                                bool v2 = val
+                                    ? element.id != snap.data?.id
+                                        ? true
+                                        : false
+                                    : false;
+
+                                v2 ? saveList.add(element) : null;
+
+                                return v2;
+                              })
                               .toList()
                               .length ??
                           0,
                       (index) => Padding(
                             padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
                             child: possibleFriendWidget(
-                              name: snapd.data?.docs[index].id ?? "",
-                              image:
-                                  "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                              description: snapd.data?.docs[index]
-                                      .get("description")
-                                      .toString() ??
-                                  "",
-                            ),
+                              user: saveList[index].id,
+                                name: saveList[index].get("username") ?? "",
+                                image:
+                                    "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                                description: saveList[index]
+                                    .get("description")
+                                    .toString()),
                           )),
                 );
               });
@@ -84,18 +99,23 @@ class possibleFriendsWidget extends StatelessWidget {
 class possibleFriendWidget extends StatelessWidget {
   final String image;
   final String name;
+  final String user;
   final String description;
   const possibleFriendWidget(
       {required this.description,
       required this.name,
+      required this.user,
       required this.image,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {},
-      //Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
+      onTap: () {
+        RouteGenerator.user = user;
+        followStateNotifier().editFollow(false);
+        Navigator.pushNamed(context, RouteGenerator.friendprofilescreen);
+      },
       leading: CircleAvatar(
           radius: 35,
           child: Center(

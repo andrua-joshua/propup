@@ -7,119 +7,154 @@ class followsUpdateBloc {
   static final usersStore = FirebaseFirestore.instance.collection("users");
   static final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
 
-  static void follow({required String uid}) {
+  static Future<void> follow({required String uid}) async{
     if (uid != "") {
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-        final secureSnap = await transaction.get(user);
-        final secureSnap2 = await transaction.get(usersStore.doc(uid));
+
+      bool success = false;
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+
+        final secureSnap = await transaction.get(user); //good
 
         ///to update the current users database
         final bool isFollower =
-            (secureSnap.get("followersList") as List).contains(uid);
-        int friends = (secureSnap.get("friends") as int);
-        int followings = (secureSnap.get("following") as int);
+            (secureSnap.get("followersList") as List).contains(uid); //good
 
-        List friendsList = secureSnap.get("friendsList") as List;
-        List followingsList = secureSnap.get("followingsList") as List;
+
+        int friends = (secureSnap.get("friends") as int); //good
+
+        int followings = secureSnap.get("following") as int; //good
+
+        List friendsList = secureSnap.get("friendsList") as List;  //good
+
+        List followingsList = secureSnap.get("followingList") as List; //good
 
         if (isFollower) {
-          friendsList.add(uid);
-          followingsList.add(uid);
-          ++friends;
+          friendsList.add(uid);  //valid
+          followingsList.add(uid); //valid
+          ++friends;  //valid
         } else {
-          followingsList.add(uid);
+          followingsList.add(uid); //valid
         }
 
         transaction.update(secureSnap.reference, {
-          "friends": friends,
-          "following": ++followings,
-          "followingsList": followingsList,
-          "friendsList": friendsList
+          "friends": friends, //valid
+          "following": ++followings, //valid
+          "followingsList": followingsList, //valid
+          "friendsList": friendsList //valid
         });
 
-        ///to update the followed user database
-        final bool isFollowing =
-            (secureSnap2.get("followingsList") as List).contains(uid);
-        int friends2 = (secureSnap2.get("friends") as int);
-        int followers = (secureSnap2.get("followers") as int);
 
-        List friendsList2 = secureSnap2.get("friendsList") as List;
-        List followersList = secureSnap.get("followersList") as List;
+
+        ///to update the followed user database
+        ///
+        final secureSnap2 = await transaction.get(usersStore.doc(uid)); //good
+
+        final bool isFollowing =
+            (secureSnap2.get("followingList") as List).contains(user.id); //good 
+
+        int friends2 = (secureSnap2.get("friends") as int); //good
+
+        int followers = (secureSnap2.get("followers") as int); //good
+
+        List friendsList2 = secureSnap2.get("friendsList") as List; //good
+
+        List followersList = secureSnap2.get("followersList") as List; //good
 
         if (isFollowing) {
-          friendsList2.add(uid);
-          followersList.add(uid);
-          ++friends2;
+          friendsList2.add(user.id);  //valid
+          followersList.add(user.id);  //valid
+          ++friends2;  //valid
         } else {
-          followersList.add(uid);
+          followersList.add(user.id);  //valid
         }
 
         transaction.update(secureSnap2.reference, {
-          "friends": friends2,
-          "following": ++followers,
-          "followingsList": followersList,
-          "friendsList": friendsList
+          "friends": friends2,   //valid
+          "followers": ++followers, //valid
+          "followersList": followersList, //valid
+          "friendsList": friendsList  //valid
         });
+
+        success = (secureSnap.get("followingList") as List).contains(uid);
+
       });
 
-      followStateNotifier().editFollow(true);
+      followStateNotifier().editFollow(success);
     }
   }
 
   ///used for unfollowing a user
-  static void unfollow({required String uid}) {
+  static Future<void> unfollow({required String uid}) async{
     if (uid != "") {
-      FirebaseFirestore.instance.runTransaction((transaction) async {
-        final secureSnap = await transaction.get(user);
-        final secureSnap2 = await transaction.get(usersStore.doc(uid));
+      
+      bool success = false;
+
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        
+        final secureSnap = await transaction.get(user); //good
+        
 
         ///to update the current users database
         final bool isFriend =
-            (secureSnap.get("friendsList") as List).contains(uid);
-        int friends = (secureSnap.get("friends") as int);
-        int followings = (secureSnap.get("following") as int);
+            (secureSnap.get("friendsList") as List).contains(uid);  //good
 
-        List friendsList = secureSnap.get("friendsList") as List;
-        List followingsList = secureSnap.get("followingsList") as List;
+        int friends = secureSnap.get("friends") as int;  //good
+
+        int followings = secureSnap.get("following") as int;  //good
+
+        List friendsList = secureSnap.get("friendsList") as List;   //good
+
+        List followingsList = secureSnap.get("followingList") as List;  //good
 
         if (isFriend) {
-          friendsList.remove(uid);
-          followingsList.remove(uid);
-          --friends;
+          friendsList.remove(uid);  //valid
+          followingsList.remove(uid);  //valid
+          --friends;  //valid
         } else {
-          followingsList.remove(uid);
+          followingsList.remove(uid);  //valid
         }
 
         transaction.update(secureSnap.reference, {
-          "friends": friends,
-          "following": --followings,
-          "followingsList": followingsList,
-          "friendsList": friendsList
+          "friends": friends,   //valid
+          "following": --followings,  //valid
+          "followingsList": followingsList,  //valid
+          "friendsList": friendsList  //valid
         });
 
-        ///to update the unfollowed user database
-        final bool isFriend2 =
-            (secureSnap2.get("friendsList") as List).contains(uid);
-        int friends2 = (secureSnap2.get("friends") as int);
-        int followers = (secureSnap2.get("followers") as int);
 
-        List friendsList2 = secureSnap2.get("friendsList") as List;
-        List followersList = secureSnap.get("followersList") as List;
+
+        ///to update the unfollowed user database
+        ///
+        final secureSnap2 = await transaction.get(usersStore.doc(uid)); //good
+
+        final bool isFriend2 =
+            (secureSnap2.get("friendsList") as List).contains(user.id); //good
+
+        int friends2 = secureSnap2.get("friends") as int;  //good
+
+        int followers = secureSnap2.get("followers") as int;   //good
+
+        List friendsList2 = secureSnap2.get("friendsList") as List;   //good
+
+        List followersList = secureSnap.get("followersList") as List; //good
 
         if (isFriend2) {
-          friendsList2.remove(uid);
-          followersList.remove(uid);
-          --friends2;
+          friendsList2.remove(user.id);  //valid
+          followersList.remove(user.id);  //valid
+          --friends2;   //valid
         } else {
-          followersList.remove(uid);
+          followersList.remove(user.id);  //valid
         }
 
         transaction.update(secureSnap2.reference, {
-          "friends": friends2,
-          "following": --followers,
-          "followingsList": followersList,
-          "friendsList": friendsList
+          "friends": friends2,  //valid
+          "followers": --followers, //valid
+          "followersList": followersList, //valid
+          "friendsList": friendsList  //valid
         });
+
+        success = !(secureSnap.get("followingList") as List).contains(uid);
       });
 
       followStateNotifier().editFollow(false);
