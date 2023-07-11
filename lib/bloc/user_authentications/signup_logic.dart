@@ -78,7 +78,10 @@ class signUpLogic {
                 "description": "",
                 "followers": 0,
                 "friends": 0,
-                "following": 0
+                "following": 0,
+                "followersList": [],
+                "followingList": [],
+                "friendsList": [],
               });
 
               Navigator.pushNamed(context, RouteGenerator.homescreen);
@@ -94,7 +97,10 @@ class signUpLogic {
                   "description": "",
                   "followers": 0,
                   "friends": 0,
-                  "following": 0
+                  "following": 0,
+                  "followersList": [],
+                  "followingList": [],
+                  "friendsList": [],
                 });
 
                 Navigator.pushNamed(
