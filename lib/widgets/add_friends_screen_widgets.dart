@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 
@@ -47,21 +49,63 @@ class possibleFriendsWidget extends StatelessWidget {
     "John dush",
     "Natalia Joyce",
   ];
-
+  
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(
-          images.length,
-          (index) => Padding(
-                padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
-                child: possibleFriendWidget(
-                  name: names[index],
-                  image: images[index],
-                  description: "Here i am using propup to develop",
-                ),
-              )),
+    final auth = FirebaseAuth.instance.currentUser;
+    final currentUser =
+        FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    final allUsers = FirebaseFirestore.instance.collection("users");
+    List saveList = [];
+
+    return StreamBuilder(
+      stream: currentUser.snapshots(),
+      builder: (context, snap) {
+        if (snap.hasData) {
+          return Column(
+            children: List.generate(
+                possibleFriends(
+                  coll: allUsers, snap: snap.data, saveList: saveList),
+                (index) => Padding(
+                      padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
+                      child: possibleFriendWidget(
+                        name: (saveList[index] as QueryDocumentSnapshot).get("username").toString(),
+                        image: "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                        description: (saveList[index] as QueryDocumentSnapshot).get("description").toString(),
+                      ),
+                    )),
+          );
+        }
+
+        if (snap.hasError) {
+          return const Text(
+            "(*_*)\n there was an error.\n Please check your network and try again.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          );
+        }
+
+        return const Center(
+          child: Icon(Icons.watch_outlined),
+        );
+      },
     );
+  }
+
+  int possibleFriends(
+      {required CollectionReference coll, required DocumentSnapshot? snap, required List saveList}) {
+
+    coll.snapshots().where((event) {
+      bool val = false;
+      saveList = event.docs.where((element) {
+        val = (snap?.get("followingList") as List).contains(element.id);
+        return val?false:true;
+      }).toList();
+
+      return val;
+    });
+
+    return saveList.length;
   }
 }
 
@@ -80,14 +124,14 @@ class possibleFriendWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {},
-          //Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
+      //Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
       leading: CircleAvatar(
           radius: 35,
           child: Center(
               child: CircleAvatar(
             backgroundColor: Colors.grey,
             radius: 35,
-            backgroundImage: AssetImage(image),
+            backgroundImage: NetworkImage(image),
           ))),
       title: Text(
         name,
