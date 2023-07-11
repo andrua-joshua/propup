@@ -24,57 +24,35 @@ class searchFriendWidget extends StatelessWidget {
 class possibleFriendsWidget extends StatelessWidget {
   const possibleFriendsWidget({super.key});
 
-  final images = const <String>[
-    "assets/images/profile.jpg",
-    "assets/images/pp.jpg",
-    "assets/images/pic1.jpg",
-    "assets/images/pic2.jpg",
-    "assets/images/pp2.jpg",
-    "assets/images/profile.jpg",
-    "assets/images/pp.jpg",
-    "assets/images/pic1.jpg",
-    "assets/images/pic2.jpg",
-    "assets/images/pp2.jpg",
-  ];
-
-  final names = const <String>[
-    "Mugisha Moses",
-    "Anthony Rock",
-    "Tom Cruisce",
-    "John dush",
-    "Natalia Joyce",
-    "Mugisha Moses",
-    "Anthony Rock",
-    "Tom Cruisce",
-    "John dush",
-    "Natalia Joyce",
-  ];
-  
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance.currentUser;
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
     final allUsers = FirebaseFirestore.instance.collection("users");
-    List saveList = [];
+    // List saveList = [];
 
     return StreamBuilder(
       stream: currentUser.snapshots(),
       builder: (context, snap) {
         if (snap.hasData) {
-          return Column(
+          return StreamBuilder(
+            stream: allUsers.snapshots(),
+            builder: (context, snapd){
+              return Column(
             children: List.generate(
-                possibleFriends(
-                  coll: allUsers, snap: snap.data, saveList: saveList),
+                snapd.data?.size??0,
                 (index) => Padding(
                       padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
                       child: possibleFriendWidget(
-                        name: (saveList[index] as QueryDocumentSnapshot).get("username").toString(),
-                        image: "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                        description: (saveList[index] as QueryDocumentSnapshot).get("description").toString(),
+                        name: snapd.data?.docs[index].id??"",
+                        image:
+                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                        description: snapd.data?.docs[index].get("description").toString()??"",
                       ),
                     )),
           );
+            });
         }
 
         if (snap.hasError) {
@@ -92,22 +70,8 @@ class possibleFriendsWidget extends StatelessWidget {
     );
   }
 
-  int possibleFriends(
-      {required CollectionReference coll, required DocumentSnapshot? snap, required List saveList}) {
-
-    coll.snapshots().where((event) {
-      bool val = false;
-      saveList = event.docs.where((element) {
-        val = (snap?.get("followingList") as List).contains(element.id);
-        return val?false:true;
-      }).toList();
-
-      return val;
-    });
-
-    return saveList.length;
-  }
 }
+
 
 //ignore:camel_case_types
 class possibleFriendWidget extends StatelessWidget {
