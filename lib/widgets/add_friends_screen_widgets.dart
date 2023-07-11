@@ -37,22 +37,31 @@ class possibleFriendsWidget extends StatelessWidget {
       builder: (context, snap) {
         if (snap.hasData) {
           return StreamBuilder(
-            stream: allUsers.snapshots(),
-            builder: (context, snapd){
-              return Column(
-            children: List.generate(
-                snapd.data?.size??0,
-                (index) => Padding(
-                      padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
-                      child: possibleFriendWidget(
-                        name: snapd.data?.docs[index].id??"",
-                        image:
-                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                        description: snapd.data?.docs[index].get("description").toString()??"",
-                      ),
-                    )),
-          );
-            });
+              stream: allUsers.snapshots(),
+              builder: (context, snapd) {
+                return Column(
+                  children: List.generate(
+                      snapd.data?.docs
+                              .where((element) =>
+                                  (snap.data?.get("followingList") as List)
+                                      .contains(element.id))
+                              .toList()
+                              .length ??
+                          0,
+                      (index) => Padding(
+                            padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
+                            child: possibleFriendWidget(
+                              name: snapd.data?.docs[index].id ?? "",
+                              image:
+                                  "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                              description: snapd.data?.docs[index]
+                                      .get("description")
+                                      .toString() ??
+                                  "",
+                            ),
+                          )),
+                );
+              });
         }
 
         if (snap.hasError) {
@@ -69,9 +78,7 @@ class possibleFriendsWidget extends StatelessWidget {
       },
     );
   }
-
 }
-
 
 //ignore:camel_case_types
 class possibleFriendWidget extends StatelessWidget {
