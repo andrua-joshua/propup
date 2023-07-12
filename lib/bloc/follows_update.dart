@@ -14,13 +14,15 @@ class followsUpdateBloc {
    
    */
 
-  static Future<void> drilloxFollow({required String uid}) async {
+  static Future<bool> drilloxFollow({required String uid}) async {
     final usersStore = FirebaseFirestore.instance.collection("users");
     final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
 
+    bool success = false;
+
     if (uid != "") {
       //to check whether the uid isnt empty
-      bool success = false;
+      
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         final secureSnap =
             await transaction.get(user); //for holding the current user
@@ -133,9 +135,9 @@ class followsUpdateBloc {
         });
       });
 
-      followStateNotifier().editFollow(success);
-      debugPrint("following success: >> $success");
     }
+
+    return success;
   }
 
   // ignore: slash_for_doc_comments
@@ -146,12 +148,13 @@ class followsUpdateBloc {
    
    */
 
-  static Future<void> drilloxUnfollow({required String uid}) async {
+  static Future<bool> drilloxUnfollow({required String uid}) async {
     final usersStore = FirebaseFirestore.instance.collection("users");
     final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
 
+    bool success = false;
+
     if (uid != "") {
-      bool success = false;
 
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         //defining our two users involved
@@ -238,7 +241,7 @@ class followsUpdateBloc {
         if (wasFriend) {
           if (friendsList2.contains(secureSnap.id)) {
             friendsList2.remove(secureSnap.id);
-            friends = friendsList2.length;
+            friends2 = friendsList2.length;
           }
         }
 
@@ -246,7 +249,6 @@ class followsUpdateBloc {
           followersList2.remove(secureSnap.id);
           followers2 = followersList2.length;
 
-          
         }
 
         transaction.update(secureSnap2.reference, {
@@ -257,8 +259,8 @@ class followsUpdateBloc {
         });
       }); //end of run transaction method
 
-      followStateNotifier().editFollow(success);
-      debugPrint("unfollowing success: >> $success");
     }
+
+    return success;
   }
 }
