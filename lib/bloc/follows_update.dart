@@ -31,7 +31,7 @@ class followsUpdateBloc {
 
         //for the current user's updating
 
-        final bool isFollowing = (secureSnap.get("followingList") as List).contains(
+        final bool isFollowing = (secureSnap.get("followersList") as List).contains(
             uid); //to check whether the user to be followed is currently following us
 
         List followingList = secureSnap.get("followingList") as List;
@@ -245,8 +245,9 @@ class followsUpdateBloc {
         if (followersList2.contains(secureSnap.id)) {
           bool successTemp = followersList2.remove(secureSnap.id);
           followers2 = followersList2.length;
-
-          success = successTemp && true;
+          
+          bool scs =success;
+          success = successTemp && scs;
         }
 
         transaction.update(secureSnap2.reference, {
