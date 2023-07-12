@@ -318,18 +318,15 @@ class addFriendBtnWidget extends StatelessWidget {
           child: Consumer<followStateNotifier2>(builder: (context, val, child) {
             return TextButton(
                 onPressed: () {
-                  val.followingCurrentUser2
-                      ? followsUpdateBloc.unfollow(uid: "uid")
-                      : followsUpdateBloc.follow(uid: "uid");
-
-
-                      if(val.followingCurrentUser2){
-                          followsUpdateBloc.unfollow(uid: "uid").then(
-                            (value) => val.editFollow2(followStateNotifier().followingCurrentUser));
-                      }else{
-                        followsUpdateBloc.follow(uid: "uid").then(
-                            (value) => val.editFollow2(followStateNotifier().followingCurrentUser));
-                      }
+                  if (val.followingCurrentUser2) {
+                    followsUpdateBloc.drilloxUnfollow(uid: uid).then((value) =>
+                        val.editFollow2(
+                            followStateNotifier().followingCurrentUser));
+                  } else {
+                    followsUpdateBloc.drilloxFollow(uid: uid).then((value) =>
+                        val.editFollow2(
+                            followStateNotifier().followingCurrentUser));
+                  }
                 },
                 child: Text(
                   val.followingCurrentUser2 ? "Unfollow" : "Follow",
