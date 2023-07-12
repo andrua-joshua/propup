@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/state_managers/following_state.dart';
 
 //ignore:camel_case_types
@@ -7,146 +9,284 @@ class followsUpdateBloc {
   static final usersStore = FirebaseFirestore.instance.collection("users");
   static final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
 
-  static Future<void> follow({required String uid}) async {
-    if (uid != "") {
+
+  // ignore: slash_for_doc_comments
+  /**
+   
+    static final usersStore = FirebaseFirestore.instance.collection("users");
+    static final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
+   
+   */
+
+
+  static Future<void> drilloxFollow({required String uid})async{
+
+    if(uid!=""){ //to check whether the uid isnt empty
       bool success = false;
+      await FirebaseFirestore.instance.runTransaction((transaction)async{
 
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final secureSnap = await transaction.get(user); //good
+        final secureSnap = await transaction.get(user); //for holding the current user
+        final secureSnap2 = await transaction.get(usersStore.doc(uid)); //for the followed user
 
-        ///to update the current users database
-        final bool isFollower =
-            (secureSnap.get("followersList") as List).contains(uid); //good
 
-        int friends = (secureSnap.get("friends") as int); //good
+        bool wasAdded = false;
 
-        int followings = secureSnap.get("following") as int; //good
+        //for the current user's updating
 
-        List friendsList = secureSnap.get("friendsList") as List; //good
+        final bool isFollowing 
+              = (secureSnap.get("following") as List).contains(uid);  //to check whether the user to be followed is currently following us
+        
+        List followingList = secureSnap.get("followingList") as List;
+        List friendsList = secureSnap.get("friendsList") as List;
 
-        List followingsList = secureSnap.get("followingList") as List; //good
+        int following = secureSnap.get("following") as int;
+        int friends = secureSnap.get("friends") as int;
 
-        if (isFollower) {
-          friendsList.add(uid); //valid
-          followingsList.add(uid); //valid
-          ++friends; //valid
-        } else {
-          followingsList.add(uid); //valid
+        
+        /// 
+        /// if is following us: 
+        ///    if !infriendsList    //-to check whether the user already a friend
+        ///       friendsList.add
+        ///       ++friends
+        /// then adding the user to the ones that we are currently following
+        /// 
+        /// if !infollowingList
+        ///    followingList.add
+        ///     ++following
+        /// 
+        /// update currentUser
+        ///   "friendsList"=friendsList
+        ///   "followingList"=followingList
+        ///   "following"=following
+        ///   "friends"=friends
+        /// 
+
+
+        if(isFollowing){
+          if(!friendsList.contains(uid)){
+            friendsList.add(uid);
+            friends = friendsList.length;
+          }
         }
 
-        transaction.update(secureSnap.reference, {
-          "friends": friends, //valid
-          "following": ++followings, //valid
-          "followingsList": followingsList, //valid
-          "friendsList": friendsList //valid
-        });
-
-        ///to update the followed user database
-        ///
-        final secureSnap2 = await transaction.get(usersStore.doc(uid)); //good
-
-        final bool isFollowing =
-            (secureSnap2.get("followingList") as List).contains(user.id); //good
-
-        int friends2 = (secureSnap2.get("friends") as int); //good
-
-        int followers = (secureSnap2.get("followers") as int); //good
-
-        List friendsList2 = secureSnap2.get("friendsList") as List; //good
-
-        List followersList = secureSnap2.get("followersList") as List; //good
-
-        if (isFollowing) {
-          friendsList2.add(user.id); //valid
-          followersList.add(user.id); //valid
-          ++friends2; //valid
-        } else {
-          followersList.add(user.id); //valid
+        if(!followingList.contains(uid)){
+          followingList.add(uid);
+          following = followingList.length;
+          wasAdded = true;
+          success = true;
         }
 
-        transaction.update(secureSnap2.reference, {
-          "friends": friends2, //valid
-          "followers": ++followers, //valid
-          "followersList": followersList, //valid
-          "friendsList": friendsList //valid
+        
+        transaction.update(secureSnap.reference,{
+          "friendsList":friendsList,
+          "followingList":followingList,
+          "friends":friends,
+          "following":following
+        } );
+
+
+
+
+
+        //this will be for updating the user that we are currently following
+        final bool isBothFollowing = (secureSnap.get("followingList") as List).contains(uid)
+                  && (secureSnap2.get("followingList") as List).contains(secureSnap.id)
+                    &&wasAdded;
+
+        List friendsList2 = secureSnap2.get("friendsList") as List;
+        List followersList2 = secureSnap2.get("followersList") as List;
+
+        int friends2 = secureSnap2.get("friends") as int;
+        int followers2 = secureSnap2.get("followers") as int;
+
+
+        /// 
+        /// if isBothFollowing:
+        ///    if !infriendsList
+        ///       friendsList2.add
+        ///       ++friends2
+        /// 
+        /// if !inFollowersList:
+        ///     followersList2.add
+        ///     ++followers2
+        /// 
+        /// 
+        /// update User Data secureSnap2:
+        ///   "friendsList2"=friendsList2
+        ///   "followersList"=followersList,
+        ///   "friends"=friends
+        ///   "followers"=followers
+        ///   
+
+        if(isBothFollowing){
+          if(!friendsList2.contains(secureSnap.id)){
+            friendsList2.add(secureSnap.id);
+            friends2 = friendsList2.length;
+          }
+        }
+
+        if(!followersList2.contains(secureSnap.id)){
+          followersList2.add(secureSnap.id);
+          followers2 = followersList2.length;
+
+          bool successTemp = success;
+          success = successTemp && true;
+        }
+
+
+        transaction.update(secureSnap2.reference,{
+          "friendsList":friendsList2,
+          "followersList":followersList2,
+          "friends":friends2,
+          "followers":followers2
         });
 
-        success = (secureSnap.get("followingList") as List).contains(uid);
+
+
+
       });
 
       followStateNotifier().editFollow(success);
+      debugPrint("following success: >> $success");
     }
+
   }
 
-  ///used for unfollowing a user
-  static Future<void> unfollow({required String uid}) async {
-    if (uid != "") {
+
+
+  // ignore: slash_for_doc_comments
+  /**
+   
+    static final usersStore = FirebaseFirestore.instance.collection("users");
+    static final user = usersStore.doc(FirebaseAuth.instance.currentUser?.uid);
+   
+   */
+
+  static Future<void> drilloxUnfollow({required String uid})async{
+    if(uid!=""){
+
       bool success = false;
 
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final secureSnap = await transaction.get(user); //good
+      await FirebaseFirestore.instance.runTransaction((transaction)async{
+        
+        //defining our two users involved
+        final secureSnap = await transaction.get(user);
+        final secureSnap2 = await transaction.get(usersStore.doc(uid));
 
-        ///to update the current users database
-        final bool isFriend =
-            (secureSnap.get("friendsList") as List).contains(uid); //good
+        bool wasFriend = false;
 
-        int friends = secureSnap.get("friends") as int; //good
 
-        int followings = secureSnap.get("following") as int; //good
+        //first or currentuser update
+        final isFriend = (secureSnap.get("friendsList") as List).contains(uid);
 
-        List friendsList = secureSnap.get("friendsList") as List; //good
 
-        List followingsList = secureSnap.get("followingList") as List; //good
+        List friendsList = secureSnap.get("friendsList") as List;
+        List followingList = secureSnap.get("followingList") as List;
 
-        if (isFriend) {
-          friendsList.remove(uid); //valid
-          followingsList.remove(uid); //valid
-          --friends; //valid
-        } else {
-          followingsList.remove(uid); //valid
+        int friends = secureSnap.get("friends") as int;
+        int following = secureSnap.get("following") as int;
+
+
+        ///
+        ///if isFriend of us:
+        ///  if infriendsList
+        ///     friendlist.remove
+        ///     --friends
+        /// 
+        /// if inFollowingList
+        ///     followingList.remove
+        ///      --following
+        /// 
+        /// --update our database state
+        /// 
+        /// secureSnap.update
+        ///   "friends"=friends,
+        ///   "following"= following,
+        ///   "followingList"= followingList
+        ///   "friendsList"= friendsList
+        /// 
+
+        if(isFriend){
+          if(friendsList.contains(uid)){
+            friendsList.remove(uid);
+            friends = friendsList.length;
+            wasFriend = true;
+          }
         }
+
+        if(followingList.contains(uid)){
+          success = followingList.remove(uid);
+          following = followingList.length;
+        }
+
 
         transaction.update(secureSnap.reference, {
-          "friends": friends, //valid
-          "following": --followings, //valid
-          "followingsList": followingsList, //valid
-          "friendsList": friendsList //valid
-        });
+          "friends":friends,
+          "following":following,
+          "friendsList":friendsList,
+          "followingList":followingList
+        }); //end of updating Securenap
 
-        ///to update the unfollowed user database
+
+
+
+
+        //---for updating of the user that we are currently trying to unfollow
+        
+        List friendsList2 = secureSnap2.get("friendsList") as List;
+        List followersList2 = secureSnap2.get("followersList") as List;
+
+        int friends2 = secureSnap2.get("friends") as int;
+        int followers2 = secureSnap2.get("followers") as int;
+
+
         ///
-        final secureSnap2 = await transaction.get(usersStore.doc(uid)); //good
+        /// if wasFriends :
+        ///    if(inFriendsList2)
+        ///       friendsList2.remove
+        ///       --friends2
+        /// 
+        /// if inFollowersList2
+        ///     followersList2.remove
+        ///     --followers2
+        /// 
+        /// --update the user state
+        /// 
+        /// secureSnap2.update
+        ///     "followers"=followers
+        ///     "friends"=friends,
+        ///     "followersList"=followersList,
+        ///     "friendsList"=friendsList
+        /// 
 
-        final bool isFriend2 =
-            (secureSnap2.get("friendsList") as List).contains(user.id); //good
-
-        int friends2 = secureSnap2.get("friends") as int; //good
-
-        int followers = secureSnap2.get("followers") as int; //good
-
-        List friendsList2 = secureSnap2.get("friendsList") as List; //good
-
-        List followersList = secureSnap.get("followersList") as List; //good
-
-        if (isFriend2) {
-          friendsList2.remove(user.id); //valid
-          followersList.remove(user.id); //valid
-          --friends2; //valid
-        } else {
-          followersList.remove(user.id); //valid
+        if(wasFriend){
+          if(friendsList2.contains(secureSnap.id)){
+            friendsList2.remove(secureSnap.id);
+            friends = friendsList2.length;
+          }
         }
 
+        if(followersList2.contains(secureSnap.id)){
+          bool successTemp = followersList2.remove(secureSnap.id);
+          followers2 = followersList2.length;
+          
+          success = successTemp && true;
+        }
+
+
         transaction.update(secureSnap2.reference, {
-          "friends": friends2, //valid
-          "followers": --followers, //valid
-          "followersList": followersList, //valid
-          "friendsList": friendsList //valid
+          "followers":followers2,
+          "friends":friends2,
+          "followersList":followersList2,
+          "friendsList":friendsList2
         });
 
-        success = !(secureSnap.get("followingList") as List).contains(uid);
-      });
 
-      followStateNotifier().editFollow(false);
+
+      }); //end of run transaction method
+      
+      followStateNotifier().editFollow(success);
+      debugPrint("unfollowing success: >> $success");
     }
   }
 }
