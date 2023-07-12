@@ -1,8 +1,15 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_cache_manager/src/cache_manager.dart';
+import 'package:flutter_cache_manager/src/config/config.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:propup/routes.dart';
+import 'package:http/http.dart' as http;
 
 ///
 ///this is where all the custome widgets of the home screen are to be created from
@@ -17,19 +24,40 @@ class helloTitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext) {
+    final user = FirebaseAuth.instance.currentUser;
+    final usersStore =
+        FirebaseFirestore.instance.collection("users").doc(user?.uid);
+
     return Container(
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
-          Text(
-            "Hello, Jacob",
-            style: TextStyle(
-                color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
-          ),
-          Text(
+          StreamBuilder(
+              stream: usersStore.snapshots(),
+              builder: (context, snap) {
+                if (snap.hasError) {
+                  return const Text("Error retriving the info",
+                      style: TextStyle(color: Colors.red));
+                }
+
+                if (snap.hasData) {
+                  if (snap.data != null) {
+                    return Text(
+                      snap.data?.get("username"),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
+                    );
+                  }
+                }
+
+                return const Center(child: CircularProgressIndicator());
+              }),
+          const Text(
             "Good morning",
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
@@ -205,85 +233,196 @@ class postsTabPostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+    final usersStore = FirebaseFirestore.instance.collection("users");
+    final storageRf = FirebaseStorage.instance.ref();
+
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
-      return FutureBuilder<ImageDescriptor>(
-          future: rootBundle
-              .load(image)
-              .then((value) => value.buffer.asUint8List())
-              .then((value) => ImmutableBuffer.fromUint8List(value))
-              .then((value) => ImageDescriptor.encoded(value)),
+      return FutureBuilder<String>(
+          future: storageRf.child("posts/" + image).getDownloadURL(),
           builder: (context, snap) {
             if (snap.hasError) {
               return const Center(
-                child: Text("there occurred some error"),
+                child: Text("(*_*)",
+                    style: TextStyle(
+                        color: Colors.redAccent, fontWeight: FontWeight.bold)),
               );
             }
-            if (snap.hasData == false) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            int h = 0;
-            int w = 0;
-
             if (snap.hasData) {
-              h = snap.data?.height ?? 1;
-              w = snap.data?.width ?? 1;
+              return FutureBuilder<ImageDescriptor>(
+                  future: http
+                      .get(Uri.parse(snap.data ?? ""))
+                      .then((value) => value.bodyBytes)
+                      .then((value) => ImmutableBuffer.fromUint8List(value))
+                      .then((value) => ImageDescriptor.encoded(value)),
+                  builder: (context, value) {
+                    if (value.hasError) {
+                      return const Center(
+                        child: Text(
+                          "there occurred some error",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      );
+                    }
+                    if (value.hasData == false) {
+                      return const Center(
+                          //child: CircularProgressIndicator(),
+                          );
+                    }
+                    int h = 0;
+                    int w = 0;
+
+                    if (value.hasData) {
+                      h = value.data?.height ?? 1;
+                      w = value.data?.width ?? 1;
+                    }
+                    return Container(
+                      constraints:
+                          BoxConstraints.expand(height: width / (w / h)),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image:
+                                  CachedNetworkImageProvider(
+                                    snap.data ?? "",
+                                    cacheKey: "customcache",
+                                    cacheManager: CacheManager(
+                                      Config(
+                                        "customcache",
+                                        stalePeriod: const Duration(days: 7),
+                                        maxNrOfCacheObjects: 200
+                                      )
+                                    )
+                                    ),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(15),
+                          color: const Color.fromARGB(255, 224, 221, 221)),
+                      padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          postOwnerWidget(
+                            postId: image,
+                          ),
+                          const Expanded(child: SizedBox()),
+                          reactionOptionsWidget(
+                            postId: image,
+                          )
+                        ],
+                      ),
+                    );
+                  });
             }
-            return Container(
-              constraints: BoxConstraints.expand(height: width / (w / h)),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(image), fit: BoxFit.fill),
-                  borderRadius: BorderRadius.circular(15),
-                  color: const Color.fromARGB(255, 224, 221, 221)),
-              padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  postOwnerWidget(
-                      name: "Drillox", image: "assets/images/profile.jpg"),
-                  Expanded(child: SizedBox()),
-                  reactionOptionsWidget()
-                ],
-              ),
+
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           });
     });
   }
 }
 
+/**
+ * Container(
+                      constraints:
+                          BoxConstraints.expand(height: width / (w / h)),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: CachedNetworkImageProvider(snap.data ?? ""),
+                              fit: BoxFit.fill),
+                          borderRadius: BorderRadius.circular(15),
+                          color: const Color.fromARGB(255, 224, 221, 221)),
+                      padding: const EdgeInsets.fromLTRB(3, 6, 3, 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          postOwnerWidget(
+                            postId: image,
+                          ),
+                          const Expanded(child: SizedBox()),
+                          reactionOptionsWidget(
+                            postId: image,
+                          )
+                        ],
+                      ),
+                    )
+ */
+
 ///this is for showing the user who had posted the image
 //ignore:camel_case_types
 class postOwnerWidget extends StatelessWidget {
-  final String image;
-  final String name;
-  const postOwnerWidget({required this.name, required this.image, super.key});
+  final String postId;
+  const postOwnerWidget({required this.postId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () =>
-          Navigator.pushNamed(context, RouteGenerator.friendprofilescreen),
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey,
-        backgroundImage: AssetImage(image),
-      ),
-      title: Text(
-        name,
-        style: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-      ),
-      subtitle: const Text(
-        "2 hrs ago",
-        style: TextStyle(color: Colors.white),
-      ),
-      trailing: const Icon(
-        Icons.more_vert,
-        color: Colors.white,
-      ),
-    );
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+    final usersStore = FirebaseFirestore.instance.collection("users");
+
+    return FutureBuilder<DocumentSnapshot>(
+        future: postsStore.doc(postId).get(),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return ListTile(
+              onTap: () => Navigator.pushNamed(
+                  context, RouteGenerator.friendprofilescreen),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.grey,
+                backgroundImage: NetworkImage(
+                    "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+              ),
+              title: FutureBuilder<DocumentSnapshot>(
+                future: usersStore.doc(snap.data?.get("owner")).get(),
+                builder: (context, value) {
+                  if (value.hasData) {
+                    return Text(
+                      value.data?.get("username"),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    );
+                  }
+
+                  if (value.hasError) {
+                    return const Center(
+                      child: Text(
+                        "(*_*)",
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+
+                  return const Center(
+                      //child: CircularProgressIndicator(),
+                      );
+                },
+              ),
+              subtitle: const Text(
+                "2 hrs ago",
+                style: TextStyle(color: Colors.white),
+              ),
+              trailing: const Icon(
+                Icons.more_vert,
+                color: Colors.white,
+              ),
+            );
+          }
+
+          if (snap.hasError) {
+            return const Center(
+                child: Text(
+              "(*_*)",
+              style: TextStyle(
+                  color: Colors.redAccent, fontWeight: FontWeight.bold),
+            ));
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }
 
@@ -292,10 +431,14 @@ class postOwnerWidget extends StatelessWidget {
 ///
 //ignore:camel_case_types
 class reactionOptionsWidget extends StatelessWidget {
-  const reactionOptionsWidget({super.key});
+  final String postId;
+
+  const reactionOptionsWidget({required this.postId, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final postsStore = FirebaseFirestore.instance.collection("posts");
+
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return Row(
@@ -309,17 +452,38 @@ class reactionOptionsWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(180, 240, 239, 239)),
                 padding: const EdgeInsets.all(2),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.heart_broken_outlined,
                       color: Colors.white,
                     ),
-                    Text(
-                      "5.2k",
-                      style: TextStyle(color: Colors.white),
-                    )
+                    StreamBuilder(
+                        stream: postsStore.doc(postId).snapshots(),
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            return Text(
+                              snap.data?.get("likes"),
+                              style: const TextStyle(color: Colors.white),
+                            );
+                          }
+
+                          if (snap.hasError) {
+                            return const Center(
+                              child: Text(
+                                "(*_*)",
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }
+
+                          return const Center(
+                              //child: CircularProgressIndicator(),
+                              );
+                        })
                   ],
                 ),
               )),
@@ -513,7 +677,8 @@ class postsCommentWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.heart_broken_outlined)),
+                  onPressed: () {},
+                  icon: const Icon(Icons.heart_broken_outlined)),
               // const SizedBox(
               //   width: 4,
               // ),
@@ -569,7 +734,9 @@ class _commentingAreaWidgetState extends State<commentingAreaWidget> {
                 border: InputBorder.none, hintText: "Add a comment...."),
           ),
         ),
-        const SizedBox(height: 10,),
+        const SizedBox(
+          height: 10,
+        ),
         SizedBox(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -589,8 +756,7 @@ class _commentingAreaWidgetState extends State<commentingAreaWidget> {
                   child: const Text(
                     "SEND",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                        color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               )
