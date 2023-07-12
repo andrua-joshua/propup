@@ -320,12 +320,10 @@ class addFriendBtnWidget extends StatelessWidget {
                 onPressed: () {
                   if (val.followingCurrentUser2) {
                     followsUpdateBloc.drilloxUnfollow(uid: uid).then((value) =>
-                        val.editFollow2(
-                            followStateNotifier().followingCurrentUser));
+                        val.editFollow2(value));
                   } else {
                     followsUpdateBloc.drilloxFollow(uid: uid).then((value) =>
-                        val.editFollow2(
-                            followStateNotifier().followingCurrentUser));
+                        val.editFollow2(value));
                   }
                 },
                 child: Text(

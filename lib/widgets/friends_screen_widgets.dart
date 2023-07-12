@@ -54,6 +54,9 @@ class gridDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fuser = FirebaseFirestore.instance.collection("users").doc(user);
+    final currentUser = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid);
 
     return StreamBuilder(
         stream: fuser.snapshots(),
@@ -63,11 +66,13 @@ class gridDataWidget extends StatelessWidget {
               //color: Colors.white,
               child: snap.hasData
                   ? GestureDetector(
-                      onTap: (){
-                        RouteGenerator.user=user;
-                        followStateNotifier().editFollow(true);
+                      onTap: () { 
+                        RouteGenerator.user = user;
+                        bool v =(snap.data?.get("followersList") as List).contains(currentUser.id);
+                        followStateNotifier().editFollow(v);
                         Navigator.pushNamed(
-                          context, RouteGenerator.friendprofilescreen);},
+                            context, RouteGenerator.friendprofilescreen);
+                      },
                       child: Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -80,8 +85,8 @@ class gridDataWidget extends StatelessWidget {
                               margin: const EdgeInsets.only(top: 10),
                               child: const CircleAvatar(
                                   backgroundColor: Colors.grey,
-                                  backgroundImage:
-                                      NetworkImage("https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
+                                  backgroundImage: NetworkImage(
+                                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
                             ), // for holding the profile pic
 
                             const SizedBox(
@@ -192,12 +197,6 @@ class followersWidget extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
 //ignore:camel_case_types
 class followingWidget extends StatelessWidget {
   const followingWidget({super.key});
@@ -243,8 +242,6 @@ class followingWidget extends StatelessWidget {
         });
   }
 }
-
-
 
 //ignore:camel_case_types
 class friendsWidget extends StatelessWidget {
