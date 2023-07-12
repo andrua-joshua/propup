@@ -62,13 +62,13 @@ class followsUpdateBloc {
           if (!friendsList.contains(uid)) {
             friendsList.add(uid);
             friends = friendsList.length;
+            wasAdded = true;
           }
         }
 
         if (!followingList.contains(uid)) {
           followingList.add(uid);
           following = followingList.length;
-          wasAdded = true;
           success = true;
         }
 
@@ -81,10 +81,9 @@ class followsUpdateBloc {
 
         //this will be for updating the user that we are currently following
         final bool isBothFollowing =
-            //(secureSnap.get("followingList") as List)
-            friendsList.contains(uid) &&
-                // (secureSnap2.get("followingList") as List)
-                //     .contains(secureSnap.id) &&
+            (secureSnap.get("followingList") as List).contains(uid) &&
+                (secureSnap2.get("followingList") as List)
+                    .contains(secureSnap.id) &&
                 wasAdded;
 
         List friendsList2 = secureSnap2.get("friendsList") as List;
@@ -111,7 +110,7 @@ class followsUpdateBloc {
         ///   "followers"=followers
         ///
 
-        if (isBothFollowing) {
+        if (wasAdded) {
           if (!friendsList2.contains(secureSnap.id)) {
             friendsList2.add(secureSnap.id);
             friends2 = friendsList2.length;
@@ -240,14 +239,13 @@ class followsUpdateBloc {
           if (friendsList2.contains(secureSnap.id)) {
             friendsList2.remove(secureSnap.id);
             friends = friendsList2.length;
-
-            debugPrint("friends Removed:::::::::::::::::::::<><>"); //for debugging purposes only
           }
         }
 
         if (followersList2.contains(secureSnap.id)) {
           followersList2.remove(secureSnap.id);
           followers2 = followersList2.length;
+
           
         }
 
