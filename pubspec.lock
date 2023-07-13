@@ -241,6 +241,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.0"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      sha256: "7a09d8c21147f009882a27c96de1918ea283f974d73cb6fae1d234bb9ec18d8b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.6.4"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_messaging_platform_interface
+      sha256: e9e9dc48a3d8ffa67aaba3d6b1ebf74bc7d7d8c83d10b1458ff97878b9d8a2b0
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.3"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      name: firebase_messaging_web
+      sha256: "381f217e41e0e407baf8df21787b97e46fabfacefd6a953425be3a6cdf2269f4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.5.3"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -340,10 +364,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: "258864d68b68f2b2846c10283b7afb95f26ff3307c410a2841a010d034b65439"
+      sha256: "8d60a787b29cb7d2bcf29230865f4a91f17323c6ac5b6b9027a6418e48d9ffc3"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.17"
+    version: "6.1.18"
   google_sign_in_ios:
     dependency: transitive
     description:
