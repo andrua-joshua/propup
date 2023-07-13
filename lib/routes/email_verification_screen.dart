@@ -39,10 +39,9 @@ class _emailVerificationScreenState extends State<emailVerificationScreen> {
         children: [
           Expanded(
               child: Center(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child:Text("Check your email to varify it"))
-          ))
+                  child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text("Check your email to varify it"))))
         ],
       )),
     );

@@ -22,7 +22,7 @@ class followsUpdateBloc {
 
     if (uid != "") {
       //to check whether the uid isnt empty
-      
+
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         final secureSnap =
             await transaction.get(user); //for holding the current user
@@ -134,7 +134,6 @@ class followsUpdateBloc {
           "followers": followers2
         });
       });
-
     }
 
     return success;
@@ -155,7 +154,6 @@ class followsUpdateBloc {
     bool success = false;
 
     if (uid != "") {
-
       await FirebaseFirestore.instance.runTransaction((transaction) async {
         //defining our two users involved
         final secureSnap = await transaction.get(user);
@@ -248,7 +246,6 @@ class followsUpdateBloc {
         if (followersList2.contains(secureSnap.id)) {
           followersList2.remove(secureSnap.id);
           followers2 = followersList2.length;
-
         }
 
         transaction.update(secureSnap2.reference, {
@@ -258,7 +255,6 @@ class followsUpdateBloc {
           "friendsList": friendsList2
         });
       }); //end of run transaction method
-
     }
 
     return success;
