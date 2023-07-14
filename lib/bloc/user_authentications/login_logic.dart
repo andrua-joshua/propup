@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/cloud_messaging_api/fcm_api_init.dart';
 import 'package:propup/bloc/user_authentications/user_repository.dart';
 import 'package:propup/routes.dart';
 
@@ -39,8 +41,14 @@ class loginLogic {
       try {
         final provider = EmailUser(email: email, password: password);
         final user = provider.signIn();
-        user.then((value) {
+        user.then((value) async{
           if (value.user?.emailVerified ?? false) {
+            final token = await fcmApiInit.instance().fcmToken();
+            final doc = FirebaseFirestore.instance.collection("users").doc(value.user?.uid);
+            await doc.update({"token":token});
+
+
+            // ignore: use_build_context_synchronously
             Navigator.pushNamed(context, RouteGenerator.homescreen);
           } else {
             value.user?.sendEmailVerification().then((value) =>
