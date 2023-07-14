@@ -76,19 +76,47 @@ class accountBalanceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "\$5623.67",
-          style: TextStyle(
-              color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "July 01, 2022",
-          style: TextStyle(color: Colors.grey, fontSize: 14),
-        )
-      ],
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .snapshots(),
+      builder: (context, snap) {
+        if (snap.hasData) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "UGX${snap.data?.get("account_balance")}",
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "July 01, 2022",
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              )
+            ],
+          );
+        }
+
+        if(snap.hasError){
+          return const Center(
+            child: Text("(*_*)", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+          );
+        }
+
+        return Center(
+          child:Container(
+            width: 130,
+            height: 50,
+
+            color: const Color.fromARGB(155, 179, 177, 177)
+          )
+        );
+
+      },
     );
   }
 }
@@ -282,18 +310,12 @@ class postsTabPostWidget extends StatelessWidget {
                           BoxConstraints.expand(height: width / (w / h)),
                       decoration: BoxDecoration(
                           image: DecorationImage(
-                              image:
-                                  CachedNetworkImageProvider(
-                                    snap.data ?? "",
-                                    cacheKey: "customcache",
-                                    cacheManager: CacheManager(
-                                      Config(
-                                        "customcache",
-                                        stalePeriod: const Duration(days: 7),
-                                        maxNrOfCacheObjects: 200
-                                      )
-                                    )
-                                    ),
+                              image: CachedNetworkImageProvider(snap.data ?? "",
+                                  cacheKey: "customcache",
+                                  cacheManager: CacheManager(Config(
+                                      "customcache",
+                                      stalePeriod: const Duration(days: 7),
+                                      maxNrOfCacheObjects: 200))),
                               fit: BoxFit.fill),
                           borderRadius: BorderRadius.circular(15),
                           color: const Color.fromARGB(255, 224, 221, 221)),
@@ -609,7 +631,7 @@ class chatUserWidget extends StatelessWidget {
         child: CircleAvatar(
           radius: 22,
           backgroundColor: Colors.grey,
-          backgroundImage: AssetImage(image),
+          backgroundImage: NetworkImage(image),
         ),
       ),
       title: Text(

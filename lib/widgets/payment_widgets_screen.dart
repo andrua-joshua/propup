@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/payments/paymen_gateway.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -58,7 +61,7 @@ class optionsWidget extends StatelessWidget {
 //ignore: camel_case_types
 class depositFormWidget extends StatefulWidget {
   final bool isWithdraw;
-  const depositFormWidget({ this.isWithdraw= false,super.key});
+  const depositFormWidget({this.isWithdraw = false, super.key});
 
   @override
   _depositFormWidgetState createState() => _depositFormWidgetState();
@@ -93,8 +96,10 @@ class _depositFormWidgetState extends State<depositFormWidget> {
           children: [
             const Text(
               "Enter Amount (UGX)",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
             const SizedBox(
               height: 10,
@@ -105,12 +110,14 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                   color: const Color.fromARGB(255, 240, 238, 238)),
               padding: const EdgeInsets.all(3),
               child: TextFormField(
+                controller: _amountController,
                 maxLength: 7,
                 maxLines: 1,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
-                  counterText: "",
-                    border: InputBorder.none, hintText: "Enter amount"),
+                    counterText: "",
+                    border: InputBorder.none,
+                    hintText: "Enter amount"),
               ),
             ),
             const Text(
@@ -122,34 +129,96 @@ class _depositFormWidgetState extends State<depositFormWidget> {
             ),
             const Text(
               "Mobile Money number",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 16),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
             const SizedBox(
               height: 10,
             ),
             Container(
-              width: 150,
+              width: 160,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: const Color.fromARGB(255, 240, 238, 238)),
               padding: const EdgeInsets.all(5),
               child: TextFormField(
-                maxLength: 9,
+                controller: _contactController,
+                maxLength: 10,
                 maxLines: 1,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  counterText: "",
+                    counterText: "",
                     prefixIcon: Icon(Icons.contact_emergency),
                     border: InputBorder.none,
-                    hintText: "Enter amount"),
+                    hintText: "Enter contact"),
               ),
             ),
             const SizedBox(
               height: 40,
             ),
             GestureDetector(
-                onTap: () {},
+                onTap: (){
+                  final userRf = FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser?.uid);
+
+                  // ignore: unrelated_type_equality_checks
+                  if (_amountController != "" &&
+                      _contactController.text != "") {
+                    (!widget.isWithdraw)
+                        ? paymentGateWay
+                            .instance()
+                            .depositToWallet(
+                                amount: double.parse(_amountController.text),
+                                reason: "Supporting each other",
+                                phone: _contactController.text)
+                            .then((value) async {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Transaction result"),
+                                    content: Text(
+                                        (value == '1')
+                                            ? "Transaction successful"
+                                            : "Transaction failed",
+                                        style: TextStyle(
+                                            color: (value == '1')
+                                                ? Colors.green
+                                                : Colors.red)),
+                                  );
+                                });
+
+                          })
+                        : paymentGateWay
+                            .instance()
+                            .withDrawFromWallet(
+                                amount: double.parse(_amountController.text),
+                                reason: "Supporting each other",
+                                phone: _contactController.text)
+                            .then((value) async {
+                              
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text("Transaction result"),
+                                    content: Text(
+                                        (value == '1')
+                                            ? "Transaction successful"
+                                            : "Transaction failed",
+                                        style: TextStyle(
+                                            color: (value == '1')
+                                                ? Colors.green
+                                                : Colors.red)),
+                                  );
+                                });
+                                
+                          }); //end of the transaction
+                  }
+                },
                 child: Container(
                   height: 30,
                   decoration: BoxDecoration(
@@ -157,7 +226,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                       color: Colors.blue),
                   padding: const EdgeInsets.all(3),
                   child: Text(
-                    widget.isWithdraw?"CONFIRM WITHDRAW":"CONFIRM DEPOSIT",
+                    widget.isWithdraw ? "CONFIRM WITHDRAW" : "CONFIRM DEPOSIT",
                     style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

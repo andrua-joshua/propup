@@ -12,42 +12,26 @@ class welcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder<FirebaseApp>(
-            future: Firebase.initializeApp(),
-            builder: (context, snap) {
-              if (snap.hasError) {
-                return const Center(
-                  child: Text(
-                      "There was an Error connection to firebase, Check your network pliz"),
-                );
-              }
-              if (snap.hasData) {
-                return SafeArea(
-                  child: Column(children: [
-                    Expanded(
-                        child: SingleChildScrollView(
-                            child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset("assets/images/bg3.png"),
-                        //const Expanded(child:
-                        const salutationWidget(),
-                        //)
-                      ],
-                    ))),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(100, 0, 100, 10),
-                      constraints: const BoxConstraints.expand(height: 3),
-                      decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(10)),
-                    )
-                  ]),
-                );
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }));
+        body: SafeArea(
+      child: Column(children: [
+        Expanded(
+            child: SingleChildScrollView(
+                child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Image.asset("assets/images/bg3.png"),
+            //const Expanded(child:
+            const salutationWidget(),
+            //)
+          ],
+        ))),
+        Container(
+          margin: const EdgeInsets.fromLTRB(100, 0, 100, 10),
+          constraints: const BoxConstraints.expand(height: 3),
+          decoration: BoxDecoration(
+              color: Colors.black, borderRadius: BorderRadius.circular(10)),
+        )
+      ]),
+    ));
   }
 }
