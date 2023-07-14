@@ -13,7 +13,7 @@ class paymentGateWay {
   factory paymentGateWay.instance() => _singleObj;
 
   Future<String> depositToWallet(
-      {required double amount,
+      {required int amount,
       required String reason,
       required String phone}) async {
     String url = "https://ugexportsolutions.com/easypay.php";
@@ -52,7 +52,7 @@ class paymentGateWay {
   }
 
   Future<String> withDrawFromWallet(
-      {required double amount,
+      {required int amount,
       required String reason,
       required String phone}) async {
     String url = "https://ugexportsolutions.com/drilloxpay.php";
@@ -122,9 +122,9 @@ class paymentGateWay {
     return balance;
   }
 
-  Future<double> updateAccountBalance(
-      {bool isWithdraw = false, required double amount}) async {
-    double balance = 0.0;
+  Future<int> updateAccountBalance(
+      {bool isWithdraw = false, required int amount}) async {
+    int balance = 0;
 
     final user = FirebaseFirestore.instance
         .collection("users")
@@ -134,12 +134,12 @@ class paymentGateWay {
       final secureSnap = await transaction.get(user);
 
       // ignore: non_constant_identifier_names
-      double secure_balance = secureSnap.get("account_balance") as double;
+      int secure_balance = secureSnap.get("account_balance") as int;
 
       // ignore: non_constant_identifier_names
-      double updated_balance = (isWithdraw)
+      int updated_balance = (isWithdraw)
           ? secure_balance - amount
-          : secure_balance + secure_balance;
+          : secure_balance + amount;
 
       transaction.update(user, {"account_balance": updated_balance});
 

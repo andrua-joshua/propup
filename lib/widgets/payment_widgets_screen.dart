@@ -159,64 +159,60 @@ class _depositFormWidgetState extends State<depositFormWidget> {
               height: 40,
             ),
             GestureDetector(
-                onTap: (){
-                  final userRf = FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(FirebaseAuth.instance.currentUser?.uid);
-
+                onTap: () {
                   // ignore: unrelated_type_equality_checks
                   if (_amountController != "" &&
                       _contactController.text != "") {
-                    (!widget.isWithdraw)
-                        ? paymentGateWay
-                            .instance()
-                            .depositToWallet(
-                                amount: double.parse(_amountController.text),
-                                reason: "Supporting each other",
-                                phone: _contactController.text)
-                            .then((value) async {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Transaction result"),
-                                    content: Text(
-                                        (value == '1')
-                                            ? "Transaction successful"
-                                            : "Transaction failed",
-                                        style: TextStyle(
-                                            color: (value == '1')
-                                                ? Colors.green
-                                                : Colors.red)),
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Transaction result"),
+                            content: FutureBuilder<String>(
+                              future: (!widget.isWithdraw)
+                                  ? paymentGateWay.instance().depositToWallet(
+                                      amount:
+                                          int.parse(_amountController.text),
+                                      reason: "Supporting each other",
+                                      phone: _contactController.text)
+                                  : paymentGateWay
+                                      .instance()
+                                      .withDrawFromWallet(
+                                          amount: int.parse(
+                                              _amountController.text),
+                                          reason: "Supporting each other",
+                                          phone: _contactController.text),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    (snapshot.data == '1')
+                                        ? "Transaction successful"
+                                        : "Transaction failed",
+                                    style: TextStyle(
+                                        color: (snapshot.data == '1')
+                                            ? Colors.green
+                                            : Colors.red),
                                   );
-                                });
+                                }
 
-                          })
-                        : paymentGateWay
-                            .instance()
-                            .withDrawFromWallet(
-                                amount: double.parse(_amountController.text),
-                                reason: "Supporting each other",
-                                phone: _contactController.text)
-                            .then((value) async {
-                              
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Transaction result"),
-                                    content: Text(
-                                        (value == '1')
-                                            ? "Transaction successful"
-                                            : "Transaction failed",
-                                        style: TextStyle(
-                                            color: (value == '1')
-                                                ? Colors.green
-                                                : Colors.red)),
+                                if (snapshot.hasError) {
+                                  return const Center(
+                                    child: Text(
+                                      "^(*_*)^",
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   );
-                                });
-                                
-                          }); //end of the transaction
+                                }
+
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            ),
+                          );
+                        });
                   }
                 },
                 child: Container(
