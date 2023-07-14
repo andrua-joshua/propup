@@ -3,29 +3,22 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_api_init.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_incoming_messages_handler.dart';
-import 'package:propup/bloc/payments/paymen_gateway.dart';
 import 'package:propup/routes.dart';
 
 void main() async {
+WidgetsFlutterBinding.ensureInitialized();
 
 debugPrint("@Drillox-result ::> just starting the test");
 
-  String result =await paymentGateWay.instance().withDrawFromWallet(
-    amount: 530, 
-    reason: "Testing the api", 
-    phone: "0788866776");
+  await Firebase.initializeApp();
+    await fcmIncomingMessagesHandler.instance().captureMessages();
+    requestPermissions();
+  fcmApiInit
+      .instance()
+      .fcmToken()
+      .then((value) => debugPrint("::::token ::> $value"));
 
-    debugPrint("@Drillox-result - pays ::> $result");
-
-  // await Firebase.initializeApp();
-  //   await fcmIncomingMessagesHandler.instance().captureMessages();
-  //   requestPermissions();
-  // fcmApiInit
-  //     .instance()
-  //     .fcmToken()
-  //     .then((value) => debugPrint("::::token ::> $value"));
-
-  // runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> requestPermissions()async{

@@ -87,7 +87,7 @@ class signUpLogic {
                 "friendsList": [],
                 "token": "",
                 "group_key": "",
-                "account_balance":0.0
+                "account_balance":0.01
               });
 
               final user = await FirebaseFirestore.instance
@@ -130,7 +130,7 @@ class signUpLogic {
                   "friendsList": [],
                   "token": "",
                   "group_key": "",
-                  "account_balance":0.0
+                  "account_balance":0.01
                 });
 
                 final user = await FirebaseFirestore.instance

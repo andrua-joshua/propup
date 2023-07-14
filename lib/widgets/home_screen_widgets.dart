@@ -87,10 +87,10 @@ class accountBalanceWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "UGX${snap.data?.get("account_balance")}",
+                "UGX ${snap.data?.get("account_balance")}",
                 style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 25,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
               const Text(
