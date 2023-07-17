@@ -29,5 +29,23 @@ class chatMessage {
   String get recieverID => _recieverID;
   String get message => _message;
   bool get viewedStatus => _viewedStatus;
-  
+
+  factory chatMessage.fromJson(
+    {
+      required Map<String ,dynamic> json 
+    }
+  ) => chatMessage(
+    senderId: json['senderID'], 
+    recieverID: json['recieverID'], 
+    message: json['message'], 
+    head: json['head']);
+
+  Map<String , dynamic> toJson()
+  => {
+    "head":_head,
+    "senderID":_senderID,
+    "recieverID": _recieverID,
+    "message":_message,
+    "viewedStatus": _viewedStatus
+  };
 }

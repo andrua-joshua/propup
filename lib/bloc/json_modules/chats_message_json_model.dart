@@ -30,9 +30,10 @@
 
 */
 
-// ignore: camel_case_types
+
 import 'dart:convert';
 
+//ignore:camel_case_types
 class chat {
   final String _senderID;
   final String _recieverID;
@@ -83,6 +84,7 @@ class chatTop {
     for (var element in (json['chats'] as List)) {
       cht.add(chat.fromJson(element));
     }
+
 
     return chatTop._(chatId: json['chatId'] as String, cht: cht);
   }

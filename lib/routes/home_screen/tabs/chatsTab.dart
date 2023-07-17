@@ -84,7 +84,12 @@ class chatTab extends StatelessWidget {
                           },
                         );
                       }));
-            })
+            }),
+            FloatingActionButton(
+              onPressed: (){
+                //code to the screen with all the friends of the current user
+              },
+              child: const Text("New chat"),)
           ],
         ));
       },

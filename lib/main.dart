@@ -8,7 +8,7 @@ import 'package:propup/routes.dart';
 void main() async {
 WidgetsFlutterBinding.ensureInitialized();
 
-debugPrint("@Drillox-result ::> just starting the test");
+//debugPrint("@Drillox-result ::> just starting the test");
 
   await Firebase.initializeApp();
     await fcmIncomingMessagesHandler.instance().captureMessages();
@@ -17,6 +17,8 @@ debugPrint("@Drillox-result ::> just starting the test");
       .instance()
       .fcmToken()
       .then((value) => debugPrint("::::token ::> $value"));
+
+      requestPermissions();
 
   runApp(const MyApp());
 }
