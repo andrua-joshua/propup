@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 // ignore: depend_on_referenced_packages
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
@@ -18,12 +21,22 @@ class fcmChatMessagesNotifiers {
 
   Map<String, List<chatMessage>> allChatMessages() => _allChatMessages;
 
-  void addChatMessage({required chatMessage message}) {
+  void addChatMessage({required chatMessage message})async {
      (message.recieverID == FirebaseAuth.instance.currentUser?.uid)
     ?_allChatMessages.putIfAbsent(message.senderId, () => [message])
     : _allChatMessages.putIfAbsent(message.recieverID, () => [message]);
 
     serializeChatsToJson();
+
+    final fb = await FirebaseFirestore.instance.collection("hint").doc("MNGTzwswNilWSzUnq06Z");
+
+    fb.update(
+      {
+        "val":Random(3)
+      }
+    );
+    
+    debugPrint("@Drillox {After serialization}::>>>>>>>>>> ");
 
     _newUpdate = true;
     //notifyListeners();

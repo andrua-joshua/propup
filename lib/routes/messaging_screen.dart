@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
 import 'package:propup/widgets/messaging_screen_widgets.dart';
@@ -25,7 +26,7 @@ class messagingScreen extends StatelessWidget {
           Expanded(
               child: SingleChildScrollView(
             child: StreamBuilder(
-                stream: fcmChatMessagesNotifiers().allChats(),
+                stream: FirebaseFirestore.instance.collection("hint").snapshots(),
                 builder: (
                   context,
                   value,
@@ -33,10 +34,11 @@ class messagingScreen extends StatelessWidget {
                   if (value.hasData) {
                     return Column(
                       children: List.generate(
-                          value.data![chatId]!
-                              .length,
+                          fcmChatMessagesNotifiers().allChatMessages()[chatId]
+                              !.length,
                           (index) => messageWidget(
-                              chat: value.data![chatId]![index])),
+                              chat: fcmChatMessagesNotifiers().allChatMessages()[chatId]
+                              ![index])),
                     );
                   }
                   if (value.hasError) {

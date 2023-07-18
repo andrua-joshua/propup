@@ -37,6 +37,11 @@ class fcmIncomingMessagesHandler {
     debugPrint(
         ":::::::::::::>>>>> got the new incoming message ${message.data}");
 
+        RemoteNotification? notification = message.notification;
+    //AndroidNotification? android = message.notification?.android;
+
+    debugPrint("notification: $notification");
+
     if (message.data['type'] == 'chat') {
       //to handle chat messages
 
@@ -57,7 +62,7 @@ class fcmIncomingMessagesHandler {
   chatMessage _toChatMessage(RemoteMessage message) {
     chatMessage chatmessage = chatMessage(
         senderId: message.data['senderID'] as String,
-        recieverID: message.data['recieverId'] as String,
+        recieverID: message.data['recieverID'] as String,
         message: message.data['message'] as String,
         head: DateTime.now().microsecondsSinceEpoch);
 
