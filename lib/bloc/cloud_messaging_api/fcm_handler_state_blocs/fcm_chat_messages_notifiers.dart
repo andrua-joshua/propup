@@ -23,12 +23,20 @@ class fcmChatMessagesNotifiers {
 
   void addChatMessage({required chatMessage message})async {
      (message.recieverID == FirebaseAuth.instance.currentUser?.uid)
-    ?_allChatMessages.putIfAbsent(message.senderId, () => [message])
-    : _allChatMessages.putIfAbsent(message.recieverID, () => [message]);
+    ?_allChatMessages.update(message.senderId, (value){
+          value.add(message);
+          return value;
+          }, ifAbsent: () => [message],)
+    : _allChatMessages.update(message.recieverID, (value){
+          value.add(message);
+          return value;
+          }, ifAbsent: () => [message],);
+
+    
 
     serializeChatsToJson();
 
-    final fb = await FirebaseFirestore.instance.collection("hint").doc("MNGTzwswNilWSzUnq06Z");
+    final fb = FirebaseFirestore.instance.collection("hint").doc("MNGTzwswNilWSzUnq06Z");
 
     fb.update(
       {
