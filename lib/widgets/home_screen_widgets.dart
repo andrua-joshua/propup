@@ -588,7 +588,7 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Row(children:[Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: const Color.fromARGB(255, 241, 241, 241)),
@@ -603,9 +603,112 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
                 Icons.search,
                 color: Colors.black,
               )),
-        ));
+        )),
+        TextButton(
+          onPressed: (){
+           showBottomSheet(
+            elevation: 10,
+            context: context, 
+            builder: (context) {
+              return const allFriendsListWidget();
+            }); 
+          }, 
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 241, 241, 241),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            padding: const EdgeInsets.all(6),
+            child: const Icon(Icons.mark_unread_chat_alt_rounded),
+          ))
+        ]);
   }
 }
+
+
+//ignore:camel_case_types
+class allFriendsListWidget extends StatelessWidget{
+  const allFriendsListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context){
+    final currentUser = FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser?.uid);
+
+    return Column(
+      children: [
+        const Text("All friends", style: TextStyle(color: Colors.black),),
+        Expanded(
+          child: SingleChildScrollView(
+            child: StreamBuilder(
+              stream: currentUser.snapshots(),
+              builder: (conext, snap){
+                if(snap.hasData){
+                  return Column(
+                    children: List.generate(
+                      (snap.data?.get("friends") as List).length, 
+                      (index) => 
+                        FutureBuilder(
+                          future: FirebaseFirestore.instance.collection("users").doc((snap.data?.get("friends") as List)[index]).get(),
+                          builder: (context, value){
+                            if(value.hasData){
+                              return ListTile(
+                                onTap: (){
+                                  //sending it to the messaging screen
+                                  Navigator.pushNamed(
+                                    context, 
+                                    RouteGenerator.messagingscreen,
+                                    arguments: value.data?.id);
+                                },
+                                leading: const CircleAvatar(
+                                  radius: 33,
+                                  backgroundImage: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQf5M2j5aP_QleSz2Sb2Qgf-J5UgjP3po54hg&usqp=CAU"),
+                                ),
+                                title: Text(value.data?.get("username")),
+                              );
+                            }
+
+                            if(value.hasError){
+                              return const Text("(*_*)", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),);
+                            }
+                            
+                            return Container(
+                              constraints: const BoxConstraints.expand(
+                                height: 30
+                              ),
+                              color: const Color.fromARGB(255, 241, 241, 241),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10)
+                              ),
+
+                              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            );
+                          })
+                      )
+                  );
+                }
+
+                if(snap.hasError){
+                  return const Center(
+                    child: Text("(*_*)\n check your internet connection and try again",textAlign: TextAlign.center , style: TextStyle(color:Colors.red, fontWeight: FontWeight.bold),),
+                  );
+                }
+
+                return Container(
+                  constraints: const BoxConstraints.expand(
+                    height: 400
+                  ),
+                  color: const Color.fromARGB(255, 241, 241, 241),
+                  margin: const EdgeInsets.all(10),
+                );
+              },
+            ),
+          ),
+        )
+      ]
+    );
+  }
+}
+
 
 ///
 ///this is for the user view
