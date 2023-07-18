@@ -40,6 +40,7 @@ class fcmOutgoingMessages {
       },
       "data": <String, dynamic>{
         "type": "chat",
+        "recieverID":chatmessage.recieverID,
         "senderID": chatmessage.senderId,
         "message": chatmessage.message
       },

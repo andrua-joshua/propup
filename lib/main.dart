@@ -6,24 +6,24 @@ import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_incoming_messag
 import 'package:propup/routes.dart';
 
 void main() async {
-WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
 //debugPrint("@Drillox-result ::> just starting the test");
 
-  await Firebase.initializeApp();
-    await fcmIncomingMessagesHandler.instance().captureMessages();
-    requestPermissions();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+ // await Firebase.initializeApp();
+  await fcmIncomingMessagesHandler.instance().captureMessages();
+
+  await requestPermissions();
   fcmApiInit
       .instance()
       .fcmToken()
       .then((value) => debugPrint("::::token ::> $value"));
 
-      requestPermissions();
-
   runApp(const MyApp());
 }
 
-Future<void> requestPermissions()async{
+Future<void> requestPermissions() async {
   await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
@@ -32,7 +32,13 @@ Future<void> requestPermissions()async{
       criticalAlert: false,
       provisional: false,
       sound: true);
+}
 
+// Lisitnening to the background messages
+// ignore: unused_element
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  debugPrint("Handling a background message: ${message.messageId}");
 }
 
 class MyApp extends StatelessWidget {

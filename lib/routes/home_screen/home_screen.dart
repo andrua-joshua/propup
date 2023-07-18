@@ -5,7 +5,7 @@ import 'package:propup/routes/home_screen/tabs/postsTab/postsTab.dart';
 import 'package:propup/state_managers/home_tabs_state.dart';
 import 'package:provider/provider.dart';
 
-///
+///propup-715a1
 ///this class is where the home screen page shall be placed
 ///
 //ignore: camel_case_types

@@ -23,12 +23,12 @@ class chatTab extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             const chatSearchWidget(),
             StreamBuilder(
-              stream: fcmChatMessagesNotifiers().allChats(),
+              stream: FirebaseFirestore.instance.collection("hint").snapshots(),
                 builder: (context, value) {
               List<chatMessage> allchats = [];
               List<int> allChatsByDate = [];
 
-              value.data?.forEach((key, value2) {
+              fcmChatMessagesNotifiers().allChatMessages().forEach((key, value2) {
                 for (int i = 0; i < value2.length; i++) {
                   allchats.add(value2[i]);
                   allChatsByDate.add(value2[i].head);
