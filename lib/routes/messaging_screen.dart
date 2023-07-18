@@ -8,12 +8,11 @@ import 'package:provider/provider.dart';
 ///
 //ignore: camel_case_types
 class messagingScreen extends StatelessWidget {
-  const messagingScreen({super.key});
+  final String chatId;
+  const messagingScreen({required this.chatId, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final String chatId = ModalRoute.of(context)!.settings.arguments as String;
-
     return Scaffold(
       appBar: AppBar(
           leadingWidth: 20,
@@ -23,25 +22,42 @@ class messagingScreen extends StatelessWidget {
       body: SafeArea(
           child: Column(
         children: [
-          ChangeNotifierProvider<fcmChatMessagesNotifiers>(
-            create: (context) => fcmChatMessagesNotifiers(),
-            builder: (context, child) {
-              return Expanded(child: SingleChildScrollView(
-                child: Consumer<fcmChatMessagesNotifiers>(
-                    builder: (context, value, child) {
-                  return Column(
-                    children: List.generate(
-                        fcmChatMessagesNotifiers()
-                            .allChatMessages()[chatId]!
-                            .length,
-                        (index) => messageWidget(
-                            chat: fcmChatMessagesNotifiers()
-                                .allChatMessages()[chatId]![index])),
+          Expanded(
+              child: SingleChildScrollView(
+            child: StreamBuilder(
+                stream: fcmChatMessagesNotifiers().allChats(),
+                builder: (
+                  context,
+                  value,
+                ) {
+                  if (value.hasData) {
+                    return Column(
+                      children: List.generate(
+                          value.data![chatId]!
+                              .length,
+                          (index) => messageWidget(
+                              chat: value.data![chatId]![index])),
+                    );
+                  }
+                  if (value.hasError) {
+                    return const Center(
+                      child: Text(
+                        "(*_*)\n check your internet connection.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }
+
+                  return Container(
+                    constraints: const BoxConstraints.expand(height: 50),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromARGB(255, 204, 202, 202)),
                   );
                 }),
-              ));
-            },
-          ),
+          )),
           Padding(
               padding: const EdgeInsets.all(10),
               child: sendingWidget(
