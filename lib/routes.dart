@@ -104,8 +104,9 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());
       case messagingscreen:
+        final String args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => const messagingScreen());
+            builder: (context) => messagingScreen(chatId: args));
       case friendprofilescreen:
         return MaterialPageRoute(
             builder: (context) =>

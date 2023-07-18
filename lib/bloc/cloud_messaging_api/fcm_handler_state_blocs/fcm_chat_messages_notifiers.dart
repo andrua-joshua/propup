@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
 
 //ignore:camel_case_types
-class fcmChatMessagesNotifiers with ChangeNotifier {
+class fcmChatMessagesNotifiers {
   final Map<String, List<chatMessage>> _allChatMessages = {};
+  bool _newUpdate = false;
 
   ///creation of the singleton pattern
   fcmChatMessagesNotifiers._();
@@ -23,7 +24,9 @@ class fcmChatMessagesNotifiers with ChangeNotifier {
     : _allChatMessages.putIfAbsent(message.recieverID, () => [message]);
 
     serializeChatsToJson();
-    notifyListeners();
+
+    _newUpdate = true;
+    //notifyListeners();
   }
 
   Future<String> get _localPath async {
@@ -80,4 +83,18 @@ class fcmChatMessagesNotifiers with ChangeNotifier {
           as Map<String, List<chatMessage>>);
     }
   }
+
+
+  Stream<Map<String, List<chatMessage>>> allChats()async*{
+
+    while(true){
+      if(_newUpdate){
+        _newUpdate = false;
+        yield _allChatMessages;
+      }
+    }  
+
+  }
+
+
 }

@@ -13,10 +13,7 @@ class chatTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<fcmChatMessagesNotifiers>(
-      create: (context) => fcmChatMessagesNotifiers(),
-      builder: (context, child) {
-        return SafeArea(
+    return SafeArea(
             child: Column(
           children: [
             const Text("Messages",
@@ -25,12 +22,13 @@ class chatTab extends StatelessWidget {
                     fontSize: 25,
                     fontWeight: FontWeight.bold)),
             const chatSearchWidget(),
-            Consumer<fcmChatMessagesNotifiers>(
-                builder: (context, value, child) {
+            StreamBuilder(
+              stream: fcmChatMessagesNotifiers().allChats(),
+                builder: (context, value) {
               List<chatMessage> allchats = [];
               List<int> allChatsByDate = [];
 
-              value.allChatMessages().forEach((key, value2) {
+              value.data?.forEach((key, value2) {
                 for (int i = 0; i < value2.length; i++) {
                   allchats.add(value2[i]);
                   allChatsByDate.add(value2[i].head);
@@ -87,7 +85,6 @@ class chatTab extends StatelessWidget {
             })
           ],
         ));
-      },
-    );
+     
   }
 }
