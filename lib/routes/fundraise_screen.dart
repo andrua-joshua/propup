@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/donation.dart';
 import 'package:propup/widgets/fundraise_screen_widgets.dart';
 
 ///this is where the fundraise route is created from
@@ -9,6 +10,10 @@ class fundRaiseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _purposeController = TextEditingController();
+
+    final TextEditingController _amountController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -39,9 +44,9 @@ class fundRaiseScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 22),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: purposeWidget(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: purposeWidget(controller: _purposeController,),
             ),
             const Text(
               "Amount",
@@ -50,12 +55,56 @@ class fundRaiseScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 22),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: amountWidget(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: amountWidget(controller:_amountController),
             ),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: const Text(
+                              "Processing..",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: FutureBuilder(
+                                future: donations.instance().requestDonation(
+                                    amount: int.parse(_amountController.text),
+                                    purpose: _purposeController.text),
+                                builder: (context, snap) {
+                                  if (snap.hasData) {
+                                    (snap.data ?? false)
+                                        ? const Text(
+                                            "FundRaise request succesful.",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          )
+                                        : const Text(
+                                            "FundRaise request failed.\n Make sure that you dont have running fundraises.",
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                  }
+
+                                  if (snap.hasError) {
+                                    return const Center(
+                                      child: Text(
+                                        "(*_*)\n Please Check your internet Connection and try again",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }
+
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                }),
+                          ));
+
+                  Navigator.pop(context);
+                },
                 child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(

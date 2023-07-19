@@ -36,26 +36,10 @@ class transactionDataWidget extends StatelessWidget {
 ///this will be used for entering the purpose of the fundraising
 ///
 //ignore: camel_case_types
-class purposeWidget extends StatefulWidget {
-  const purposeWidget({super.key});
+class purposeWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const purposeWidget({required this.controller  ,super.key});
 
-  @override
-  _purposeWidgetState createState() => _purposeWidgetState();
-}
-
-class _purposeWidgetState extends State<purposeWidget> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +49,7 @@ class _purposeWidgetState extends State<purposeWidget> {
             borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 5,
-          controller: _controller,
+          controller: controller,
           decoration: const InputDecoration(
               border: InputBorder.none, hintText: "Enter purpose of funds"),
         ));
@@ -76,26 +60,9 @@ class _purposeWidgetState extends State<purposeWidget> {
 ///this will be used for entering the amount to fund
 ///
 //ignore: camel_case_types
-class amountWidget extends StatefulWidget {
-  const amountWidget({super.key});
-
-  @override
-  _amountWidgetState createState() => _amountWidgetState();
-}
-
-class _amountWidgetState extends State<amountWidget> {
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+class amountWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const amountWidget({ required this.controller ,super.key});
 
   @override
   Widget build(BuildContext context) {

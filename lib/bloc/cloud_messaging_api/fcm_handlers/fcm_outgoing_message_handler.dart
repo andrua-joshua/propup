@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_notifications_handler/firebase_notifications_handler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
@@ -32,36 +34,16 @@ class fcmOutgoingMessages {
     // ignore: non_constant_identifier_names
     final server_key = server.get("server_key") as String;
 
-    //creating the payload
-    FormData payload = FormData.fromMap(<String, dynamic>{
-      "notification": <String, dynamic>{
-        "body": "New message from ${user.get("username").toString()}",
-        "title": "Propup Chat"
-      },
-      "data": <String, dynamic>{
-        "type": "chat",
-        "recieverID":chatmessage.recieverID,
-        "senderID": chatmessage.senderId,
-        "message": chatmessage.message
-      },
-      "to": token
-    });
-
-    if (token.isEmpty) {
-      //what to do incase the token is empty
-    }
 
     try {
-      Dio dio = Dio();
-      String url = "https://fcm.googleapis.com/fcm/send";
-      final response = await dio.post(url,
-          data: payload,
-          options: Options(headers: {
-            "Content-Type": "application/json",
-            "Authorization": "key=$server_key"
-          }));
 
-      debugPrint("Send Result:  ${response.data.toString()}");
+      final response = await FirebaseNotificationsHandler.sendNotification(
+          cloudMessagingServerKey: server_key,
+          title: "Propup chat",
+          body: "New message from ${user.get("username").toString()}",
+          fcmTokens: [token]);
+
+      debugPrint("Send Result:  ${response.body}");
     } catch (e) {
       debugPrint("@Drillox {Exception} :: $e");
     }
@@ -74,8 +56,6 @@ class fcmOutgoingMessages {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get();
-    final token =
-        user.get("group_key"); //should be changed to the device group's token
 
     final server = await FirebaseFirestore.instance
         .collection("tokens")
@@ -84,43 +64,71 @@ class fcmOutgoingMessages {
     // ignore: non_constant_identifier_names
     final server_key = server.get("server_key");
 
-    ///-----
-    ///"New message from ${user.get("username") as String}"
-    ///
-
-    //creating the payload
-    FormData payload = FormData.fromMap(<String, dynamic>{
-      "notification": <String, dynamic>{
-        "body": "${message.subType} request by ${user.get("username")}",
-        "title": "Propup Notification"
-      },
-      "data": <String, dynamic>{
-        "type": "notification",
-        "messageID": message.messageID,
-        "message": message.message,
-        "subType": message.subType
-      },
-      "token": token
-    });
-
-    if (token.isEmpty) {
-      //what to do incase the token is empty
+    final followersTokens = <String>[];
+    final followers = user.get("followersList") as List;
+    for (var element in followers) {
+      final follower = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(element)
+          .get();
+      followersTokens.add(follower.get("token"));
     }
 
     try {
-      Dio dio = Dio();
-      String url = "https://fcm.googleapis.com/fcm/send";
-      final response = await dio.post(url,
-          data: payload,
-          options: Options(headers: {
-            "Content-Type": "application/json",
-            "Authorization": "key=$server_key"
-          }));
+      final response = await FirebaseNotificationsHandler.sendNotification(
+          cloudMessagingServerKey: server_key,
+          title: "Propup notification",
+          body: "${message.subType} request by ${user.get("username")}",
+          fcmTokens: followersTokens,
+          payload: <String, dynamic>{
+            "type": "notification",
+            "messageID": message.messageID,
+            "message": message.message,
+            "subType": message.subType
+          });
 
-      debugPrint("Send Result:  ${response.data.toString()}");
+      debugPrint("Send Result:  ${response.body}");
     } catch (e) {
       debugPrint("@Drillox {Exception} :: $e");
     }
+  }
+
+  Future<void> sendCompaignNotification({
+    required notificationsMessage message,
+    required recieverId
+    })async{
+
+    final user = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(recieverId)
+        .get();
+
+    final server = await FirebaseFirestore.instance
+        .collection("tokens")
+        .doc("IkULG3L9RgmOnpQkxmci")
+        .get();
+    // ignore: non_constant_identifier_names
+    final server_key = server.get("server_key");
+
+
+    try {
+      final response = await FirebaseNotificationsHandler.sendNotification(
+          cloudMessagingServerKey: server_key,
+          title: "Propup compaigns",
+          body: message.message,
+          fcmTokens: [user.get("token") as String],
+          payload: <String, dynamic>{
+            "type": "notification",
+            "messageID": message.messageID,
+            "message": message.message,
+            "subType": message.subType
+          });
+
+      debugPrint("Send Result:  ${response.body}");
+    } catch (e) {
+      debugPrint("@Drillox {Exception} :: $e");
+    }
+
   }
 
   //used for sending the follow notifications to the user being followed (the one passed in the arguments)

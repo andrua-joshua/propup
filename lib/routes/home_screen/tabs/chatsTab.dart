@@ -29,10 +29,13 @@ class chatTab extends StatelessWidget {
               List<int> allChatsByDate = [];
 
               fcmChatMessagesNotifiers().allChatMessages().forEach((key, value2) {
+                List<int> temp = [];
                 for (int i = 0; i < value2.length; i++) {
                   allchats.add(value2[i]);
-                  allChatsByDate.add(value2[i].head);
+                  temp.add(value2[i].head);
                 }
+                temp.sort();
+                allChatsByDate.add(temp.reversed.toList()[0]);
               });
 
               //allSortedChats = allChatsByDate.sort();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 ///
 ///this is where all the loan  screen custome widgets will be decalred
@@ -8,40 +9,21 @@ import 'package:flutter/material.dart';
 ///this will be used for entering the purpose of the loan
 ///
 //ignore: camel_case_types
-class loanPurposeWidget extends StatefulWidget {
-  const loanPurposeWidget({super.key});
-
-  @override
-  _loanPurposeWidgetState createState() => _loanPurposeWidgetState();
-}
-
-class _loanPurposeWidgetState extends State<loanPurposeWidget> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
+class loanPurposeWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const loanPurposeWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:
-            BoxDecoration(color:const Color.fromARGB(255, 241, 240, 240), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 5,
-          controller: _controller,
+          controller: controller,
           decoration: const InputDecoration(
-            border: InputBorder.none,
-            hintText: "Enter purpose"
-          ),
+              border: InputBorder.none, hintText: "Enter purpose"),
         ));
   }
 }
@@ -50,33 +32,16 @@ class _loanPurposeWidgetState extends State<loanPurposeWidget> {
 ///this will be used for entering the amount to fund
 ///
 //ignore: camel_case_types
-class loanAmountWidget extends StatefulWidget {
-  const loanAmountWidget({super.key});
-
-  @override
-  _loanAmountWidgetState createState() => _loanAmountWidgetState();
-}
-
-class _loanAmountWidgetState extends State<loanAmountWidget> {
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller.dispose();
-  }
+class loanAmountWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const loanAmountWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration:
-          BoxDecoration(color:const Color.fromARGB(255, 241, 240, 240), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.circular(10)),
         child: TextField(
           maxLines: 1,
           keyboardType: TextInputType.number,
@@ -84,11 +49,9 @@ class _loanAmountWidgetState extends State<loanAmountWidget> {
           controller: controller,
           textAlign: TextAlign.center,
           decoration: const InputDecoration(
-            border: InputBorder.none,
-            hintText: "Enter amount",
-            counterText: ""
-          ),
-          
+              border: InputBorder.none,
+              hintText: "Enter amount",
+              counterText: ""),
         ));
   }
 }
@@ -98,7 +61,8 @@ class _loanAmountWidgetState extends State<loanAmountWidget> {
 ///
 //ignore: camel_case_types
 class returnDateWidget extends StatefulWidget {
-  const returnDateWidget({super.key});
+  final TextEditingController dateController;
+  const returnDateWidget({required this.dateController, super.key});
 
   @override
   _returnDateWidgetState createState() => _returnDateWidgetState();
@@ -106,35 +70,45 @@ class returnDateWidget extends StatefulWidget {
 
 //ignore: camel_case_types
 class _returnDateWidgetState extends State<returnDateWidget> {
-  late TextEditingController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    DateTime date = DateTime.now();
     return Container(
         constraints: const BoxConstraints.expand(height: 35),
         decoration:
             const BoxDecoration(color: Color.fromARGB(255, 241, 240, 240)),
-        child: TextButton(
-          onPressed: () => showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.fromMicrosecondsSinceEpoch(
-                  date.microsecondsSinceEpoch * 2)),
-          child: const Text("select date"),
+        child: TextFormField(
+          controller: widget.dateController,
+          decoration: const InputDecoration(
+              icon: Icon(Icons.calendar_today),
+              border: InputBorder.none,
+              hintText: "Enter Date"),
+          readOnly: true,
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101));
+
+            if (pickedDate != null) {
+              String formattedDate =
+                  DateFormat("yyyy-MM-dd").format(pickedDate);
+
+              setState(() {
+                widget.dateController.text = formattedDate;
+              });
+            }
+          },
         ));
   }
 }

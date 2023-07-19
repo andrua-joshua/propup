@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
@@ -27,33 +31,55 @@ class fcmIncomingMessagesHandler {
         _handler); //for handling messages while the app is in the foreground
   }
 
-  void _handlerOnInteraction(RemoteMessage message) {
+  void _handlerOnInteraction(RemoteMessage message) async {
     debugPrint(
         ":::::::::::::>>>>> got the new interaction message ${message.data}");
+
     //this is for handling the messages incase the application was in the terminated state
-  }
 
-  void _handler(RemoteMessage message) {
-    debugPrint(
-        ":::::::::::::>>>>> got the new incoming message ${message.data}");
-
-        RemoteNotification? notification = message.notification;
-    //AndroidNotification? android = message.notification?.android;
-
-    debugPrint("notification: $notification");
-
-    if (message.data['type'] == 'chat') {
+    if ((jsonDecode(message.data['data']) as Map<String, dynamic>)['type'] ==
+        'chat') {
       //to handle chat messages
 
       final chatMessage chat = _toChatMessage(
           message); //the object to be pushed to the chat message bloc
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
-    } else if (message.data['type'] == 'notification') {
+    } else if ((jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['type'] ==
+        'notification') {
       //to handle notification messages
-      final notificationsMessage notification = _toNotificationMessage(
-          message); //the object to be pushed to the notification message bloc
+      final notificationsMessage notification = _toNotificationMessage(message);
 
-      //fcmNotificationMessageBloc().add(notification);
+      await updateNotifications(notification);
+    } else {
+      //to handle all othe kinds of messages
+    }
+  }
+  
+
+  void _handler(RemoteMessage message) async {
+    debugPrint(
+        ":::::::::::::>>>>> got the new incoming message ${message.data}");
+
+    RemoteNotification? notification = message.notification;
+    //AndroidNotification? android = message.notification?.android;
+
+    debugPrint("notification: $notification");
+
+    if ((jsonDecode(message.data['data']) as Map<String, dynamic>)['type'] ==
+        'chat') {
+      //to handle chat messages
+
+      final chatMessage chat = _toChatMessage(
+          message); //the object to be pushed to the chat message bloc
+      fcmChatMessagesNotifiers().addChatMessage(message: chat);
+    } else if ((jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['type'] ==
+        'notification') {
+      //to handle notification messages
+      final notificationsMessage notification = _toNotificationMessage(message);
+
+      await updateNotifications(notification);
     } else {
       //to handle all othe kinds of messages
     }
@@ -61,9 +87,12 @@ class fcmIncomingMessagesHandler {
 
   chatMessage _toChatMessage(RemoteMessage message) {
     chatMessage chatmessage = chatMessage(
-        senderId: message.data['senderID'] as String,
-        recieverID: message.data['recieverID'] as String,
-        message: message.data['message'] as String,
+        senderId: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['senderID'] as String,
+        recieverID: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['recieverID'] as String,
+        message: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['message'] as String,
         head: DateTime.now().microsecondsSinceEpoch);
 
     return chatmessage;
@@ -72,10 +101,36 @@ class fcmIncomingMessagesHandler {
   notificationsMessage _toNotificationMessage(RemoteMessage message) {
     notificationsMessage notificationsmessage = notificationsMessage(
         head: DateTime.now().microsecondsSinceEpoch,
-        messageID: message.data['messageID'] as String,
-        message: message.data['message'] as String,
-        subType: message.data['subType'] as String);
+        messageID: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['messageID'] as String,
+        message: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['message'] as String,
+        subType: (jsonDecode(message.data['data'])
+            as Map<String, dynamic>)['subType'] as String);
 
     return notificationsmessage;
+  }
+
+  Future<void> updateNotifications(notificationsMessage notification) async {
+    final auth = FirebaseAuth.instance.currentUser;
+    final userRf =
+        FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+
+    //updating the notification in the firebase
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      final secureSnap = await transaction.get(userRf);
+
+      final notifications = secureSnap.get("notifications") as List;
+
+      notifications.add({
+        "messageId": notification.messageID,
+        "subtype": notification.subType,
+        "head": notification.head,
+        "message": notification.message,
+        "viewedStatus": notification.viewedStatus
+      });
+
+      transaction.update(userRf, {"notifications": notifications});
+    });
   }
 }
