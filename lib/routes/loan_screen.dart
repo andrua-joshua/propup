@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/loans.dart';
 import 'package:propup/widgets/loan_screen_widgets.dart';
 
 ///
@@ -10,6 +11,10 @@ class loanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _purposeController = TextEditingController();
+    final TextEditingController _amountController = TextEditingController();
+    final TextEditingController _dateController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -34,9 +39,11 @@ class loanScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 22),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: loanPurposeWidget(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: loanPurposeWidget(
+                controller: _purposeController,
+              ),
             ),
             const Text(
               "Amount",
@@ -45,27 +52,78 @@ class loanScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 22),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: loanAmountWidget(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: loanAmountWidget(
+                controller: _amountController,
+              ),
             ),
             const SizedBox(
               height: 20,
             ),
             const Text(
-              "Return Date (1% interest rate)",
+              "Return Date (5% interest rate)",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 22),
             ),
-            const Padding(
-              padding: EdgeInsets.all(20),
-              child: returnDateWidget(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: returnDateWidget(
+                dateController: _dateController,
+              ),
             ),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: const Text(
+                              "Processing..",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: FutureBuilder(
+                                future: loans.instance().requestLoan(
+                                    amount: int.parse(_amountController.text),
+                                    interestRate: 5,
+                                    paybackTime:
+                                        DateTime.parse(_dateController.text),
+                                    purpose: _purposeController.text),
+                                builder: (context, snap) {
+                                  if (snap.hasData) {
+                                    (snap.data ?? false)
+                                        ? const Text(
+                                            "Loan request succesful.",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          )
+                                        : const Text(
+                                            "Loan request failed.\n Make sure that you dont have running loans.",
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                  }
+
+                                  if (snap.hasError) {
+                                    return const Center(
+                                      child: Text(
+                                        "(*_*)\n Please Check your internet Connection and try again",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }
+
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                }),
+                          ));
+
+                  Navigator.pop(context);
+                },
                 child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(

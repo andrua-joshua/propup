@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
 import 'package:propup/widgets/messaging_screen_widgets.dart';
@@ -14,6 +15,7 @@ class messagingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
           leadingWidth: 20,
@@ -25,20 +27,31 @@ class messagingScreen extends StatelessWidget {
         children: [
           Expanded(
               child: SingleChildScrollView(
+            controller: _scrollController,
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("hint").snapshots(),
+                stream:
+                    FirebaseFirestore.instance.collection("hint").snapshots(),
                 builder: (
                   context,
                   value,
                 ) {
                   if (value.hasData) {
+                    var scrollPosition = _scrollController.position;
+
+                      _scrollController.animateTo(
+                        scrollPosition.maxScrollExtent+100,
+                        duration: const Duration(milliseconds: 50),
+                        curve: Curves.easeOut,);
+
                     return Column(
                       children: List.generate(
-                          fcmChatMessagesNotifiers().allChatMessages()[chatId]
-                              !.length,
+                          fcmChatMessagesNotifiers()
+                                  .allChatMessages()[chatId]
+                                  ?.length ??
+                              0,
                           (index) => messageWidget(
-                              chat: fcmChatMessagesNotifiers().allChatMessages()[chatId]
-                              ![index])),
+                              chat: fcmChatMessagesNotifiers()
+                                  .allChatMessages()[chatId]![index])),
                     );
                   }
                   if (value.hasError) {

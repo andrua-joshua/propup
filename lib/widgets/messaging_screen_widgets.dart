@@ -147,26 +147,30 @@ class messageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Row(
+      children:[
+        
+        Container(
       decoration: BoxDecoration(
           color: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
-              ? Colors.black12
-              : Colors.green,
+              ? Colors.green
+              : Colors.black,
           borderRadius: BorderRadius.only(
             bottomLeft: const Radius.circular(10),
             bottomRight: const Radius.circular(10),
             topLeft: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
-                ? Radius.zero
-                : const Radius.circular(10),
-            topRight: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
                 ? const Radius.circular(10)
                 : Radius.zero,
+            topRight: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
+                ? Radius.zero
+                : const Radius.circular(10),
           )),
       padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
       child: Text(
         chat.message,
         style: const TextStyle(color: Colors.white),
       ),
-    );
+    )]);
   }
 }

@@ -13,6 +13,14 @@ class customNotificationsListTileWidget extends StatelessWidget {
   /// type == 0 :> support
   /// type == 1 :> loan
   /// type == 2 :> friendRequest
+  /// type == 3 :> donation-recieved
+  /// type == 4 :> loan-recieved
+  /// 
+  /// ----- --- transitioned values ----- 
+  /// type == loan               :> loan request
+  /// type == donation           :> donation request
+  /// type == donation-compaign  :> donation compaign status
+  /// type == loan-comaign       :> loan compaign status
 
   const customNotificationsListTileWidget({required this.type, super.key});
 
