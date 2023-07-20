@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/loans.dart';
 
 ///
 ///this is where all the custom widgets of the lend friend screen shall be shown
@@ -29,27 +31,14 @@ class lendReasonWidget extends StatelessWidget {
 ///this is for the amount entry
 ///
 //ignore:camel_case_types
-class lendAmountEntryWidget extends StatefulWidget {
-  const lendAmountEntryWidget({super.key});
-  @override
-  _lendAmountEntryWidgetState createState() => _lendAmountEntryWidgetState();
-}
-
-//ignore:camel_case_types
-class _lendAmountEntryWidgetState extends State<lendAmountEntryWidget> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class lendAmountEntryWidget extends StatelessWidget {
+  final TextEditingController controller;
+  final int paybackTime;
+  const lendAmountEntryWidget({
+    required this.controller,
+    required this.paybackTime,
+    super.key});
+  
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +52,7 @@ class _lendAmountEntryWidgetState extends State<lendAmountEntryWidget> {
             keyboardType: TextInputType.number,
             maxLength: 9,
             maxLines: 1,
-            controller: _controller,
+            controller: controller,
             textAlign: TextAlign.center,
             decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -71,9 +60,9 @@ class _lendAmountEntryWidgetState extends State<lendAmountEntryWidget> {
                 hintText: "ENTER AMOUNT",
                 semanticCounterText: ""),
           )),
-      const Text(
-        "Returned after 12 days with 3% profits",
-        style: TextStyle(color: Colors.grey),
+      Text(
+        "Returned on ${DateFormat("yyyy-MM-dd").format(DateTime.fromMicrosecondsSinceEpoch(paybackTime))} with 5% profits",
+        style: const TextStyle(color: Colors.grey),
       )
     ]);
   }
@@ -81,7 +70,12 @@ class _lendAmountEntryWidgetState extends State<lendAmountEntryWidget> {
 
 //ignore:camel_case_types
 class lendProgressWidget extends StatelessWidget {
-  const lendProgressWidget({super.key});
+  final int recieved;
+  final int amount;
+  const lendProgressWidget({
+    required this.recieved,
+    required this.amount,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +90,12 @@ class lendProgressWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              constraints: BoxConstraints.expand(width: width * 0.7),
+              constraints: BoxConstraints.expand(width: width * recieved/amount),
               color: Colors.green,
-              child: const Center(
+              child:  Center(
                   child: Text(
-                "70%",
-                style: TextStyle(
+                "${(recieved/amount)*100}%",
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                     fontWeight: FontWeight.bold),
@@ -119,7 +113,12 @@ class lendProgressWidget extends StatelessWidget {
 ///
 //ignore:camel_case_types
 class lendOptionsRowWidget extends StatelessWidget {
-  const lendOptionsRowWidget({super.key});
+  final String loanId;
+  final int amount;
+  const lendOptionsRowWidget({
+    required this.amount,
+    required this.loanId,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +140,61 @@ class lendOptionsRowWidget extends StatelessWidget {
               ),
             )),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+
+              showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: const Text(
+                              "Processing..",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: FutureBuilder(
+                                future: loans.instance().lendFriend(
+                                  loanId: loanId, 
+                                  amount: amount),
+                                builder: (context, snap) {
+                                  if (snap.hasData) {
+                                    return (snap.data==1)
+                                        ? const Text(
+                                            "Lend succesful.",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          )
+                                        : (snap.data == 2)
+                                        ?const Text(
+                                            "Loan is closed.",
+                                            style: TextStyle(color: Colors.red),
+                                          )
+                                          :(snap.data == 0)?
+                                          const Text(
+                                            "Your acount balance is low to lend this amount, top-up your account and try again.",
+                                            style: TextStyle(color: Colors.red),
+                                          )
+                                          :const Text(
+                                            "Lending failed.\n Make sure that you dont have running loans.",
+                                            style: TextStyle(color: Colors.red),
+                                          );
+                                  }
+
+                                  if (snap.hasError) {
+                                    return const Center(
+                                      child: Text(
+                                        "(*_*)\n Please Check your internet Connection and try again",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }
+
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                }),
+                          ));
+
+            },
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(25)),

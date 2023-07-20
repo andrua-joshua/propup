@@ -95,11 +95,13 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const friendRequestScreen());
       case supportscreen:
+      final String args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => const supportFriendScreen());
+            builder: (context) => supportFriendScreen(donationId: args,));
       case lendfriendscreen:
+        final String args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => const lendFriendScreen());
+            builder: (context) => lendFriendScreen(loanId: args,));
       case userProfilescreen:
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());
