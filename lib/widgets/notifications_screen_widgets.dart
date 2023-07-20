@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -10,6 +11,7 @@ import 'package:propup/routes.dart';
 class customNotificationsListTileWidget extends StatelessWidget {
   final String notificationId;
   final String subType;
+  final int head;
   final Function() callback;
 
   /// type == 0 :> support
@@ -28,6 +30,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
       {required this.callback,
       required this.subType,
       required this.notificationId,
+      required this.head,
       super.key});
 
   @override
@@ -39,7 +42,8 @@ class customNotificationsListTileWidget extends StatelessWidget {
             .get(),
         builder: (context, snap) {
           if (snap.hasData) {
-            return ListTile(
+            if(snap.data!=null) {
+              return ListTile(
               onTap: () => callback,
               leading: Card(
                   elevation: 8,
@@ -98,15 +102,16 @@ class customNotificationsListTileWidget extends StatelessWidget {
                       subType,
                       style: const TextStyle(color: Colors.grey),
                     ),
-                    const Text(
-                      "July 14, 2022",
-                      style: TextStyle(
+                    Text(
+                      DateFormat("yyyy-MM-dd").format(DateTime.fromMicrosecondsSinceEpoch(head)),
+                      style: const TextStyle(
                           color: Colors.grey, fontStyle: FontStyle.italic),
                     )
                   ],
                 ),
               ),
             );
+            }
           }
 
           if (snap.hasError) {

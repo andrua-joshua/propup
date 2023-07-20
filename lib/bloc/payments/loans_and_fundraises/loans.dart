@@ -44,7 +44,8 @@ class loans {
           "lenders": [],
           "paidback": 0,
           "recieved": 0,
-          "user": auth?.uid
+          "user": auth?.uid,
+          "purpose":""
         });
 
         userLoans.add(newLoan.id);
@@ -86,8 +87,8 @@ class loans {
   Future<int> lendFriend({required String loanId, required int amount}) async {
     ///
     /// return 0 -> low account balance
-    /// return 1 -> donation was succesful
-    /// return 2 -> donation closed
+    /// return 1 -> loan was succesful
+    /// return 2 -> loan closed
     /// return 3 -> data write or update failed
     /// return 4 -> unkown error
     ///
