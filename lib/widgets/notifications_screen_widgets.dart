@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:propup/routes.dart';
 
 ///
@@ -10,6 +11,7 @@ import 'package:propup/routes.dart';
 class customNotificationsListTileWidget extends StatelessWidget {
   final String notificationId;
   final String subType;
+  final int head;
   final Function() callback;
 
   /// type == 0 :> support
@@ -28,18 +30,20 @@ class customNotificationsListTileWidget extends StatelessWidget {
       {required this.callback,
       required this.subType,
       required this.notificationId,
+      required this.head,
       super.key});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: FirebaseFirestore.instance
-            .collection((subType == 'loan') ? "loan" : "donations")
+            .collection((subType == 'Loan') ? "loans" : "donations")
             .doc(notificationId)
             .get(),
         builder: (context, snap) {
           if (snap.hasData) {
-            return ListTile(
+            if(snap.data!=null) {
+              return ListTile(
               onTap: () => callback,
               leading: Card(
                   elevation: 8,
@@ -48,9 +52,9 @@ class customNotificationsListTileWidget extends StatelessWidget {
                     decoration: const BoxDecoration(
                         color: Colors.white, shape: BoxShape.circle),
                     padding: const EdgeInsets.all(10),
-                    child: Icon((subType == 'donation')
+                    child: Icon((subType == 'Donation')
                         ? Icons.support
-                        : (subType == 'loan')
+                        : (subType == 'Loan')
                             ? Icons.balance
                             : Icons.child_friendly),
                   )),
@@ -62,7 +66,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       return Text(
-                          (subType == 'Donaton')
+                          (subType == 'Donation')
                               ? "Your friend ${snapShot.data?.get("username")} needs your support"
                               : (subType == 'Loan')
                                   ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
@@ -98,15 +102,16 @@ class customNotificationsListTileWidget extends StatelessWidget {
                       subType,
                       style: const TextStyle(color: Colors.grey),
                     ),
-                    const Text(
-                      "July 14, 2022",
-                      style: TextStyle(
+                    Text(
+                      DateFormat("yyyy-MM-dd").format(DateTime.fromMicrosecondsSinceEpoch(head)),
+                      style: const TextStyle(
                           color: Colors.grey, fontStyle: FontStyle.italic),
                     )
                   ],
                 ),
               ),
             );
+            }
           }
 
           if (snap.hasError) {

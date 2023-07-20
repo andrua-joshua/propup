@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/donation.dart';
 
 ///
 ///this is where all the custom widgets of the support screen shall be shown
@@ -14,11 +15,9 @@ class supportReasonWidget extends StatelessWidget {
         elevation: 7,
         child: Container(
           padding: const EdgeInsets.all(10),
-          decoration:
-              BoxDecoration(
-                color: Color.fromARGB(255, 237, 236, 236),
-                borderRadius: BorderRadius.circular(10)
-                ),
+          decoration: BoxDecoration(
+              color: Color.fromARGB(255, 237, 236, 236),
+              borderRadius: BorderRadius.circular(10)),
           child: Text(
             message,
             style: const TextStyle(color: Colors.grey),
@@ -31,27 +30,9 @@ class supportReasonWidget extends StatelessWidget {
 ///this is for the amount entry
 ///
 //ignore:camel_case_types
-class amountEntryWidget extends StatefulWidget {
-  const amountEntryWidget({super.key});
-  @override
-  _amountEntryWidgetState createState() => _amountEntryWidgetState();
-}
-
-//ignore:camel_case_types
-class _amountEntryWidgetState extends State<amountEntryWidget> {
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class amountEntryWidget extends StatelessWidget {
+  final TextEditingController controller;
+  const amountEntryWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +47,9 @@ class _amountEntryWidgetState extends State<amountEntryWidget> {
           maxLength: 9,
           maxLines: 1,
           textAlign: TextAlign.center,
-          controller: _controller,
+          controller: controller,
           decoration: const InputDecoration(
-            border: InputBorder.none,
+              border: InputBorder.none,
               counterText: "",
               hintText: "ENTER AMOUNT",
               semanticCounterText: ""),
@@ -78,7 +59,10 @@ class _amountEntryWidgetState extends State<amountEntryWidget> {
 
 //ignore:camel_case_types
 class progressWidget extends StatelessWidget {
-  const progressWidget({super.key});
+  final int recieved;
+  final int amount;
+  const progressWidget(
+      {required this.recieved, required this.amount, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +77,13 @@ class progressWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              constraints: BoxConstraints.expand(width: width * 0.7),
+              constraints:
+                  BoxConstraints.expand(width: width * recieved / amount),
               color: Colors.green,
-              child: const Center(
+              child: Center(
                   child: Text(
-                "70%",
-                style: TextStyle(
+                "${(recieved / amount) * 100}%",
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 17,
                     fontWeight: FontWeight.bold),
@@ -116,7 +101,10 @@ class progressWidget extends StatelessWidget {
 ///
 //ignore:camel_case_types
 class optionsRowWidget extends StatelessWidget {
-  const optionsRowWidget({super.key});
+  final String donationId;
+  final int amount;
+  const optionsRowWidget(
+      {required this.amount, required this.donationId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +126,59 @@ class optionsRowWidget extends StatelessWidget {
               ),
             )),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text(
+                          "Processing..",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: FutureBuilder(
+                            future: donations.instance().donateToFriend(
+                                donationId: donationId, amount: amount),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                return (snap.data == 1)
+                                    ? const Text(
+                                        "Funding succesful.",
+                                        style: TextStyle(color: Colors.green),
+                                      )
+                                    : (snap.data == 2)
+                                        ? const Text(
+                                            "Fund compaign is closed.",
+                                            style: TextStyle(color: Colors.red),
+                                          )
+                                        : (snap.data == 0)
+                                            ? const Text(
+                                                "Your acount balance is low to make this funding, top-up your account and try again.",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              )
+                                            : const Text(
+                                                "Funding failed.\n Make sure that you dont have running loans.",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              );
+                              }
+
+                              if (snap.hasError) {
+                                return const Center(
+                                  child: Text(
+                                    "(*_*)\n Please Check your internet Connection and try again",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
+
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }),
+                      ));
+            },
             child: Container(
               decoration: BoxDecoration(
                   color: Colors.green, borderRadius: BorderRadius.circular(25)),
