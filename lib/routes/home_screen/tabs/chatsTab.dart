@@ -68,6 +68,7 @@ class chatTab extends StatelessWidget {
                               return chatUserWidget(
                                   message: msg.message,
                                   name: snap.data?.get("username"),
+                                  userId: snap.data?.id??"",
                                   image: "image here");
                             }
                             if (snap.hasError) {

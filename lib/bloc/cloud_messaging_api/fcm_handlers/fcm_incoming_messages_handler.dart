@@ -55,26 +55,27 @@ class fcmIncomingMessagesHandler {
       //to handle all othe kinds of messages
     }
   }
-  
 
   void _handler(RemoteMessage message) async {
     debugPrint(
-        ":::::::::::::>>>>> got the new incoming message ${message.data}");
+        ":::::::::::::>>>>> got the new incoming message ${jsonEncode(message.data)}");
+
+    final message2 = jsonEncode(message.data);
+    final message3 = jsonDecode(message2) as Map<String, dynamic>;
 
     RemoteNotification? notification = message.notification;
     //AndroidNotification? android = message.notification?.android;
 
     debugPrint("notification: $notification");
 
-    if ((jsonDecode(message.data['data']) as Map<String, dynamic>)['type'] ==
+    if (message3['type'] ==
         'chat') {
       //to handle chat messages
 
       final chatMessage chat = _toChatMessage(
           message); //the object to be pushed to the chat message bloc
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
-    } else if ((jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['type'] ==
+    } else if (message3['type'] ==
         'notification') {
       //to handle notification messages
       final notificationsMessage notification = _toNotificationMessage(message);
@@ -86,27 +87,27 @@ class fcmIncomingMessagesHandler {
   }
 
   chatMessage _toChatMessage(RemoteMessage message) {
+    final message2 = jsonEncode(message.data);
+    final message3 = jsonDecode(message2) as Map<String, dynamic>;
+
     chatMessage chatmessage = chatMessage(
-        senderId: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['senderID'] as String,
-        recieverID: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['recieverID'] as String,
-        message: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['message'] as String,
+        senderId: message3['senderID'] as String,
+        recieverID: message3['recieverID'] as String,
+        message: message3['message'] as String,
         head: DateTime.now().microsecondsSinceEpoch);
 
     return chatmessage;
   }
 
   notificationsMessage _toNotificationMessage(RemoteMessage message) {
+    final message2 = jsonEncode(message.data);
+    final message3 = jsonDecode(message2) as Map<String, dynamic>;
+
     notificationsMessage notificationsmessage = notificationsMessage(
         head: DateTime.now().microsecondsSinceEpoch,
-        messageID: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['messageID'] as String,
-        message: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['message'] as String,
-        subType: (jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['subType'] as String);
+        messageID: message3['messageID'] as String,
+        message: message3['message'] as String,
+        subType: message3['subType'] as String);
 
     return notificationsmessage;
   }

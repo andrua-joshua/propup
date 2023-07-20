@@ -635,6 +635,7 @@ class allFriendsListWidget extends StatelessWidget {
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
     return Column(children: [
+      const SizedBox(height: 50,),
       const Text(
         "All friends",
         style: TextStyle(color: Colors.black),
@@ -647,11 +648,12 @@ class allFriendsListWidget extends StatelessWidget {
               if (snap.hasData) {
                 return Column(
                     children: List.generate(
-                        (snap.data?.get("friends") as List).length,
+                        (snap.data?.get("friendsList") as List).length,
                         (index) => FutureBuilder(
                             future: FirebaseFirestore.instance
                                 .collection("users")
-                                .doc((snap.data?.get("friends") as List)[index])
+                                .doc((snap.data?.get("friendsList")
+                                    as List)[index])
                                 .get(),
                             builder: (context, value) {
                               if (value.hasData) {
@@ -692,8 +694,9 @@ class allFriendsListWidget extends StatelessWidget {
                               return Container(
                                 constraints:
                                     const BoxConstraints.expand(height: 50),
-                                color: const Color.fromARGB(255, 241, 241, 241),
+                               
                                 decoration: BoxDecoration(
+                                   color: const Color.fromARGB(255, 241, 241, 241),
                                     borderRadius: BorderRadius.circular(10)),
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
@@ -730,11 +733,13 @@ class allFriendsListWidget extends StatelessWidget {
 ///
 //ignore:camel_case_types
 class chatUserWidget extends StatelessWidget {
+  final String userId;
   final String image;
   final String name;
   final String message;
   const chatUserWidget(
       {required this.message,
+      required this.userId,
       required this.name,
       required this.image,
       super.key});
@@ -742,7 +747,13 @@ class chatUserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () => Navigator.pushNamed(context, RouteGenerator.messagingscreen),
+      onTap: () {
+        //sending it to the messaging screen
+        Navigator.pushNamed(
+          context, 
+          RouteGenerator.messagingscreen,
+          arguments: userId);
+      },
       leading: CircleAvatar(
         backgroundColor: Colors.black,
         radius: 24,

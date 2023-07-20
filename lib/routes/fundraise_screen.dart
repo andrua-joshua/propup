@@ -46,7 +46,9 @@ class fundRaiseScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: purposeWidget(controller: _purposeController,),
+              child: purposeWidget(
+                controller: _purposeController,
+              ),
             ),
             const Text(
               "Amount",
@@ -57,10 +59,11 @@ class fundRaiseScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(20),
-              child: amountWidget(controller:_amountController),
+              child: amountWidget(controller: _amountController),
             ),
             TextButton(
                 onPressed: () {
+                  debugPrint(":::::::@Drilloxc");
                   showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -103,7 +106,8 @@ class fundRaiseScreen extends StatelessWidget {
                                 }),
                           ));
 
-                  Navigator.pop(context);
+              debugPrint(":::::::@Drillox xcvcv");
+                 // Navigator.pop(context);
                 },
                 child: Container(
                     padding: const EdgeInsets.all(10),

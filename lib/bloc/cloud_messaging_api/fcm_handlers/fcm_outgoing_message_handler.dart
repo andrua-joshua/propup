@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_notifications_handler/firebase_notifications_handler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
@@ -34,14 +33,23 @@ class fcmOutgoingMessages {
     // ignore: non_constant_identifier_names
     final server_key = server.get("server_key") as String;
 
-
     try {
-
       final response = await FirebaseNotificationsHandler.sendNotification(
           cloudMessagingServerKey: server_key,
           title: "Propup chat",
           body: "New message from ${user.get("username").toString()}",
-          fcmTokens: [token]);
+          fcmTokens: [
+            token
+          ],
+          additionalHeaders: {
+            "Content-type": "application/json"
+          },
+          payload: <String, dynamic>{
+            "type": "chat",
+            "senderID": chatmessage.senderId,
+            "recieverID": chatmessage.recieverID,
+            "message": chatmessage.message
+          });
 
       debugPrint("Send Result:  ${response.body}");
     } catch (e) {
@@ -80,6 +88,9 @@ class fcmOutgoingMessages {
           title: "Propup notification",
           body: "${message.subType} request by ${user.get("username")}",
           fcmTokens: followersTokens,
+          additionalHeaders: {
+            "Content-Type": "application/json"
+          },
           payload: <String, dynamic>{
             "type": "notification",
             "messageID": message.messageID,
@@ -93,11 +104,8 @@ class fcmOutgoingMessages {
     }
   }
 
-  Future<void> sendCompaignNotification({
-    required notificationsMessage message,
-    required recieverId
-    })async{
-
+  Future<void> sendCompaignNotification(
+      {required notificationsMessage message, required recieverId}) async {
     final user = await FirebaseFirestore.instance
         .collection("users")
         .doc(recieverId)
@@ -110,14 +118,18 @@ class fcmOutgoingMessages {
     // ignore: non_constant_identifier_names
     final server_key = server.get("server_key");
 
-
     try {
       final response = await FirebaseNotificationsHandler.sendNotification(
           cloudMessagingServerKey: server_key,
           title: "Propup compaigns",
           body: message.message,
-          fcmTokens: [user.get("token") as String],
-          payload: <String, dynamic>{
+          fcmTokens: [
+            user.get("token") as String
+          ],
+          additionalHeaders: {
+            "Content-Type": "application/json"
+          },
+          payload: {
             "type": "notification",
             "messageID": message.messageID,
             "message": message.message,
@@ -128,7 +140,6 @@ class fcmOutgoingMessages {
     } catch (e) {
       debugPrint("@Drillox {Exception} :: $e");
     }
-
   }
 
   //used for sending the follow notifications to the user being followed (the one passed in the arguments)

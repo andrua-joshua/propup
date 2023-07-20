@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_outgoing_message_handler.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
 
@@ -15,10 +16,8 @@ class donations {
   static final _singleObj = donations._();
   factory donations.instance() => _singleObj;
 
-  Future<bool> requestDonation({
-    required int amount,
-    required String purpose
-  }) async {
+  Future<bool> requestDonation(
+      {required int amount, required String purpose}) async {
     final auth = FirebaseAuth.instance.currentUser;
     final donations = FirebaseFirestore.instance.collection("donations");
     final currentUser =
@@ -31,7 +30,9 @@ class donations {
       final userDonations = secureSnap.get("donations") as List;
 
       bool val = await hasNoOpenDonations(secureSnap);
-      if (val) {
+      if (true) {
+      debugPrint("::::::::::::::::::::::hello world:::igiojhrte343r");
+
         //adding the donation to the donation compaigns
         final newDonation = await donations.add({
           "amount": amount,
@@ -52,10 +53,12 @@ class donations {
             message: purpose,
             subType: "Donation");
 
+        
+
         await fcmOutgoingMessages
             .instance()
             .sendNotificationMessage(message: notificaton);
-
+debugPrint("::::::::::::::::::::::hello world:::");
         return true;
       }
     });

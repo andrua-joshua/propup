@@ -40,7 +40,7 @@ class fcmChatMessagesNotifiers {
 
     fb.update(
       {
-        "val":Random(3)
+        "val":Random(4354353).nextInt(543543)
       }
     );
     
