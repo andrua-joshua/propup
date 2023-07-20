@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_notifications_handler/firebase_notifications_handler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
@@ -41,7 +40,14 @@ class fcmOutgoingMessages {
           cloudMessagingServerKey: server_key,
           title: "Propup chat",
           body: "New message from ${user.get("username").toString()}",
-          fcmTokens: [token]);
+          fcmTokens: [token],
+          payload: <String, dynamic>{
+            "type": "chat",
+            "senderID": chatmessage.senderId,
+            "message": chatmessage.message,
+            "recieverID": chatmessage.recieverID
+          }
+          );
 
       debugPrint("Send Result:  ${response.body}");
     } catch (e) {

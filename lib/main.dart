@@ -46,26 +46,27 @@ Future<void> requestPermissions() async {
 
 // Lisitnening to the background messages
 // ignore: unused_element
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message2) async {
   await Firebase.initializeApp();
-  if ((jsonDecode(message.data['data']) as Map<String, dynamic>)['type'] ==
-      'chat') {
-    //to handle chat messages
+  final message =
+        jsonDecode(jsonEncode(message2.data)) as Map<String, dynamic>;
 
-    final chatMessage chat = _toChatMessage(
-        message); //the object to be pushed to the chat message bloc
-    fcmChatMessagesNotifiers().addChatMessage(message: chat);
-  } else if ((jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['type'] ==
-      'notification') {
-    //to handle notification messages
-    final notificationsMessage notification = _toNotificationMessage(message);
 
-    await updateNotifications(notification);
-  } else {
-    //to handle all othe kinds of messages
-  }
-  debugPrint("Handling a background message: ${message.messageId}");
+    if (message['type'] == 'chat') {
+      //to handle chat messages
+
+      final chatMessage chat = _toChatMessage(
+          message); //the object to be pushed to the chat message bloc
+      fcmChatMessagesNotifiers().addChatMessage(message: chat);
+    } else if (message['type'] == 'notification') {
+      //to handle notification messages
+      final notificationsMessage notification = _toNotificationMessage(message);
+
+      await updateNotifications(notification);
+    } else {
+      //to handle all othe kinds of messages
+    }
+  debugPrint("Handling a background message: ${message2.messageId}");
 }
 
 Future<void> updateNotifications(notificationsMessage notification) async {
@@ -90,31 +91,25 @@ Future<void> updateNotifications(notificationsMessage notification) async {
   });
 }
 
-chatMessage _toChatMessage(RemoteMessage message) {
-  chatMessage chatmessage = chatMessage(
-      senderId: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['senderID'] as String,
-      recieverID: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['recieverID'] as String,
-      message: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['message'] as String,
-      head: DateTime.now().microsecondsSinceEpoch);
+chatMessage _toChatMessage(Map<String, dynamic> message) {
+    chatMessage chatmessage = chatMessage(
+        senderId: message['senderID'] as String,
+        recieverID: message['recieverID'] as String,
+        message: message['message'] as String,
+        head: DateTime.now().microsecondsSinceEpoch);
 
-  return chatmessage;
-}
+    return chatmessage;
+  }
 
-notificationsMessage _toNotificationMessage(RemoteMessage message) {
-  notificationsMessage notificationsmessage = notificationsMessage(
-      head: DateTime.now().microsecondsSinceEpoch,
-      messageID: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['messageID'] as String,
-      message: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['message'] as String,
-      subType: (jsonDecode(message.data['data'])
-          as Map<String, dynamic>)['subType'] as String);
+notificationsMessage _toNotificationMessage(Map<String, dynamic> message) {
+    notificationsMessage notificationsmessage = notificationsMessage(
+        head: DateTime.now().microsecondsSinceEpoch,
+        messageID: message['messageID'] as String,
+        message: message['message'] as String,
+        subType: message['subType'] as String);
 
-  return notificationsmessage;
-}
+    return notificationsmessage;
+  }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
