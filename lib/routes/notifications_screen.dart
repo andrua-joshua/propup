@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/notifications_screen_widgets.dart';
 
@@ -8,39 +10,15 @@ import 'package:propup/widgets/notifications_screen_widgets.dart';
 class notificationsScreen extends StatelessWidget {
   const notificationsScreen({super.key});
 
-  final all = const <int>[
-    0,
-    1,
-    0,
-    2,
-    1,
-    3,
-    2,
-    3,
-    1,
-    2,
-    0,
-    2,
-    3,
-    1,
-    0,
-    2,
-    2,
-    1,
-    2,
-    0,
-    1,
-    2,
-    0,
-    0,
-    3,
-    2
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
-      body: CustomScrollView(
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("users").doc(auth?.uid).snapshots(),
+        builder: (context, snap){
+          return CustomScrollView(
         slivers: [
           const SliverAppBar(
             pinned: true,
@@ -57,12 +35,18 @@ class notificationsScreen extends StatelessWidget {
             ),
           ),
           SliverList.builder(
-              itemCount: all.length,
+              itemCount: (snap.data?.get("notifications") as List).length,
               itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.all(10),
-                    child: customNotificationsListTileWidget(type: all[index]),
+                    child: customNotificationsListTileWidget(
+                      callback: (){},
+                      subType: (snap.data?.get("notifications") as List)[index]['subType'],
+                      notificationId: (snap.data?.get("notifications") as List)[index]['messageId'],
+                    ),
                   ))
         ],
+      );
+        },
       ),
     );
   }

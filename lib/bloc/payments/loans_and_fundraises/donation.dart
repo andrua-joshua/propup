@@ -19,6 +19,9 @@ class donations {
     required int amount,
     required String purpose
   }) async {
+
+    bool returnedValue = false;
+
     final auth = FirebaseAuth.instance.currentUser;
     final donations = FirebaseFirestore.instance.collection("donations");
     final currentUser =
@@ -56,11 +59,11 @@ class donations {
             .instance()
             .sendNotificationMessage(message: notificaton);
 
-        return true;
+        returnedValue = true;
       }
     });
 
-    return false;
+    return returnedValue;
   }
 
   Future<bool> hasNoOpenDonations(DocumentSnapshot user) async {
