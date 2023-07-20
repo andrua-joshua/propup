@@ -98,6 +98,8 @@ class gridDataWidget extends StatelessWidget {
                             ),
                             Text(
                               snap.data?.get("description"),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                   color: Colors.grey, fontSize: 14),
                             )
@@ -165,17 +167,17 @@ class followersWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snap) {
           if (snap.hasData) {
-            return SliverGrid.builder(
+            return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     mainAxisExtent: 200),
                 itemCount:
-                    (snap.data?.get("followersList") as List<String>).length,
+                    (snap.data?.get("followersList") as List).length,
                 itemBuilder: (context, index) => gridDataWidget(
                       user: (snap.data?.get("followersList")
-                          as List<String>)[index],
+                          as List)[index],
                     ));
           }
 
@@ -211,17 +213,17 @@ class followingWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snap) {
           if (snap.hasData) {
-            return SliverGrid.builder(
+            return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     mainAxisExtent: 200),
                 itemCount:
-                    (snap.data?.get("followingList") as List<String>).length,
+                    (snap.data?.get("followingList") as List).length,
                 itemBuilder: (context, index) => gridDataWidget(
                       user: (snap.data?.get("followingList")
-                          as List<String>)[index],
+                          as List)[index],
                     ));
           }
 
@@ -257,17 +259,17 @@ class friendsWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snap) {
           if (snap.hasData) {
-            return SliverGrid.builder(
+            return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     mainAxisExtent: 200),
                 itemCount:
-                    (snap.data?.get("friendsList") as List<String>).length,
+                    (snap.data?.get("friendsList") as List).length,
                 itemBuilder: (context, index) => gridDataWidget(
                       user: (snap.data?.get("friendsList")
-                          as List<String>)[index],
+                          as List)[index],
                     ));
           }
 

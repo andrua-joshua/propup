@@ -16,11 +16,8 @@ class donations {
   static final _singleObj = donations._();
   factory donations.instance() => _singleObj;
 
-  Future<bool> requestDonation({
-    required int amount,
-    required String purpose
-  }) async {
-
+  Future<bool> requestDonation(
+      {required int amount, required String purpose}) async {
     bool returnedValue = false;
 
     final auth = FirebaseAuth.instance.currentUser;
@@ -35,7 +32,7 @@ class donations {
       final userDonations = secureSnap.get("donations") as List;
 
       bool val = await hasNoOpenDonations(secureSnap);
-      if (true) {
+      if (val) {
         debugPrint("::::::::::::::::::::::hello world:::igiojhrte343r");
 
         //adding the donation to the donation compaigns
@@ -44,7 +41,8 @@ class donations {
           "donars": [],
           "user": currentUser.id,
           "closed": false,
-          "recieved": 0
+          "recieved": 0,
+          "purpose": ""
         });
 
         userDonations.add(newDonation.id);
@@ -93,6 +91,8 @@ class donations {
     /// return 3 -> data write or update failed
     /// return 4 -> unkown error
 
+    int returned = 4;
+
     final auth = FirebaseAuth.instance.currentUser;
     final donationRf =
         FirebaseFirestore.instance.collection("donations").doc(donationId);
@@ -103,7 +103,6 @@ class donations {
     final donatedUserRf = FirebaseFirestore.instance
         .collection("users")
         .doc(donation.get("user"));
-    final donatedUser = await donatedUserRf.get();
 
     if ((user.get("account_balance") as int) > amount) {
       //to first check whether the current user has enough cash  to donate
@@ -160,7 +159,7 @@ class donations {
                 head: DateTime.now().microsecondsSinceEpoch,
                 messageID: donation.id,
                 message:
-                    "Congulation,your donation compaing of $totalDonationAmount is completed.",
+                    "Congulation,your donation compaing of ${donationSecureSnap.get("amount")} is completed.",
                 subType: "donation-compaign");
 
             await fcmOutgoingMessages.instance().sendCompaignNotification(
@@ -185,16 +184,7 @@ class donations {
               "donated": donated
             });
 
-            bool chkD = await checkDonation(
-                expRecieved: totalDonationAmount, donationId: donationId);
-
-            bool chkB = await chechBalance(expBalance: account_balance);
-
-            if (chkD && chkB) {
-              return 1;
-            } else {
-              return 3;
-            }
+            returned = 1;
           });
         } else {
           //incase the balance is greater than than the amount being donated
@@ -238,34 +228,30 @@ class donations {
                 messageID: donation.id,
                 message:
                     "${userSecureSnap.get("username")} has made a donation of "
-                    "$amount to  your donation compaing of $totalDonationAmount.",
+                    "$amount to  your donation compaing of ${donationSecureSnap.get("amount")}.",
                 subType: "donation-compaign");
 
             await fcmOutgoingMessages.instance().sendCompaignNotification(
                 message: notificaton, recieverId: donation.get("user"));
 
-            bool chkD = await checkDonation(
-                expRecieved: totalDonationAmount, donationId: donationId);
-
-            bool chkB = await chechBalance(expBalance: account_balance);
-
-            if (chkD && chkB) {
-              return 1;
-            } else {
-              return 3;
-            }
+            returned = 1;
+            // if (chkD && chkB) {
+            //   returned = 1;
+            // } else {
+            //   returned = 3;
+            // }
           });
         }
 
         // ignore: curly_braces_in_flow_control_structures
       } else
-        return 2;
+        returned = 2;
 
       // ignore: curly_braces_in_flow_control_structures
     } else
-      return 0;
+      returned = 0;
 
-    return 4;
+    return returned;
   }
 
   Future<bool> checkDonation(

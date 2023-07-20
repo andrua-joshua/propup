@@ -15,6 +15,7 @@ class messagingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
     var _scrollController = ScrollController();
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +44,7 @@ class messagingScreen extends StatelessWidget {
                         duration: const Duration(milliseconds: 50),
                         curve: Curves.easeOut,);
 
-                    return Column(
+                    return Padding(padding: const EdgeInsets.symmetric(horizontal: 20) ,child:Column(
                       children: List.generate(
                           fcmChatMessagesNotifiers()
                                   .allChatMessages()[chatId]
@@ -52,7 +53,7 @@ class messagingScreen extends StatelessWidget {
                           (index) => messageWidget(
                               chat: fcmChatMessagesNotifiers()
                                   .allChatMessages()[chatId]![index])),
-                    );
+                    ));
                   }
                   if (value.hasError) {
                     return const Center(

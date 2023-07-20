@@ -156,7 +156,7 @@ class optionsRowWidget extends StatelessWidget {
                                                     color: Colors.red),
                                               )
                                             : const Text(
-                                                "Funding failed.\n Make sure that you dont have running loans.",
+                                                "Funding failed.\n",
                                                 style: TextStyle(
                                                     color: Colors.red),
                                               );

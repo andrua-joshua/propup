@@ -45,7 +45,7 @@ class loans {
           "paidback": 0,
           "recieved": 0,
           "user": auth?.uid,
-          "purpose":""
+          "purpose": ""
         });
 
         userLoans.add(newLoan.id);
@@ -93,6 +93,7 @@ class loans {
     /// return 4 -> unkown error
     ///
 
+    int returned = 4;
     final auth = FirebaseAuth.instance.currentUser;
     final loanRf = FirebaseFirestore.instance.collection("loans").doc(loanId);
     final loan = await loanRf.get();
@@ -178,16 +179,7 @@ class loans {
               "transactions": userTransactions,
             });
 
-            bool chkD =
-                await checkLoan(expRecieved: totalLentAmount, loanId: loanId);
-
-            bool chkB = await chechBalance(expBalance: account_balance);
-
-            if (chkD && chkB) {
-              return 1;
-            } else {
-              return 3;
-            }
+            returned = 1;
           });
         } else {
           //if the balance is greater than the amount to lend
@@ -228,34 +220,25 @@ class loans {
                 head: DateTime.now().microsecondsSinceEpoch,
                 messageID: loan.id,
                 message: "${userSecureSnap.get("username")} has lent you"
-                    "$amount to  your loan compaing of $totalLentAmount.",
+                    "$amount to  your loan compaing of ${loanSecureSnap.get("amount")}.",
                 subType: "donation-compaign");
 
             await fcmOutgoingMessages.instance().sendCompaignNotification(
                 message: notificaton, recieverId: loan.get("user"));
 
-            bool chkD =
-                await checkLoan(expRecieved: totalLentAmount, loanId: loanId);
-
-            bool chkB = await chechBalance(expBalance: account_balance);
-
-            if (chkD && chkB) {
-              return 1;
-            } else {
-              return 3;
-            }
+            returned = 1;
           });
 
           //---------
         }
       } else {
-        return 2;
+        returned = 2;
       }
     } else {
-      return 0;
+      returned = 0;
     }
 
-    return 4;
+    return returned;
   }
 
   Future<bool> checkLoan(

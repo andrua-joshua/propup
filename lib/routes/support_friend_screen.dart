@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/support_screen_widgets.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/donation.dart';
 
 import '../widgets/lend_friend_widget.dart';
 
@@ -18,10 +19,10 @@ class supportFriendScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
    final TextEditingController controller 
-    = TextEditingController();
+    = TextEditingController(text:'0');
 
     return FutureBuilder(
-      future: FirebaseFirestore.instance.collection("loans").doc(donationId).get(),
+      future: FirebaseFirestore.instance.collection("donations").doc(donationId).get(),
       builder: (context, snap) {
         if (snap.hasData) {
           return Scaffold(
@@ -108,9 +109,97 @@ class supportFriendScreen extends StatelessWidget {
                         const SizedBox(
                           height: 40,
                         ),
-                        optionsRowWidget(
-                          donationId:donationId,
-                          amount: int.parse(controller.text),
+                        // optionsRowWidget(
+                        //   donationId:donationId,
+                        //   amount: int.parse(controller.text),
+                        // )
+
+                        SizedBox(
+                          child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(25)),
+              padding: const EdgeInsets.fromLTRB(25, 7, 25, 7),
+              child: const Text(
+                "Reject",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+            )),
+        TextButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text(
+                          "Processing..",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: FutureBuilder(
+                            future: donations.instance().donateToFriend(
+                                donationId: donationId, amount: int.parse(controller.text)),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                return (snap.data == 1)
+                                    ? const Text(
+                                        "Funding succesful.",
+                                        style: TextStyle(color: Colors.green),
+                                      )
+                                    : (snap.data == 2)
+                                        ? const Text(
+                                            "Fund compaign is closed.",
+                                            style: TextStyle(color: Colors.red),
+                                          )
+                                        : (snap.data == 0)
+                                            ? const Text(
+                                                "Your acount balance is low to make this funding, top-up your account and try again.",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              )
+                                            : const Text(
+                                                "Funding failed.\n",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              );
+                              }
+
+                              if (snap.hasError) {
+                                return const Center(
+                                  child: Text(
+                                    "(*_*)\n Please Check your internet Connection and try again",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
+
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }),
+                      ));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.green, borderRadius: BorderRadius.circular(25)),
+              padding: const EdgeInsets.fromLTRB(25, 7, 25, 7),
+              child: const Text(
+                "Accept",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+            ))
+      ],
+    ),
                         )
                       ],
                     ),

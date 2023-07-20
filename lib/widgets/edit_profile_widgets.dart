@@ -255,7 +255,7 @@ class mySummaryWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(snap.data?.get("followers"),
+                        Text("${snap.data?.get("followers")}",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,
@@ -271,7 +271,7 @@ class mySummaryWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(snap.data?.get("friends"),
+                        Text("${snap.data?.get("friends")}",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,
@@ -287,7 +287,7 @@ class mySummaryWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(snap.data?.get("following"),
+                        Text("${snap.data?.get("following")}",
                             style: const TextStyle(
                                 color: Color.fromARGB(255, 9, 14, 17),
                                 fontSize: 18,

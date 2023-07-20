@@ -12,7 +12,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
   final String notificationId;
   final String subType;
   final int head;
-  final Function() callback;
+  final void Function() callback;
 
   /// type == 0 :> support
   /// type == 1 :> loan
@@ -42,75 +42,76 @@ class customNotificationsListTileWidget extends StatelessWidget {
             .get(),
         builder: (context, snap) {
           if (snap.hasData) {
-            if(snap.data!=null) {
+            if (snap.data != null) {
               return ListTile(
-              onTap: () => callback,
-              leading: Card(
-                  elevation: 8,
-                  color: Colors.white,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: Colors.white, shape: BoxShape.circle),
-                    padding: const EdgeInsets.all(10),
-                    child: Icon((subType == 'Donation')
-                        ? Icons.support
-                        : (subType == 'Loan')
-                            ? Icons.balance
-                            : Icons.child_friendly),
-                  )),
-              title: FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(snap.data?.get("user"))
-                      .get(),
-                  builder: (context, snapShot) {
-                    if (snapShot.hasData) {
-                      return Text(
-                          (subType == 'Donation')
-                              ? "Your friend ${snapShot.data?.get("username")} needs your support"
-                              : (subType == 'Loan')
-                                  ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
-                                  : "Default notification to be replaced by the others",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold));
-                    }
+                onTap: () =>callback(),
+                leading: Card(
+                    elevation: 8,
+                    color: Colors.white,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Colors.white, shape: BoxShape.circle),
+                      padding: const EdgeInsets.all(10),
+                      child: Icon((subType == 'Donation')
+                          ? Icons.support
+                          : (subType == 'Loan')
+                              ? Icons.balance
+                              : Icons.child_friendly),
+                    )),
+                title: FutureBuilder(
+                    future: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(snap.data?.get("user"))
+                        .get(),
+                    builder: (context, snapShot) {
+                      if (snapShot.hasData) {
+                        return Text(
+                            (subType == 'Donation')
+                                ? "Your friend ${snapShot.data?.get("username")} needs your support"
+                                : (subType == 'Loan')
+                                    ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
+                                    : "Default notification to be replaced by the others",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold));
+                      }
 
-                    if (snapShot.hasError) {
-                      return const Text(
-                        "Error, check your network plz",
-                        style: TextStyle(color: Colors.red),
+                      if (snapShot.hasError) {
+                        return const Text(
+                          "Error, check your network plz",
+                          style: TextStyle(color: Colors.red),
+                        );
+                      }
+
+                      return Container(
+                        constraints: const BoxConstraints.expand(height: 30),
+                        margin: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 219, 219, 219),
+                            borderRadius: BorderRadius.circular(10)),
                       );
-                    }
-
-                    return Container(
-                      constraints: const BoxConstraints.expand(height: 30),
-                      margin: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 219, 219, 219),
-                          borderRadius: BorderRadius.circular(10)),
-                    );
-                  }),
-              subtitle: SizedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      subType,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      DateFormat("yyyy-MM-dd").format(DateTime.fromMicrosecondsSinceEpoch(head)),
-                      style: const TextStyle(
-                          color: Colors.grey, fontStyle: FontStyle.italic),
-                    )
-                  ],
+                    }),
+                subtitle: SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        subType,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      Text(
+                        DateFormat("yyyy-MM-dd")
+                            .format(DateTime.fromMicrosecondsSinceEpoch(head)),
+                        style: const TextStyle(
+                            color: Colors.grey, fontStyle: FontStyle.italic),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            );
+              );
             }
           }
 

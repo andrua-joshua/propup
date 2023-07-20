@@ -17,54 +17,63 @@ class notificationsScreen extends StatelessWidget {
 
     return Scaffold(
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("users").doc(auth?.uid).snapshots(),
-        builder: (context, snap){
+        stream: FirebaseFirestore.instance
+            .collection("users")
+            .doc(auth?.uid)
+            .snapshots(),
+        builder: (context, snap) {
           int idx = 0;
 
           return CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            pinned: true,
-            expandedHeight: 100,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                "Notifications",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+            slivers: [
+              const SliverAppBar(
+                pinned: true,
+                expandedHeight: 100,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    "Notifications",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  centerTitle: true,
+                ),
               ),
-              centerTitle: true,
-            ),
-          ),
-          SliverList.builder(
-              itemCount: (idx = (snap.data?.get("notifications") as List).length),
-              itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: customNotificationsListTileWidget(
-                      callback: (){
-                        String subtyp = (snap.data?.get("notifications") as List)[idx -(index+1)]['subType'];
+              SliverList.builder(
+                  itemCount: (idx =
+                      (snap.data?.get("notifications") as List).length),
+                  itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: customNotificationsListTileWidget(
+                          callback: () {
+                            String subtyp = (snap.data?.get("notifications")
+                                as List)[idx - (index + 1)]['subtype'];
 
-                        if(subtyp =='Loan'){
-                          Navigator.pushNamed(
-                            context, RouteGenerator.lendfriendscreen,
-                            arguments: (snap.data?.get("notifications") as List)[idx -(index+1)]['messageId'] 
-                            );
-                        }else if(subtyp =='Donation'){
-                          Navigator.pushNamed(
-                            context, RouteGenerator.supportscreen,
-                            arguments: (snap.data?.get("notifications") as List)[idx -(index+1)]['messageId'] 
-                            );
-                        } 
+                            String id = (snap.data?.get("notifications")
+                                as List)[idx - (index + 1)]['messageId'];
 
-                      },
-                      subType: (snap.data?.get("notifications") as List)[idx -(index+1)]['subType'],
-                      notificationId: (snap.data?.get("notifications") as List)[idx -(index+1)]['messageId'],
-                      head: (snap.data?.get("notifications") as List)[idx -(index+1)]['head'],
-                    ),
-                  ))
-        ],
-      );
+                            if (subtyp == 'Loan') {
+                              debugPrint("Here in the call back:::::::::::::>$id");
+                              Navigator.pushNamed(
+                                  context, RouteGenerator.lendfriendscreen,
+                                  arguments: id);
+                            } else if (subtyp == 'Donation') {
+                              Navigator.pushNamed(
+                                  context, RouteGenerator.supportscreen,
+                                  arguments: id);
+                            }
+                          },
+                          subType: (snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['subtype'],
+                          notificationId: (snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['messageId'],
+                          head: (snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['head'],
+                        ),
+                      ))
+            ],
+          );
         },
       ),
     );

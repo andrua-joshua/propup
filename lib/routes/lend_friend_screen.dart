@@ -13,9 +13,8 @@ class lendFriendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller 
-    = TextEditingController();
-
+    final TextEditingController controller = TextEditingController();
+    debugPrint("***********************>> $loanId");
     return FutureBuilder(
       future: FirebaseFirestore.instance.collection("loans").doc(loanId).get(),
       builder: (context, snap) {
@@ -76,8 +75,7 @@ class lendFriendScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        lendReasonWidget(
-                            message: snap.data?.get("purpose")),
+                        lendReasonWidget(message: snap.data?.get("purpose")),
                         const SizedBox(
                           height: 30,
                         ),
