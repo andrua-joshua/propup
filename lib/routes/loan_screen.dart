@@ -93,7 +93,7 @@ class loanScreen extends StatelessWidget {
                                     purpose: _purposeController.text),
                                 builder: (context, snap) {
                                   if (snap.hasData) {
-                                    return(snap.data ?? true)
+                                    return (snap.data ?? false)
                                         ? const Text(
                                             "Loan request succesful.",
                                             style:

@@ -16,9 +16,12 @@ class donations {
   static final _singleObj = donations._();
   factory donations.instance() => _singleObj;
 
-  Future<bool> requestDonation(
-      {required int amount, required String purpose}) async {
-    bool returned = false;
+  Future<bool> requestDonation({
+    required int amount,
+    required String purpose
+  }) async {
+
+    bool returnedValue = false;
 
     final auth = FirebaseAuth.instance.currentUser;
     final donations = FirebaseFirestore.instance.collection("donations");
@@ -58,13 +61,12 @@ class donations {
         await fcmOutgoingMessages
             .instance()
             .sendNotificationMessage(message: notificaton);
-        debugPrint("::::::::::::::::::::::hello world: about set returned to true::");
-        returned = true;
+
+        returnedValue = true;
       }
     });
 
-    debugPrint("::::::::::::::::::::::valueCheck::>>  $returned");
-    return returned;
+    return returnedValue;
   }
 
   Future<bool> hasNoOpenDonations(DocumentSnapshot user) async {
