@@ -635,6 +635,9 @@ class allFriendsListWidget extends StatelessWidget {
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
     return Column(children: [
+      const SizedBox(
+        height: 50,
+      ),
       const Text(
         "All friends",
         style: TextStyle(color: Colors.black),
@@ -647,11 +650,11 @@ class allFriendsListWidget extends StatelessWidget {
               if (snap.hasData) {
                 return Column(
                     children: List.generate(
-                        (snap.data?.get("friends") as List).length,
+                        (snap.data?.get("friendsList") as List).length,
                         (index) => FutureBuilder(
                             future: FirebaseFirestore.instance
                                 .collection("users")
-                                .doc((snap.data?.get("friends") as List)[index])
+                                .doc((snap.data?.get("friendsList") as List)[index])
                                 .get(),
                             builder: (context, value) {
                               if (value.hasData) {

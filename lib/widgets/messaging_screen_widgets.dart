@@ -148,8 +148,13 @@ class messageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
+      ?MainAxisAlignment.spaceBetween:MainAxisAlignment.start,
       children:[
-        
+       SizedBox(
+        width: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)
+            ?30:0,
+       ), 
         Container(
       decoration: BoxDecoration(
           color: (chat.senderId == FirebaseAuth.instance.currentUser?.uid)

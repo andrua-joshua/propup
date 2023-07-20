@@ -38,9 +38,9 @@ class fcmChatMessagesNotifiers {
 
     final fb = FirebaseFirestore.instance.collection("hint").doc("MNGTzwswNilWSzUnq06Z");
 
-    fb.update(
+    await fb.update(
       {
-        "val":Random(3)
+        "val":Random(3478978).nextInt(433434)+1
       }
     );
     

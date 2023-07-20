@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 //ignore:camel_case_types
 class homeTabsChange with ChangeNotifier{
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   homeTabsChange._();
   static final singleObj = homeTabsChange._();
