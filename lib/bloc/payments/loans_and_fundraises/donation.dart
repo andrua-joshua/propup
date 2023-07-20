@@ -18,20 +18,22 @@ class donations {
 
   Future<bool> requestDonation(
       {required int amount, required String purpose}) async {
+    bool returned = false;
+
     final auth = FirebaseAuth.instance.currentUser;
     final donations = FirebaseFirestore.instance.collection("donations");
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
 
     //updating the users current donations status
-    FirebaseFirestore.instance.runTransaction((transaction) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
       final secureSnap = await transaction.get(currentUser);
 
       final userDonations = secureSnap.get("donations") as List;
 
       bool val = await hasNoOpenDonations(secureSnap);
       if (true) {
-      debugPrint("::::::::::::::::::::::hello world:::igiojhrte343r");
+        debugPrint("::::::::::::::::::::::hello world:::igiojhrte343r");
 
         //adding the donation to the donation compaigns
         final newDonation = await donations.add({
@@ -53,17 +55,16 @@ class donations {
             message: purpose,
             subType: "Donation");
 
-        
-
         await fcmOutgoingMessages
             .instance()
             .sendNotificationMessage(message: notificaton);
-debugPrint("::::::::::::::::::::::hello world:::");
-        return true;
+        debugPrint("::::::::::::::::::::::hello world: about set returned to true::");
+        returned = true;
       }
     });
 
-    return false;
+    debugPrint("::::::::::::::::::::::valueCheck::>>  $returned");
+    return returned;
   }
 
   Future<bool> hasNoOpenDonations(DocumentSnapshot user) async {

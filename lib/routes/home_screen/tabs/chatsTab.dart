@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
@@ -57,7 +58,9 @@ class chatTab extends StatelessWidget {
 
                         var user = FirebaseFirestore.instance
                             .collection("users")
-                            .doc(msg.senderId)
+                            .doc(
+                              (msg.senderId == FirebaseAuth.instance.currentUser?.uid)?
+                               msg.recieverID:msg.senderId)
                             .get();
                         //user.then((val){});
 

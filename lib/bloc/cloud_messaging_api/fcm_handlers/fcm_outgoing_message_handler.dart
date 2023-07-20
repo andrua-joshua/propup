@@ -38,18 +38,14 @@ class fcmOutgoingMessages {
           cloudMessagingServerKey: server_key,
           title: "Propup chat",
           body: "New message from ${user.get("username").toString()}",
-          fcmTokens: [
-            token
-          ],
-          additionalHeaders: {
-            "Content-type": "application/json"
-          },
+          fcmTokens: [token],
           payload: <String, dynamic>{
             "type": "chat",
             "senderID": chatmessage.senderId,
-            "recieverID": chatmessage.recieverID,
-            "message": chatmessage.message
-          });
+            "message": chatmessage.message,
+            "recieverID": chatmessage.recieverID
+          }
+          );
 
       debugPrint("Send Result:  ${response.body}");
     } catch (e) {

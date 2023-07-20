@@ -31,22 +31,22 @@ class fcmIncomingMessagesHandler {
         _handler); //for handling messages while the app is in the foreground
   }
 
-  void _handlerOnInteraction(RemoteMessage message) async {
+  void _handlerOnInteraction(RemoteMessage message2) async {
     debugPrint(
-        ":::::::::::::>>>>> got the new interaction message ${message.data}");
+        ":::::::::::::>>>>> got the new interaction message ${jsonEncode(message2.data)}");
 
     //this is for handling the messages incase the application was in the terminated state
 
-    if ((jsonDecode(message.data['data']) as Map<String, dynamic>)['type'] ==
-        'chat') {
+    final message =
+        jsonDecode(jsonEncode(message2.data)) as Map<String, dynamic>;
+
+    if (message['type'] == 'chat') {
       //to handle chat messages
 
       final chatMessage chat = _toChatMessage(
           message); //the object to be pushed to the chat message bloc
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
-    } else if ((jsonDecode(message.data['data'])
-            as Map<String, dynamic>)['type'] ==
-        'notification') {
+    } else if (message['type'] == 'notification') {
       //to handle notification messages
       final notificationsMessage notification = _toNotificationMessage(message);
 
@@ -56,27 +56,23 @@ class fcmIncomingMessagesHandler {
     }
   }
 
-  void _handler(RemoteMessage message) async {
+  void _handler(RemoteMessage message2) async {
     debugPrint(
-        ":::::::::::::>>>>> got the new incoming message ${jsonEncode(message.data)}");
+        ":::::::::::::>>>>> got the new incoming message ${jsonEncode(message2.data)}");
 
-    final message2 = jsonEncode(message.data);
-    final message3 = jsonDecode(message2) as Map<String, dynamic>;
+    RemoteNotification? notification = message2.notification;
 
-    RemoteNotification? notification = message.notification;
-    //AndroidNotification? android = message.notification?.android;
+    final message =
+        jsonDecode(jsonEncode(message2.data)) as Map<String, dynamic>;
 
     debugPrint("notification: $notification");
 
-    if (message3['type'] ==
-        'chat') {
-      //to handle chat messages
-
+    if (message['type'] == 'chat') {
       final chatMessage chat = _toChatMessage(
           message); //the object to be pushed to the chat message bloc
+          
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
-    } else if (message3['type'] ==
-        'notification') {
+    } else if (message['type'] == 'notification') {
       //to handle notification messages
       final notificationsMessage notification = _toNotificationMessage(message);
 
@@ -86,28 +82,22 @@ class fcmIncomingMessagesHandler {
     }
   }
 
-  chatMessage _toChatMessage(RemoteMessage message) {
-    final message2 = jsonEncode(message.data);
-    final message3 = jsonDecode(message2) as Map<String, dynamic>;
-
+  chatMessage _toChatMessage(Map<String, dynamic> message) {
     chatMessage chatmessage = chatMessage(
-        senderId: message3['senderID'] as String,
-        recieverID: message3['recieverID'] as String,
-        message: message3['message'] as String,
+        senderId: message['senderID'] as String,
+        recieverID: message['recieverID'] as String,
+        message: message['message'] as String,
         head: DateTime.now().microsecondsSinceEpoch);
 
     return chatmessage;
   }
 
-  notificationsMessage _toNotificationMessage(RemoteMessage message) {
-    final message2 = jsonEncode(message.data);
-    final message3 = jsonDecode(message2) as Map<String, dynamic>;
-
+  notificationsMessage _toNotificationMessage(Map<String, dynamic> message) {
     notificationsMessage notificationsmessage = notificationsMessage(
         head: DateTime.now().microsecondsSinceEpoch,
-        messageID: message3['messageID'] as String,
-        message: message3['message'] as String,
-        subType: message3['subType'] as String);
+        messageID: message['messageID'] as String,
+        message: message['message'] as String,
+        subType: message['subType'] as String);
 
     return notificationsmessage;
   }

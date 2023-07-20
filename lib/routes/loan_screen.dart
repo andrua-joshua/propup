@@ -93,7 +93,7 @@ class loanScreen extends StatelessWidget {
                                     purpose: _purposeController.text),
                                 builder: (context, snap) {
                                   if (snap.hasData) {
-                                    (snap.data ?? false)
+                                    return(snap.data ?? true)
                                         ? const Text(
                                             "Loan request succesful.",
                                             style:
@@ -122,7 +122,7 @@ class loanScreen extends StatelessWidget {
                                 }),
                           ));
 
-                  Navigator.pop(context);
+                  //Navigator.pop(context);
                 },
                 child: Container(
                     padding: const EdgeInsets.all(10),

@@ -20,15 +20,16 @@ class loans {
       {required int amount,
       required int interestRate,
       required DateTime paybackTime,
-      required String purpose
-      }) async {
+      required String purpose}) async {
+    bool v = false;
+
     final auth = FirebaseAuth.instance.currentUser;
     final loans = FirebaseFirestore.instance.collection("loans");
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
 
     //updating the users current loan compaigns status
-    FirebaseFirestore.instance.runTransaction((transaction) async {
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
       final secureSnap = await transaction.get(currentUser);
       final userLoans = secureSnap.get("loans") as List;
 
@@ -60,11 +61,11 @@ class loans {
             .instance()
             .sendNotificationMessage(message: notificaton);
 
-        return true;
+        v = true;
       }
     });
 
-    return false;
+    return v;
   }
 
   Future<bool> hasNoOpenLoans(DocumentSnapshot user) async {
@@ -97,24 +98,21 @@ class loans {
     final userRf =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
     final user = await userRf.get();
-    final lentUserRf = FirebaseFirestore.instance
-        .collection("users")
-        .doc(loan.get("user"));
+    final lentUserRf =
+        FirebaseFirestore.instance.collection("users").doc(loan.get("user"));
     final lentUser = await lentUserRf.get();
 
-
-    if((user.get("account_balance") as int)>amount){
+    if ((user.get("account_balance") as int) > amount) {
       //to first check whether the current user has enough cash to lend
-      
-      if(!(loan.get("closed") as bool)){
 
+      if (!(loan.get("closed") as bool)) {
         int balance =
             (loan.get("amount") as int) - (loan.get("recieved") as int);
 
-          if(balance<amount){
-            //checks if the remainin balance is smaller than the amount to lend
+        if (balance < amount) {
+          //checks if the remainin balance is smaller than the amount to lend
 
-            await FirebaseFirestore.instance.runTransaction((transaction) async {
+          await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final loanSecureSnap = await transaction.get(loanRf);
             final lentUserSecureSnap = await transaction.get(lentUserRf);
@@ -137,7 +135,7 @@ class loans {
             int lentUser_balance =
                 (lentUserSecureSnap.get("account_balance") as int) +
                     totalLentAmount;
-            
+
             final lentUserTransactions =
                 lentUserSecureSnap.get("transactions") as List;
 
@@ -148,7 +146,7 @@ class loans {
             });
             transaction.update(lentUserRf, {
               "account_balance": lentUser_balance,
-              "transactions":lentUserTransactions
+              "transactions": lentUserTransactions
             });
 
             final notificaton = notificationsMessage(
@@ -165,7 +163,7 @@ class loans {
             // ignore: non_constant_identifier_names
             int account_balance =
                 (userSecureSnap.get("account_balance") as int) - balance;
-            
+
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
@@ -179,8 +177,8 @@ class loans {
               "transactions": userTransactions,
             });
 
-            bool chkD = await checkLoan(
-                expRecieved: totalLentAmount, loanId: loanId);
+            bool chkD =
+                await checkLoan(expRecieved: totalLentAmount, loanId: loanId);
 
             bool chkB = await chechBalance(expBalance: account_balance);
 
@@ -190,10 +188,10 @@ class loans {
               return 3;
             }
           });
-          }else{
-            //if the balance is greater than the amount to lend
+        } else {
+          //if the balance is greater than the amount to lend
 
-            await FirebaseFirestore.instance.runTransaction((transaction) async {
+          await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final loanSecureSnap = await transaction.get(loanRf);
 
@@ -205,8 +203,8 @@ class loans {
 
             lenders.add({"amount": amount, "lender": userRf.id});
 
-            transaction.update(loanRf,
-                {"recieved": totalLentAmount, "lenders": lenders});
+            transaction.update(
+                loanRf, {"recieved": totalLentAmount, "lenders": lenders});
 
             ///updating the lenders donations Status
             // ignore: non_constant_identifier_names
@@ -228,16 +226,15 @@ class loans {
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,
                 messageID: loan.id,
-                message:
-                    "${userSecureSnap.get("username")} has lent you"
+                message: "${userSecureSnap.get("username")} has lent you"
                     "$amount to  your loan compaing of $totalLentAmount.",
                 subType: "donation-compaign");
 
             await fcmOutgoingMessages.instance().sendCompaignNotification(
                 message: notificaton, recieverId: loan.get("user"));
 
-            bool chkD = await checkLoan(
-                expRecieved: totalLentAmount, loanId: loanId);
+            bool chkD =
+                await checkLoan(expRecieved: totalLentAmount, loanId: loanId);
 
             bool chkB = await chechBalance(expBalance: account_balance);
 
@@ -248,28 +245,22 @@ class loans {
             }
           });
 
-            //---------
-          }
-
-      }else{
+          //---------
+        }
+      } else {
         return 2;
       }
-
-    }else{
+    } else {
       return 0;
     }
 
     return 4;
-
   }
-
 
   Future<bool> checkLoan(
       {required int expRecieved, required String loanId}) async {
-    final loan = await FirebaseFirestore.instance
-        .collection("loans")
-        .doc(loanId)
-        .get();
+    final loan =
+        await FirebaseFirestore.instance.collection("loans").doc(loanId).get();
 
     int recieved = loan.get("recieved") as int;
 
@@ -286,5 +277,4 @@ class loans {
 
     return balance == expBalance;
   }
-
 }
