@@ -45,7 +45,7 @@ class loans {
           "paidback": 0,
           "recieved": 0,
           "user": auth?.uid,
-          "purpose": ""
+          "purpose": purpose
         });
 
         userLoans.add(newLoan.id);

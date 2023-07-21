@@ -42,7 +42,7 @@ class donations {
           "user": currentUser.id,
           "closed": false,
           "recieved": 0,
-          "purpose": ""
+          "purpose": purpose
         });
 
         userDonations.add(newDonation.id);
