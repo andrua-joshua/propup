@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:propup/bloc/payments/loans_and_fundraises/loans.dart';
@@ -34,11 +35,8 @@ class lendReasonWidget extends StatelessWidget {
 class lendAmountEntryWidget extends StatelessWidget {
   final TextEditingController controller;
   final int paybackTime;
-  const lendAmountEntryWidget({
-    required this.controller,
-    required this.paybackTime,
-    super.key});
-  
+  const lendAmountEntryWidget(
+      {required this.controller, required this.paybackTime, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +68,9 @@ class lendAmountEntryWidget extends StatelessWidget {
 
 //ignore:camel_case_types
 class lendProgressWidget extends StatelessWidget {
-  final int recieved;
-  final int amount;
-  const lendProgressWidget({
-    required this.recieved,
-    required this.amount,
-    super.key});
+  final String loanId;
+
+  const lendProgressWidget({required this.loanId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -86,24 +81,93 @@ class lendProgressWidget extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(30, 5, 30, 30),
       child: LayoutBuilder(builder: (context, dimensions) {
         double width = dimensions.maxWidth;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              constraints: BoxConstraints.expand(width: width * recieved/amount),
-              color: Colors.green,
-              child:  Center(
-                  child: Text(
-                "${(recieved/amount)*100}%",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold),
-              )),
-            )
-          ],
+        return StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection("loans")
+              .doc(loanId)
+              .snapshots(),
+          builder: (context, snap) {
+            final int recieved = snap.data?.get("recieved") as int;
+            final int amount = snap.data?.get("amount") as int;
+
+            if (snap.hasData) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    constraints:
+                        BoxConstraints.expand(width: width * recieved / amount),
+                    color: Colors.green,
+                    child: Center(
+                        child: Text(
+                      "${(recieved / amount) * 100}%",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold),
+                    )),
+                  )
+                ],
+              );
+            }
+
+            if (snap.hasError) {
+              return const Text(
+                "There was an error loading progress",
+                style: TextStyle(color: Colors.red),
+              );
+            }
+
+            return const LinearProgressIndicator(
+              minHeight: 30,
+            );
+          },
         );
       }),
+    );
+  }
+}
+
+// ignore: camel_case_types
+class compaignsTextualProgress extends StatelessWidget {
+  final String compaignId;
+  final bool isLoan;
+
+  const compaignsTextualProgress(
+      {required this.compaignId, required this.isLoan, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection(isLoan ? "loans" : "donations")
+          .doc(compaignId)
+          .snapshots(),
+      builder: (context, snap) {
+        if (snap.hasData) {
+          final int recieved = snap.data?.get("recieved") as int;
+          final int amount = snap.data?.get("amount") as int;
+
+          return Text(
+            "$recieved/$amount collected so-far.",
+            style: const TextStyle(color: Colors.black),
+          );
+        }
+
+        if (snap.hasError) {
+          return const Text(
+            "There was error loading the progress",
+            style: TextStyle(color: Colors.red),
+          );
+        }
+
+        return Container(
+          constraints: const BoxConstraints.expand(height: 30),
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 221, 221, 221),
+              borderRadius: BorderRadius.circular(10)),
+        );
+      },
     );
   }
 }
@@ -115,10 +179,8 @@ class lendProgressWidget extends StatelessWidget {
 class lendOptionsRowWidget extends StatelessWidget {
   final String loanId;
   final int amount;
-  const lendOptionsRowWidget({
-    required this.amount,
-    required this.loanId,
-    super.key});
+  const lendOptionsRowWidget(
+      {required this.amount, required this.loanId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -141,59 +203,58 @@ class lendOptionsRowWidget extends StatelessWidget {
             )),
         TextButton(
             onPressed: () {
-
               showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            title: const Text(
-                              "Processing..",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            content: FutureBuilder(
-                                future: loans.instance().lendFriend(
-                                  loanId: loanId, 
-                                  amount: amount),
-                                builder: (context, snap) {
-                                  if (snap.hasData) {
-                                    return (snap.data==1)
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text(
+                          "Processing..",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        content: FutureBuilder(
+                            future: loans
+                                .instance()
+                                .lendFriend(loanId: loanId, amount: amount),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                return (snap.data == 1)
+                                    ? const Text(
+                                        "Lend succesful.",
+                                        style: TextStyle(color: Colors.green),
+                                      )
+                                    : (snap.data == 2)
                                         ? const Text(
-                                            "Lend succesful.",
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          )
-                                        : (snap.data == 2)
-                                        ?const Text(
                                             "Loan is closed.",
                                             style: TextStyle(color: Colors.red),
                                           )
-                                          :(snap.data == 0)?
-                                          const Text(
-                                            "Your acount balance is low to lend this amount, top-up your account and try again.",
-                                            style: TextStyle(color: Colors.red),
-                                          )
-                                          :const Text(
-                                            "Lending failed.\n Make sure that you dont have running loans.",
-                                            style: TextStyle(color: Colors.red),
-                                          );
-                                  }
+                                        : (snap.data == 0)
+                                            ? const Text(
+                                                "Your acount balance is low to lend this amount, top-up your account and try again.",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              )
+                                            : const Text(
+                                                "Lending failed.\n Make sure that you dont have running loans.",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              );
+                              }
 
-                                  if (snap.hasError) {
-                                    return const Center(
-                                      child: Text(
-                                        "(*_*)\n Please Check your internet Connection and try again",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    );
-                                  }
+                              if (snap.hasError) {
+                                return const Center(
+                                  child: Text(
+                                    "(*_*)\n Please Check your internet Connection and try again",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                );
+                              }
 
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }),
-                          ));
-
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }),
+                      ));
             },
             child: Container(
               decoration: BoxDecoration(

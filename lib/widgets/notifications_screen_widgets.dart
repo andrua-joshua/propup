@@ -12,6 +12,8 @@ class customNotificationsListTileWidget extends StatelessWidget {
   final String notificationId;
   final String subType;
   final int head;
+  final String notificationMessage;
+  final bool viewedStatus;
   final void Function() callback;
 
   /// type == 0 :> support
@@ -31,6 +33,8 @@ class customNotificationsListTileWidget extends StatelessWidget {
       required this.subType,
       required this.notificationId,
       required this.head,
+      required this.viewedStatus,
+      required this.notificationMessage,
       super.key});
 
   @override
@@ -70,11 +74,11 @@ class customNotificationsListTileWidget extends StatelessWidget {
                                 ? "Your friend ${snapShot.data?.get("username")} needs your support"
                                 : (subType == 'Loan')
                                     ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
-                                    : "Default notification to be replaced by the others",
+                                    : notificationMessage,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                color: Colors.black,
+                            style: TextStyle(
+                                color: viewedStatus?Colors.black:Colors.blue,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold));
                       }

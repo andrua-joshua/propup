@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/payments/loans_and_fundraises/donation.dart';
 
@@ -59,10 +60,8 @@ class amountEntryWidget extends StatelessWidget {
 
 //ignore:camel_case_types
 class progressWidget extends StatelessWidget {
-  final int recieved;
-  final int amount;
-  const progressWidget(
-      {required this.recieved, required this.amount, super.key});
+  final String donationId;
+  const progressWidget({required this.donationId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,24 +72,47 @@ class progressWidget extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(30, 5, 30, 30),
       child: LayoutBuilder(builder: (context, dimensions) {
         double width = dimensions.maxWidth;
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              constraints:
-                  BoxConstraints.expand(width: width * recieved / amount),
-              color: Colors.green,
-              child: Center(
-                  child: Text(
-                "${(recieved / amount) * 100}%",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold),
-              )),
-            )
-          ],
-        );
+        return StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("donations")
+                .doc(donationId)
+                .snapshots(),
+            builder: (context, snap) {
+              if (snap.hasData) {
+                final int recieved = snap.data?.get("recieved") as int;
+                final int amount = snap.data?.get("amount") as int;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints.expand(
+                          width: width * recieved / amount),
+                      color: Colors.green,
+                      child: Center(
+                          child: Text(
+                        "${(recieved / amount) * 100}%",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      )),
+                    )
+                  ],
+                );
+              }
+
+              if (snap.hasError) {
+                return const Text(
+                  "There was an error loading progress",
+                  style: TextStyle(color: Colors.red),
+                );
+              }
+
+              return const LinearProgressIndicator(
+                minHeight: 30,
+              );
+            });
       }),
     );
   }
