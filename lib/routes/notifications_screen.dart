@@ -53,6 +53,10 @@ class notificationsScreen extends StatelessWidget {
                             String id = (snap.data?.get("notifications")
                                 as List)[idx - (index + 1)]['messageId'];
 
+                            //snap.data?.reference.
+                            updateNotifications((snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['head']);
+
                             if (subtyp == 'Loan') {
                               debugPrint("Here in the call back:::::::::::::>$id");
                               Navigator.pushNamed(
@@ -70,6 +74,10 @@ class notificationsScreen extends StatelessWidget {
                               as List)[idx - (index + 1)]['messageId'],
                           head: (snap.data?.get("notifications")
                               as List)[idx - (index + 1)]['head'],
+                          notificationMessage: (snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['message'],
+                          viewedStatus: (snap.data?.get("notifications")
+                              as List)[idx - (index + 1)]['viewedStatus'],
                         ),
                       ))
             ],
@@ -78,4 +86,47 @@ class notificationsScreen extends StatelessWidget {
       ),
     );
   }
+
+
+  Future<void> updateNotifications(String head)async{
+    final auth = FirebaseAuth.instance.currentUser;
+
+    final userRf = FirebaseFirestore.instance
+            .collection("users")
+            .doc(auth?.uid);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async{
+
+      final secureSnap = await transaction.get(userRf);
+
+      final notificationsList = secureSnap.get("notifications") as List;
+
+      Map<String, dynamic> theNotification = {};
+      int index =0;
+      for(int i =0; i<notificationsList.length; i++){
+        if(notificationsList[i]['head']==head){
+          theNotification = notificationsList[i] as Map<String, dynamic>;
+          notificationsList.removeAt(i);
+          index = i;
+          break;
+        }
+      }
+
+      theNotification['viewedStatus'] = true;
+
+      notificationsList.insert(index, theNotification);
+
+      transaction.update(userRf, {
+        "notifications":notificationsList
+      });
+
+
+    });
+
+  }
+
+
 }
+
+
+
