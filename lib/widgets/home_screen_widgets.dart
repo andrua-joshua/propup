@@ -46,13 +46,15 @@ class helloTitleWidget extends StatelessWidget {
 
                 if (snap.hasData) {
                   if (snap.data != null) {
-                    return Text(
+                    return GestureDetector(
+                      onTap: ()=>RouteGenerator.myProfilescreen,
+                      child:Text(
                       snap.data?.get("username"),
                       style: const TextStyle(
                           color: Colors.black,
                           fontSize: 25,
                           fontWeight: FontWeight.bold),
-                    );
+                    ));
                   }
                 }
 

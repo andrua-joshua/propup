@@ -36,7 +36,7 @@ class transactionDataWidget extends StatelessWidget {
       case 'Withdraw':
         add = false;
         break;
-      case 'Deposite':
+      case 'Deposit':
         add = true;
         break;
     }

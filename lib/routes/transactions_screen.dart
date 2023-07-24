@@ -15,6 +15,7 @@ class transactionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance.currentUser;
     final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    int idx = 0;
 
     return Scaffold(
       body: StreamBuilder(
@@ -45,7 +46,7 @@ class transactionsScreen extends StatelessWidget {
                 ),
                 SliverList.builder(
                     itemCount: (snap.hasData)
-                        ? (snap.data?.get("transactions") as List).length
+                        ? (idx = (snap.data?.get("transactions") as List).length)
                         : 0,
                     itemBuilder: (context, index) => ListTile(
                           leading: Card(
@@ -61,16 +62,16 @@ class transactionsScreen extends StatelessWidget {
                                 ),
                               )),
                           title: Text(
-                            ((snap.data?.get("transactions") as List)[index]
+                            ((snap.data?.get("transactions") as List)[idx - (index + 1)]
                                         ['type'] ==
                                     'donation-recieved')
                                 ? "Recieved funds"
                                 : ((snap.data?.get("transactions")
-                                            as List)[index]['type'] ==
+                                            as List)[idx - (index + 1)]['type'] ==
                                         'loan-recieved')
                                     ? "Recieved Loan"
                                     : (snap.data?.get("transactions")
-                                        as List)[index]['type'],
+                                        as List)[idx - (index + 1)]['type'],
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -83,11 +84,11 @@ class transactionsScreen extends StatelessWidget {
                           ),
                           trailing: transactionDataWidget(
                             date: (snap.data?.get("transactions")
-                                as List)[index]['date'] as int,
+                                as List)[idx - (index + 1)]['date'] as int,
                             type: (snap.data?.get("transactions")
-                                as List)[index]['type'] as String,
+                                as List)[idx - (index + 1)]['type'] as String,
                             amount: (snap.data?.get("transactions")
-                                as List)[index]['amount'] as int,
+                                as List)[idx - (index + 1)]['amount'] as int,
                           ),
                         ))
               ],
