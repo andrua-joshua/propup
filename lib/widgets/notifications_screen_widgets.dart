@@ -87,6 +87,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
                                     fontWeight: FontWeight.bold));
                           }
 
+
                           if (snapShot.hasError) {
                             return const Text(
                               "Error, check your network plz",

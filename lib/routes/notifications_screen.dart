@@ -104,6 +104,7 @@ class notificationsScreen extends StatelessWidget {
       int index = 0;
       for (int i = 0; i < notificationsList.length; i++) {
         if (notificationsList[i]['head'] == head) {
+
           theNotification = notificationsList[i] as Map<String, dynamic>;
           notificationsList.removeAt(i);
           index = i;
@@ -119,3 +120,6 @@ class notificationsScreen extends StatelessWidget {
     });
   }
 }
+
+
+
