@@ -85,7 +85,7 @@ class supportFriendScreen extends StatelessWidget {
                           height: 30,
                         ),
                         const Text(
-                          "Amount",
+                          "Amount to Fund",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 22,
@@ -101,16 +101,13 @@ class supportFriendScreen extends StatelessWidget {
                           height: 30,
                         ),
                         progressWidget(
-                          recieved: snap.data?.get("recieved") as int,
-                          amount: snap.data?.get("amount") as int,
+                          donationId: snap.data?.id ?? "",
                         ),
+                        compaignsTextualProgress(
+                            compaignId: donationId, isLoan: false),
                         const SizedBox(
                           height: 40,
                         ),
-                        // optionsRowWidget(
-                        //   donationId:donationId,
-                        //   amount: int.parse(controller.text),
-                        // )
 
                         SizedBox(
                           child: Row(

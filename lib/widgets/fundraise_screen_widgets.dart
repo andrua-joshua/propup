@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 ///
 /// all the custom widgets of the fundraise screen declared here
@@ -6,26 +7,56 @@ import 'package:flutter/material.dart';
 
 //ignore: camel_case_types
 class transactionDataWidget extends StatelessWidget {
-  final bool isBorrowed;
-  const transactionDataWidget({required this.isBorrowed, super.key});
+  final String type;
+  final int date;
+  final int amount;
+  const transactionDataWidget({
+    required this.type,
+    required this.amount,
+    required this.date,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool add = false;
+
+    switch(type){
+      case 'Donation':
+        add = false;
+        break;
+      case 'Lent':
+        add = false;
+        break;
+      case 'loan-recieved':
+        add = true;
+        break;
+      case 'donation-recieved':
+        add = true;
+        break;
+      case 'Withdraw':
+        add = false;
+        break;
+      case 'Deposite':
+        add = true;
+        break;
+    }
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        isBorrowed
-            ? const Text(
-                "+\$352.5",
-                style: TextStyle(color: Colors.green, fontSize: 19),
+        add
+            ? Text(
+                "+ Ugx $amount",
+                style: const TextStyle(color: Colors.green, fontSize: 19),
               )
-            : const Text(
-                "-\$58.9",
-                style: TextStyle(color: Colors.red, fontSize: 19),
+            : Text(
+                "- Ugx $amount",
+                style: const TextStyle(color: Colors.red, fontSize: 19),
               ),
-        const Text(
-          "July 14, 2022",
-          style: TextStyle(color: Colors.grey),
+        Text(
+          DateFormat("MM-dd-yyyy").format(DateTime.fromMicrosecondsSinceEpoch(date)),
+          style: const TextStyle(color: Colors.grey),
         )
       ],
     );

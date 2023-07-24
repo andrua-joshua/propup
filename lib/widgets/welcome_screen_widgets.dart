@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../routes.dart';
@@ -29,8 +32,12 @@ class salutationWidget extends StatelessWidget {
           height: 30,
         ),
         TextButton(
-            onPressed: () =>
-                Navigator.pushNamed(context, RouteGenerator.loginscreen),
+            onPressed: () {
+              bool v = FirebaseAuth.instance.currentUser != null;
+              v
+                  ? Navigator.pushNamed(context, RouteGenerator.homescreen)
+                  : Navigator.pushNamed(context, RouteGenerator.loginscreen);
+            },
             child: Container(
               constraints: const BoxConstraints.expand(height: 50),
               decoration: BoxDecoration(

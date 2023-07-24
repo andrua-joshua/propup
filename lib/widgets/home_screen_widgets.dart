@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/src/config/config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:propup/routes.dart';
 import 'package:http/http.dart' as http;
 
@@ -93,9 +94,9 @@ class accountBalanceWidget extends StatelessWidget {
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
-              const Text(
-                "July 01, 2022",
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+              Text(
+                DateFormat("MM-dd-yyyy").format(DateTime.now()),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               )
             ],
           );
@@ -606,6 +607,7 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
               ))),
       TextButton(
           onPressed: () {
+            
             showBottomSheet(
                 elevation: 10,
                 context: context,
@@ -635,8 +637,20 @@ class allFriendsListWidget extends StatelessWidget {
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
     return Column(children: [
-      const SizedBox(
-        height: 50,
+      // SizedBox(
+      //   height: 50,
+      //   child: Container(),
+
+      // ),
+      Container(
+        constraints: const BoxConstraints.expand(height: 65),
+        child: const Column(
+          children: [
+            SizedBox(height: 30,),
+            Divider(thickness: 2, color: Colors.white,),
+            Divider(thickness: 2, color: Colors.white,)
+          ],
+        ),
       ),
       const Text(
         "All friends",

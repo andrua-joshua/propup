@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/widgets/lend_friend_widget.dart';
+import 'package:propup/bloc/payments/loans_and_fundraises/loans.dart';
 
 ///
 ///this is where the code for implementing the lending a friends widget shall be
@@ -13,7 +14,7 @@ class lendFriendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
+    final TextEditingController controller = TextEditingController(text: "0");
     debugPrint("***********************>> $loanId");
     return FutureBuilder(
       future: FirebaseFirestore.instance.collection("loans").doc(loanId).get(),
@@ -80,7 +81,7 @@ class lendFriendScreen extends StatelessWidget {
                           height: 30,
                         ),
                         const Text(
-                          "Amount",
+                          "Amount to lend",
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 22,
@@ -97,15 +98,119 @@ class lendFriendScreen extends StatelessWidget {
                           height: 30,
                         ),
                         lendProgressWidget(
-                          recieved: snap.data?.get("recieved") as int,
-                          amount: snap.data?.get("amount") as int,
+                          loanId: snap.data?.id??"",
                         ),
+                        compaignsTextualProgress(compaignId: loanId, isLoan: true),
                         const SizedBox(
                           height: 40,
                         ),
-                        lendOptionsRowWidget(
-                          loanId: loanId,
-                          amount: int.parse(controller.text),
+                        SizedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(25, 7, 25, 7),
+                                    child: const Text(
+                                      "Reject",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  )),
+                              TextButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: const Text(
+                                                "Processing..",
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                              content: FutureBuilder(
+                                                  future: loans
+                                                      .instance()
+                                                      .lendFriend(
+                                                          loanId: loanId,
+                                                          amount: int.parse(
+                                                              controller.text)),
+                                                  builder: (context, snap) {
+                                                    if (snap.hasData) {
+                                                      return (snap.data == 1)
+                                                          ? const Text(
+                                                              "Lend succesful.",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .green),
+                                                            )
+                                                          : (snap.data == 2)
+                                                              ? const Text(
+                                                                  "Loan is closed.",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .red),
+                                                                )
+                                                              : (snap.data == 0)
+                                                                  ? const Text(
+                                                                      "Your acount balance is low to lend this amount, top-up your account and try again.",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.red),
+                                                                    )
+                                                                  : const Text(
+                                                                      "Lending failed.\n Make sure that you dont have running loans.",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.red),
+                                                                    );
+                                                    }
+
+                                                    if (snap.hasError) {
+                                                      return const Center(
+                                                        child: Text(
+                                                          "(*_*)\n Please Check your internet Connection and try again",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                              color: Colors.red,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      );
+                                                    }
+
+                                                    return const Center(
+                                                        child:
+                                                            CircularProgressIndicator());
+                                                  }),
+                                            ));
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius:
+                                            BorderRadius.circular(25)),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(25, 7, 25, 7),
+                                    child: const Text(
+                                      "Accept",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ))
+                            ],
+                          ),
                         )
                       ],
                     ),

@@ -42,7 +42,7 @@ class donations {
           "user": currentUser.id,
           "closed": false,
           "recieved": 0,
-          "purpose": ""
+          "purpose": purpose
         });
 
         userDonations.add(newDonation.id);
@@ -145,9 +145,11 @@ class donations {
                 donationUserSecureSnap.get("transactions") as List;
 
             donationUserTransactions.add({
+              "id":donationId,
               "type": "donation-recieved",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": totalDonationAmount
+              "amount": totalDonationAmount,
+              "message":"You recieved Fundraise"
             });
             transaction.update(donatedUserRf, {
               "account_balance": donationUser_balance,
@@ -173,14 +175,16 @@ class donations {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "type": "donation",
+              "id":donationId,
+              "type": "Donation",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": balance,
+              "message":"You funded ${donationUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {
               "account_balance": account_balance,
-              "transaction": userTransactions,
+              "transactions": userTransactions,
               "donated": donated
             });
 
@@ -192,6 +196,7 @@ class donations {
           await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final donationSecureSnap = await transaction.get(donationRf);
+            final donationUserSecureSnap = await transaction.get(donatedUserRf);
 
             ///updating the donation compaign's status
             int totalDonationAmount =
@@ -212,9 +217,11 @@ class donations {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "type": "donation",
+              "id":donationId,
+              "type": "Donation",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": amount
+              "amount": amount,
+              "message":"You funded ${donationUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {

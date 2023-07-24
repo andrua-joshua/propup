@@ -26,7 +26,9 @@ class messagingTopWidget extends StatelessWidget {
           return ListTile(
             horizontalTitleGap: 10,
             onTap: () => Navigator.pushNamed(
-                context, RouteGenerator.friendprofilescreen),
+                context, RouteGenerator.friendprofilescreen,
+                arguments: chatId
+                ),
             leading: const CircleAvatar(
               radius: 20,
               backgroundColor: Color.fromARGB(255, 207, 206, 206),
