@@ -142,9 +142,11 @@ class loans {
                 lentUserSecureSnap.get("transactions") as List;
 
             lentUserTransactions.add({
+              "id":loanId,
               "type": "loan-recieved",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": totalLentAmount
+              "amount": totalLentAmount,
+              "message":"You recieved a loan"
             });
             transaction.update(lentUserRf, {
               "account_balance": lentUser_balance,
@@ -169,9 +171,11 @@ class loans {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "type": "lent",
+              "id":loanId,
+              "type": "Lent",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": balance,
+              "message":"You lent ${lentUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {
@@ -187,6 +191,7 @@ class loans {
           await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final loanSecureSnap = await transaction.get(loanRf);
+            final lentUserSecureSnap = await transaction.get(lentUserRf);
 
             ///updating the loan compaign's status
             int totalLentAmount =
@@ -206,9 +211,11 @@ class loans {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "type": "lent",
+              "id":loanId,
+              "type": "Lent",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": amount,
+              "message":"You lent ${lentUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {

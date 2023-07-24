@@ -63,43 +63,54 @@ class customNotificationsListTileWidget extends StatelessWidget {
                               ? Icons.balance
                               : Icons.child_friendly),
                     )),
-                title: FutureBuilder(
-                    future: FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(snap.data?.get("user"))
-                        .get(),
-                    builder: (context, snapShot) {
-                      if (snapShot.hasData) {
-                        return Text(
-                            (subType == 'Donation')
-                                ? "Your friend ${snapShot.data?.get("username")} needs your support"
-                                : (subType == 'Loan')
-                                    ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
-                                    : notificationMessage,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color:
-                                    viewedStatus ? Colors.black : Colors.blue,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold));
-                      }
+                title: (subType == 'Loan' || subType == 'Donation')
+                    ? FutureBuilder(
+                        future: FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(snap.data?.get("user"))
+                            .get(),
+                        builder: (context, snapShot) {
+                          if (snapShot.hasData) {
+                            return Text(
+                                (subType == 'Donation')
+                                    ? "Your friend ${snapShot.data?.get("username")} needs your support"
+                                    : (subType == 'Loan')
+                                        ? "Your Friend ${snapShot.data?.get("username")} has requested for a loan"
+                                        : notificationMessage,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: viewedStatus
+                                        ? Colors.black
+                                        : Colors.blue,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold));
+                          }
 
-                      if (snapShot.hasError) {
-                        return const Text(
-                          "Error, check your network plz",
-                          style: TextStyle(color: Colors.red),
-                        );
-                      }
 
-                      return Container(
-                        constraints: const BoxConstraints.expand(height: 30),
-                        margin: const EdgeInsets.all(7),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 219, 219, 219),
-                            borderRadius: BorderRadius.circular(10)),
-                      );
-                    }),
+                          if (snapShot.hasError) {
+                            return const Text(
+                              "Error, check your network plz",
+                              style: TextStyle(color: Colors.red),
+                            );
+                          }
+
+                          return Container(
+                            constraints:
+                                const BoxConstraints.expand(height: 30),
+                            margin: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 219, 219, 219),
+                                borderRadius: BorderRadius.circular(10)),
+                          );
+                        })
+                    : Text(notificationMessage,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: viewedStatus ? Colors.black : Colors.blue,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
                 subtitle: SizedBox(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

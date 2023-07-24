@@ -8,6 +8,7 @@ import 'package:flutter_cache_manager/src/config/config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:propup/routes.dart';
 import 'package:http/http.dart' as http;
 
@@ -93,9 +94,9 @@ class accountBalanceWidget extends StatelessWidget {
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
-              const Text(
-                "July 01, 2022",
-                style: TextStyle(color: Colors.grey, fontSize: 14),
+              Text(
+                DateFormat("MM-dd-yyyy").format(DateTime.now()),
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
               )
             ],
           );

@@ -41,8 +41,9 @@ class notificationsScreen extends StatelessWidget {
                 ),
               ),
               SliverList.builder(
-                  itemCount:(snap.hasData)?(idx =
-                      (snap.data?.get("notifications") as List).length):0,
+                  itemCount: (snap.hasData)
+                      ? (idx = (snap.data?.get("notifications") as List).length)
+                      : 0,
                   itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.all(10),
                         child: customNotificationsListTileWidget(
@@ -55,10 +56,11 @@ class notificationsScreen extends StatelessWidget {
 
                             //snap.data?.reference.
                             updateNotifications((snap.data?.get("notifications")
-                             as List)[idx - (index + 1)]['head']);
+                                as List)[idx - (index + 1)]['head']);
 
                             if (subtyp == 'Loan') {
-                              debugPrint("Here in the call back:::::::::::::>$id");
+                              debugPrint(
+                                  "Here in the call back:::::::::::::>$id");
                               Navigator.pushNamed(
                                   context, RouteGenerator.lendfriendscreen,
                                   arguments: id);
@@ -87,24 +89,22 @@ class notificationsScreen extends StatelessWidget {
     );
   }
 
-
-  Future<void> updateNotifications(int head)async{
+  Future<void> updateNotifications(int head) async {
     final auth = FirebaseAuth.instance.currentUser;
 
-    final userRf = FirebaseFirestore.instance
-            .collection("users")
-            .doc(auth?.uid);
+    final userRf =
+        FirebaseFirestore.instance.collection("users").doc(auth?.uid);
 
-    await FirebaseFirestore.instance.runTransaction((transaction) async{
-
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
       final secureSnap = await transaction.get(userRf);
 
       final notificationsList = secureSnap.get("notifications") as List;
 
       Map<String, dynamic> theNotification = {};
-      int index =0;
-      for(int i =0; i<notificationsList.length; i++){
-        if(notificationsList[i]['head']==head){
+      int index = 0;
+      for (int i = 0; i < notificationsList.length; i++) {
+        if (notificationsList[i]['head'] == head) {
+
           theNotification = notificationsList[i] as Map<String, dynamic>;
           notificationsList.removeAt(i);
           index = i;
@@ -116,16 +116,9 @@ class notificationsScreen extends StatelessWidget {
 
       notificationsList.insert(index, theNotification);
 
-      transaction.update(userRf, {
-        "notifications":notificationsList
-      });
-
-
+      transaction.update(userRf, {"notifications": notificationsList});
     });
-
   }
-
-
 }
 
 
