@@ -84,7 +84,9 @@ class friendsProfileScreen extends StatelessWidget {
                               builder: (context, snapx) {
                                 return snap.hasData
                                     ? Text(
-                                        snapx.data?.get("description"),
+                                        snapx.hasData? snapx.data?.get("description")
+                                        :snapx.hasError?"there was an Error":""
+                                        ,
                                         style: const TextStyle(
                                             color: Colors.black, fontSize: 18),
                                         textAlign: TextAlign.center,

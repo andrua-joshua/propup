@@ -48,24 +48,22 @@ Future<void> requestPermissions() async {
 // ignore: unused_element
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message2) async {
   await Firebase.initializeApp();
-  final message =
-        jsonDecode(jsonEncode(message2.data)) as Map<String, dynamic>;
+  final message = jsonDecode(jsonEncode(message2.data)) as Map<String, dynamic>;
 
+  if (message['type'] == 'chat') {
+    //to handle chat messages
 
-    if (message['type'] == 'chat') {
-      //to handle chat messages
+    final chatMessage chat = _toChatMessage(
+        message); //the object to be pushed to the chat message bloc
+    fcmChatMessagesNotifiers().addChatMessage(message: chat);
+  } else if (message['type'] == 'notification') {
+    //to handle notification messages
+    final notificationsMessage notification = _toNotificationMessage(message);
 
-      final chatMessage chat = _toChatMessage(
-          message); //the object to be pushed to the chat message bloc
-      fcmChatMessagesNotifiers().addChatMessage(message: chat);
-    } else if (message['type'] == 'notification') {
-      //to handle notification messages
-      final notificationsMessage notification = _toNotificationMessage(message);
-
-      await updateNotifications(notification);
-    } else {
-      //to handle all othe kinds of messages
-    }
+    await updateNotifications(notification);
+  } else {
+    //to handle all othe kinds of messages
+  }
   debugPrint("Handling a background message: ${message2.messageId}");
 }
 
@@ -92,24 +90,24 @@ Future<void> updateNotifications(notificationsMessage notification) async {
 }
 
 chatMessage _toChatMessage(Map<String, dynamic> message) {
-    chatMessage chatmessage = chatMessage(
-        senderId: message['senderID'] as String,
-        recieverID: message['recieverID'] as String,
-        message: message['message'] as String,
-        head: DateTime.now().microsecondsSinceEpoch);
+  chatMessage chatmessage = chatMessage(
+      senderId: message['senderID'] as String,
+      recieverID: message['recieverID'] as String,
+      message: message['message'] as String,
+      head: DateTime.now().microsecondsSinceEpoch);
 
-    return chatmessage;
-  }
+  return chatmessage;
+}
 
 notificationsMessage _toNotificationMessage(Map<String, dynamic> message) {
-    notificationsMessage notificationsmessage = notificationsMessage(
-        head: DateTime.now().microsecondsSinceEpoch,
-        messageID: message['messageID'] as String,
-        message: message['message'] as String,
-        subType: message['subType'] as String);
+  notificationsMessage notificationsmessage = notificationsMessage(
+      head: DateTime.now().microsecondsSinceEpoch,
+      messageID: message['messageID'] as String,
+      message: message['message'] as String,
+      subType: message['subType'] as String);
 
-    return notificationsmessage;
-  }
+  return notificationsmessage;
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -117,6 +115,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    bool v = FirebaseAuth.instance.currentUser != null;
+
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

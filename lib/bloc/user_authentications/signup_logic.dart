@@ -61,14 +61,17 @@ class signUpLogic {
     String email,
     String password,
     String username,
-  ) {
+  )async {
     if (ky.currentState?.validate() ?? false) {
       try {
         final provider = EmailUser(email: email, password: password);
         final user = provider.register();
-        user.then((value) async {
+       await user.then((value) async {
           if (value.user != null) {
             if (value.user?.emailVerified ?? false) {
+
+              final token = await fcmApiInit.instance().fcmToken();
+          
               FirebaseFirestore.instance
                   .collection("users")
                   .doc(value.user?.uid)
@@ -85,9 +88,13 @@ class signUpLogic {
                 "followersList": [],
                 "followingList": [],
                 "friendsList": [],
-                "token": "",
+                "token": token,
                 "group_key": "",
-                "account_balance":0.01
+                "account_balance": 0,
+                "donations": [],
+                "loans": [],
+                "notifications": [],
+                "transactions": []
               });
 
               final user = await FirebaseFirestore.instance
@@ -111,7 +118,7 @@ class signUpLogic {
               // ignore: use_build_context_synchronously
               Navigator.pushNamed(context, RouteGenerator.homescreen);
             } else {
-              value.user?.sendEmailVerification().then((value) async {
+             await value.user?.sendEmailVerification().then((value) async {
                 FirebaseFirestore.instance
                     .collection("users")
                     .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -130,7 +137,11 @@ class signUpLogic {
                   "friendsList": [],
                   "token": "",
                   "group_key": "",
-                  "account_balance":0.01
+                  "account_balance": 0,
+                  "donations": [],
+                  "loans": [],
+                  "notifications": [],
+                  "transactions": []
                 });
 
                 final user = await FirebaseFirestore.instance

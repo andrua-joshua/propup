@@ -221,7 +221,7 @@ class loans {
                 messageID: loan.id,
                 message: "${userSecureSnap.get("username")} has lent you"
                     "$amount to  your loan compaing of ${loanSecureSnap.get("amount")}.",
-                subType: "donation-compaign");
+                subType: "loan-compaign");
 
             await fcmOutgoingMessages.instance().sendCompaignNotification(
                 message: notificaton, recieverId: loan.get("user"));

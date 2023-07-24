@@ -46,9 +46,10 @@ class customNotificationsListTileWidget extends StatelessWidget {
             .get(),
         builder: (context, snap) {
           if (snap.hasData) {
+            debugPrint("here we are :::: $subType:::${snap.data?.exists}");
             if (snap.data != null) {
               return ListTile(
-                onTap: () =>callback(),
+                onTap: () => callback(),
                 leading: Card(
                     elevation: 8,
                     color: Colors.white,
@@ -78,7 +79,8 @@ class customNotificationsListTileWidget extends StatelessWidget {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                color: viewedStatus?Colors.black:Colors.blue,
+                                color:
+                                    viewedStatus ? Colors.black : Colors.blue,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold));
                       }

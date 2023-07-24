@@ -41,8 +41,8 @@ class notificationsScreen extends StatelessWidget {
                 ),
               ),
               SliverList.builder(
-                  itemCount: (idx =
-                      (snap.data?.get("notifications") as List).length),
+                  itemCount:(snap.hasData)?(idx =
+                      (snap.data?.get("notifications") as List).length):0,
                   itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.all(10),
                         child: customNotificationsListTileWidget(
@@ -55,7 +55,7 @@ class notificationsScreen extends StatelessWidget {
 
                             //snap.data?.reference.
                             updateNotifications((snap.data?.get("notifications")
-                              as List)[idx - (index + 1)]['head']);
+                             as List)[idx - (index + 1)]['head']);
 
                             if (subtyp == 'Loan') {
                               debugPrint("Here in the call back:::::::::::::>$id");
@@ -79,7 +79,7 @@ class notificationsScreen extends StatelessWidget {
                           viewedStatus: (snap.data?.get("notifications")
                               as List)[idx - (index + 1)]['viewedStatus'],
                         ),
-                      ))
+                      )),
             ],
           );
         },
@@ -88,7 +88,7 @@ class notificationsScreen extends StatelessWidget {
   }
 
 
-  Future<void> updateNotifications(String head)async{
+  Future<void> updateNotifications(int head)async{
     final auth = FirebaseAuth.instance.currentUser;
 
     final userRf = FirebaseFirestore.instance

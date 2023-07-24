@@ -606,6 +606,7 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
               ))),
       TextButton(
           onPressed: () {
+            
             showBottomSheet(
                 elevation: 10,
                 context: context,
@@ -635,8 +636,20 @@ class allFriendsListWidget extends StatelessWidget {
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
     return Column(children: [
-      const SizedBox(
-        height: 50,
+      // SizedBox(
+      //   height: 50,
+      //   child: Container(),
+
+      // ),
+      Container(
+        constraints: const BoxConstraints.expand(height: 65),
+        child: const Column(
+          children: [
+            SizedBox(height: 30,),
+            Divider(thickness: 2, color: Colors.white,),
+            Divider(thickness: 2, color: Colors.white,)
+          ],
+        ),
       ),
       const Text(
         "All friends",

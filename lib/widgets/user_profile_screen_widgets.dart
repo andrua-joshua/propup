@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -79,8 +80,16 @@ class userInfoWidget extends StatelessWidget {
           userDataTileWidget(
             icon: Icons.logout,
             title: "Logout",
-            callback: () => FirebaseAuth.instance.signOut().then((value) =>
-                Navigator.pushNamed(context, RouteGenerator.welcomescreen)),
+            callback: () async{
+              String? id = FirebaseAuth.instance.currentUser?.uid;
+              final user =
+                  FirebaseFirestore.instance.collection("users").doc(id);
+
+              await FirebaseAuth.instance.signOut().then((value) async {
+                user.update({"token":""});
+                Navigator.pushNamed(context, RouteGenerator.welcomescreen);
+              });
+            },
           )
         ],
       ),

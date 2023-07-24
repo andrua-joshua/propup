@@ -12,6 +12,7 @@ class personalPostsReview extends StatelessWidget {
     final storageRf = FirebaseStorage.instance.ref();
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
