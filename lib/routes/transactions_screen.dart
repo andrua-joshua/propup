@@ -13,7 +13,6 @@ class transactionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List lst = [];
     final auth = FirebaseAuth.instance.currentUser;
     final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
 
@@ -39,7 +38,7 @@ class transactionsScreen extends StatelessWidget {
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
-                      DateFormat("MM-dd-yyyy").format(DateTime.now()),
+                      DateFormat("MMMM-dd-yyyy").format(DateTime.now()),
                       style: const TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                   ),
