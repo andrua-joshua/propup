@@ -226,7 +226,7 @@ class loans {
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,
                 messageID: loan.id,
-                message: "${userSecureSnap.get("username")} has lent you"
+                message: "${userSecureSnap.get("username")} has lent you Ugx "
                     "$amount to  your loan compaing of ${loanSecureSnap.get("amount")}.",
                 subType: "loan-compaign");
 

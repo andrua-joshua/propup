@@ -41,11 +41,12 @@ class paymentGateWay {
       debugPrint("@Drillox {Exceptions IN depositing}:: $e");
     }
 
-
     final formatedResult = resultFormat(result: result);
 
-    if(formatedResult== '1'){
-      await updateAccountBalance(amount: amount,);
+    if (formatedResult == '1') {
+      await updateAccountBalance(
+        amount: amount,
+      );
     }
 
     return resultFormat(result: result);
@@ -87,7 +88,7 @@ class paymentGateWay {
 
     final formatedResult = resultFormat(result: result);
 
-    if(formatedResult== '1'){
+    if (formatedResult == '1') {
       await updateAccountBalance(amount: amount, isWithdraw: true);
     }
 
@@ -135,13 +136,25 @@ class paymentGateWay {
 
       // ignore: non_constant_identifier_names
       int secure_balance = secureSnap.get("account_balance") as int;
+      final usersTransactions = secureSnap.get("transactions") as List;
+
+      usersTransactions.add({
+        "id": "",
+        "type": isWithdraw ? "Withdraw" : "Deposit",
+        "date": DateTime.now().microsecondsSinceEpoch,
+        "amount": amount,
+        "message":
+            "You have made a ${isWithdraw ? "Withdraw from " : "Deposit to "} your account"
+      });
 
       // ignore: non_constant_identifier_names
-      int updated_balance = (isWithdraw)
-          ? secure_balance - amount
-          : secure_balance + amount;
+      int updated_balance =
+          (isWithdraw) ? secure_balance - amount : secure_balance + amount;
 
-      transaction.update(user, {"account_balance": updated_balance});
+      transaction.update(user, {
+        "account_balance": updated_balance,
+        "transactions":usersTransactions
+        });
 
       balance = updated_balance;
     });
