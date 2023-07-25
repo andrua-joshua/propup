@@ -158,8 +158,8 @@ class gridDataWidget extends StatelessWidget {
             title: "LeaderBoard",
             callBack: () => Navigator.pushNamed(
                 context, RouteGenerator.leadersboardscreenportal)),
-        gridData(title: "Overview", callBack: () {} //=> Navigator.pushNamed(
-            //context, RouteGenerator.leadersboardscreenportal)
+        gridData(title: "Overview", callBack: () => Navigator.pushNamed(
+            context, RouteGenerator.overviewscreen)
             ),
       ],
     );
