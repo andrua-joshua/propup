@@ -47,7 +47,7 @@ class helloTitleWidget extends StatelessWidget {
                 if (snap.hasData) {
                   if (snap.data != null) {
                     return GestureDetector(
-                      onTap: ()=>RouteGenerator.myProfilescreen,
+                      onTap: ()=>Navigator.pushNamed(context,RouteGenerator.myProfilescreen),
                       child:Text(
                       snap.data?.get("username"),
                       style: const TextStyle(
