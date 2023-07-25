@@ -68,6 +68,24 @@ class notificationsScreen extends StatelessWidget {
                               Navigator.pushNamed(
                                   context, RouteGenerator.supportscreen,
                                   arguments: id);
+                            } else if (subtyp == 'loan-compaign') {
+                              Map<String, dynamic> args = {
+                                "isLoan": true,
+                                "compaignId": id
+                              };
+
+                              Navigator.pushNamed(context,
+                                  RouteGenerator.compaignOverviewscreen,
+                                  arguments: args);
+                            } else if (subtyp == 'donation-compaign') {
+                              Map<String, dynamic> args = {
+                                "isLoan": false,
+                                "compaignId": id
+                              };
+
+                              Navigator.pushNamed(context,
+                                  RouteGenerator.compaignOverviewscreen,
+                                  arguments: args);
                             }
                           },
                           subType: (snap.data?.get("notifications")

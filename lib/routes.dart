@@ -16,6 +16,8 @@ import 'package:propup/routes/login_screen.dart';
 import 'package:propup/routes/messaging_screen.dart';
 import 'package:propup/routes/notifications_screen.dart';
 import 'package:propup/routes/my_profile_screen.dart';
+import 'package:propup/routes/overview/overview_rt1.dart';
+import 'package:propup/routes/overview/overview_v1.dart';
 import 'package:propup/routes/payments_screen/deposit_option_screen.dart';
 import 'package:propup/routes/payments_screen/payment_options_screen.dart';
 import 'package:propup/routes/payments_screen/withdraw_option_screen.dart';
@@ -59,6 +61,8 @@ class RouteGenerator {
   static const String postsCommentscreen ="/postsCommentscreen";
   static const String emailVerificationscreen = "/emailVerification";
   static const String personalPostsReviewscreen = "/personalPostsReviewPage";
+  static const String overviewscreen = "/overviewScreen";
+  static const String compaignOverviewscreen = "/compaignOverviewScreen";
 
   static bool led = true;
   static bool isFollowing = false;
@@ -102,6 +106,10 @@ class RouteGenerator {
         final String args = settings.arguments as String;
         return MaterialPageRoute(
             builder: (context) => lendFriendScreen(loanId: args,));
+      case compaignOverviewscreen:
+        final args = settings.arguments as Map;
+        return MaterialPageRoute(
+            builder: (context) => compaignOverviewScreen(args: args,));
       case userProfilescreen:
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());
@@ -109,6 +117,9 @@ class RouteGenerator {
         final String args = settings.arguments as String;
         return MaterialPageRoute(
             builder: (context) => messagingScreen(chatId: args));
+      case overviewscreen:
+        return MaterialPageRoute(
+            builder: (context) => const overviewScreen());
       case friendprofilescreen:
         return MaterialPageRoute(
             builder: (context) =>
