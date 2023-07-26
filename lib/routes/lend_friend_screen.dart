@@ -14,7 +14,7 @@ class lendFriendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController(text: "0");
+    final TextEditingController controller = TextEditingController();
     debugPrint("***********************>> $loanId");
     return FutureBuilder(
       future: FirebaseFirestore.instance.collection("loans").doc(loanId).get(),

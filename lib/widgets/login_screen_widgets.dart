@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_authentications/login_logic.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/state_managers/passwords_notifier.dart';
+import 'package:provider/provider.dart';
 
 ///
 ///this is where all the login screen  custome widgets shall be defined
@@ -109,25 +111,37 @@ class _loginFormWidgetState extends State<loginFormWidget> {
             const SizedBox(
               height: 20,
             ),
-            Container(
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 236, 235, 235),
-                    borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.all(2),
-                child: Center(
-                    child: TextFormField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "password",
-                      icon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.visibility_off),
-                      )),
-                  obscureText: true,
-                  validator: loginLogic.passwordValidate,
-                ))),
+            ChangeNotifierProvider<viewPassoword>(
+              create: (context) => viewPassoword(),
+              builder: (context, child) {
+                return Container(
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 236, 235, 235),
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.all(2),
+                    child: Center(child: Consumer<viewPassoword>(
+                      builder: (context, value, child) {
+                        return TextFormField(
+                          controller: passwordController,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "password",
+                              icon: const Icon(Icons.lock),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  value.setVisibility(
+                                      visibility:
+                                          value.visibile ? false : true);
+                                },
+                                icon: Icon(value.visibile?Icons.visibility: Icons.visibility_off),
+                              )),
+                          obscureText: value.visibile,
+                          validator: loginLogic.passwordValidate,
+                        );
+                      },
+                    )));
+              },
+            ),
             const SizedBox(
               height: 30,
             ),

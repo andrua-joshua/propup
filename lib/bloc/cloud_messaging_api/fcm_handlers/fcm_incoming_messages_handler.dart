@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 //ignore:camel_case_types
 class fcmIncomingMessagesHandler {
@@ -51,6 +52,7 @@ class fcmIncomingMessagesHandler {
       final notificationsMessage notification = _toNotificationMessage(message);
 
       await updateNotifications(notification);
+      //librarshowTopSnackBar(Overlay.of(context), Text("hello world"));
     } else {
       //to handle all othe kinds of messages
     }
@@ -70,7 +72,7 @@ class fcmIncomingMessagesHandler {
     if (message['type'] == 'chat') {
       final chatMessage chat = _toChatMessage(
           message); //the object to be pushed to the chat message bloc
-          
+
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
     } else if (message['type'] == 'notification') {
       //to handle notification messages

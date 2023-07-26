@@ -27,14 +27,16 @@ class myProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usersStore = FirebaseFirestore.instance.collection("users");
-    final postsStore = FirebaseFirestore.instance.collection("posts");
+    //final postsStore = FirebaseFirestore.instance.collection("posts");
     final auth = FirebaseAuth.instance;
     final storageRf = FirebaseStorage.instance.ref();
+
+    final List myPosts = [];
 
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder(
-            stream: postsStore.snapshots(),
+            stream: usersStore.doc(auth.currentUser?.uid).snapshots(),
             builder: (context, snap) {
               return CustomScrollView(
                 slivers: [
@@ -58,8 +60,7 @@ class myProfileScreen extends StatelessWidget {
                         child: CircleAvatar(
                       backgroundColor: Colors.grey,
                       radius: 90,
-                      backgroundImage: NetworkImage(FirebaseAuth
-                              .instance.currentUser?.photoURL ??
+                      backgroundImage: NetworkImage(snap.data?.get("profilePic")??
                           "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
                     )),
                     Center(
@@ -135,77 +136,83 @@ class myProfileScreen extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    const Center(
-                        child: Text(
-                      "Photos",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold),
-                    )),
+                    // const Center(
+                    //     child: Text(
+                    //   "Photos",
+                    //   style: TextStyle(
+                    //       color: Colors.black,
+                    //       fontSize: 15,
+                    //       fontWeight: FontWeight.bold),
+                    // )),
                     const Padding(
                         padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Divider(
                           thickness: 1,
                         )),
                   ])),
-                  SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 5,
-                            mainAxisSpacing: 10,
-                            mainAxisExtent: 150),
-                    delegate: SliverChildListDelegate((snap.hasData)
-                        ? List.generate(
-                            snap.data?.docs
-                                    .where((element) =>
-                                        element.get("owner") ==
-                                        auth.currentUser?.uid)
-                                    .length ??
-                                0,
-                            (index) => FutureBuilder<String>(
-                                future: storageRf
-                                    .child("posts/" + snap.data!.docs[index].id)
-                                    .getDownloadURL(),
-                                builder: (context, value) {
-                                  if (value.hasData) {
-                                    return GestureDetector(
-                                      onTap: (){
-                                        RouteGenerator.src = snap.data!.docs[index].id;
+                  // SliverGrid(
+                  //   gridDelegate:
+                  //       const SliverGridDelegateWithFixedCrossAxisCount(
+                  //           crossAxisCount: 3,
+                  //           crossAxisSpacing: 5,
+                  //           mainAxisSpacing: 10,
+                  //           mainAxisExtent: 150),
+                  //   delegate: SliverChildListDelegate((snap.hasData)
+                  //       ? List.generate(
+                  //           snap.data?.docs.where((element) {
+                  //                 bool val = element.get("owner") ==
+                  //                     auth.currentUser?.uid;
+                  //                 val ? myPosts.add(element.id) : null;
 
-                                        Navigator.pushNamed(context, RouteGenerator.personalPostsReviewscreen);
-                                      },
-                                        child: Container(
-                                      decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  value.data ?? ""))),
-                                    ));
-                                  }
-                                  if (value.hasError) {
-                                    return const Text(
-                                      "(*_*)",
-                                      style: TextStyle(color: Colors.red),
-                                    );
-                                  }
+                  //                 return val;
+                  //               }).length ??
+                  //               0,
+                  //           (index) => FutureBuilder<String>(
+                  //               future: storageRf
+                  //                   .child("posts/" + myPosts[index])
+                  //                   .getDownloadURL(),
+                  //               builder: (context, value) {
+                  //                 if (value.hasData) {
+                  //                   return GestureDetector(
+                  //                       onTap: () {
+                  //                         RouteGenerator.src =
+                  //                             snap.data!.docs[index].id;
 
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                }))
-                        : (snap.hasError)
-                            ? [
-                                const Text(
-                                  "Error retriving photos",
-                                  style: TextStyle(color: Colors.redAccent),
-                                )
-                              ]
-                            : [
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              ]),
-                  )
+                  //                         Navigator.pushNamed(
+                  //                             context,
+                  //                             RouteGenerator
+                  //                                 .personalPostsReviewscreen);
+                  //                       },
+                  //                       child: Container(
+                  //                         decoration: BoxDecoration(
+                  //                             image: DecorationImage(
+                  //                                 image: NetworkImage(
+                  //                                     value.data ?? ""))),
+                  //                       ));
+                  //                 }
+                  //                 if (value.hasError) {
+                  //                   return const Text(
+                  //                     "(*_*)",
+                  //                     style: TextStyle(color: Colors.red),
+                  //                   );
+                  //                 }
+
+                  //                 return const Center(
+                  //                     child: CircularProgressIndicator());
+                  //               }))
+                  //       : (snap.hasError)
+                  //           ? [
+                  //               const Text(
+                  //                 "Error retriving photos",
+                  //                 style: TextStyle(color: Colors.redAccent),
+                  //               )
+                  //             ]
+                  //           : [
+                  //               const Center(
+                  //                 child: CircularProgressIndicator(),
+                  //               )
+                  //             ]),
+                  // )
                 ],
               );
             }),
@@ -232,13 +239,13 @@ class myProfileScreen extends StatelessWidget {
                           if (((snap.data?.bytesTransferred ?? 0) /
                                   (snap.data?.totalBytes ?? 1)) ==
                               1) {
-                            postsStore
-                                .     doc(postsUpdateAndRetrival.post_Name)
-                                .set({
-                              "owner": postsUpdateAndRetrival.user?.uid,
-                              "likes": 0
-                            });
-                            Navigator.pop(context);
+                            // postsStore
+                            //     .doc(postsUpdateAndRetrival.post_Name)
+                            //     .set({
+                            //   "owner": postsUpdateAndRetrival.user?.uid,
+                            //   "likes": 0
+                            // });
+                            // Navigator.pop(context);
                           }
 
                           return SizedBox(

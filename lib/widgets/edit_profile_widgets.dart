@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_data_update.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/bloc/posts_update_and_retrival.dart';
 
 ///
 ///this is where all the custom widgets of the edit profile screen will be created from
@@ -34,6 +36,10 @@ class profilePicWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+
     return Column(
       children: [
         Card(
@@ -44,17 +50,77 @@ class profilePicWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10), color: Colors.white),
               padding: const EdgeInsets.all(10),
               child: Center(
-                child: CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(FirebaseAuth
-                          .instance.currentUser?.photoURL ??
-                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+                child: StreamBuilder(
+                  stream: user.snapshots(),
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      return CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: NetworkImage(snap.data
+                                ?.get("profilePic") ??
+                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+                      );
+                    }
+
+                    return const CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.grey,
+                    );
+                  },
                 ),
               ),
             )),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              //---------------------
+
+              postsUpdateAndRetrival.addPost().then((value) async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("upload progress"),
+                        content: StreamBuilder(
+                            stream: value.snapshotEvents,
+                            builder: (context, snap) {
+                              if (snap.hasError) {
+                                return const Text(
+                                  "error connecting",
+                                  style: TextStyle(color: Colors.red),
+                                );
+                              }
+
+                              if (((snap.data?.bytesTransferred ?? 0) /
+                                      (snap.data?.totalBytes ?? 1)) ==
+                                  1) {
+                                final user = FirebaseFirestore.instance
+                                    .collection("users")
+                                    .doc(
+                                        FirebaseAuth.instance.currentUser?.uid);
+
+                                snap.data?.ref.getDownloadURL().then((url) =>
+                                    user.update({"profilePic": url}).then(
+                                        (value) => Navigator.pop(context)));
+                              }
+
+                              return SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Center(
+                                      child: CircularProgressIndicator(
+                                    value: (snap.data?.bytesTransferred ?? 0) /
+                                        (snap.data?.totalBytes ?? 1),
+                                    color: Colors.lightGreen,
+                                    backgroundColor: Colors.grey,
+                                  )));
+                            }),
+                      );
+                    });
+              });
+
+              //-----------------------------
+            },
             child: const Text(
               "Edit",
               style: TextStyle(color: Colors.blue, fontSize: 18),
@@ -137,6 +203,10 @@ class locationRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    user.get().then((value) => controller.text = value.get("location"));
     return Card(
       elevation: 6,
       color: Colors.white,
@@ -167,6 +237,10 @@ class aboutRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    user.get().then((value) => controller.text = value.get("description"));
     return Card(
       elevation: 6,
       color: Colors.white,

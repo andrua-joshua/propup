@@ -61,17 +61,16 @@ class signUpLogic {
     String email,
     String password,
     String username,
-  )async {
+  ) async {
     if (ky.currentState?.validate() ?? false) {
       try {
         final provider = EmailUser(email: email, password: password);
         final user = provider.register();
-       await user.then((value) async {
+        await user.then((value) async {
           if (value.user != null) {
             if (value.user?.emailVerified ?? false) {
-
               final token = await fcmApiInit.instance().fcmToken();
-          
+
               FirebaseFirestore.instance
                   .collection("users")
                   .doc(value.user?.uid)
@@ -94,7 +93,8 @@ class signUpLogic {
                 "donations": [],
                 "loans": [],
                 "notifications": [],
-                "transactions": []
+                "transactions": [],
+                "profilePic": ""
               });
 
               final user = await FirebaseFirestore.instance
@@ -118,53 +118,104 @@ class signUpLogic {
               // ignore: use_build_context_synchronously
               Navigator.pushNamed(context, RouteGenerator.homescreen);
             } else {
-             await value.user?.sendEmailVerification().then((value) async {
-                FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(FirebaseAuth.instance.currentUser?.uid)
-                    .set({
-                  "username": username,
-                  "email": email,
-                  "location": "",
-                  "description": "",
-                  "followers": 0,
-                  "friends": 0,
-                  "following": 0,
-                  "donated": 0,
-                  "recieved": 0,
-                  "followersList": [],
-                  "followingList": [],
-                  "friendsList": [],
-                  "token": "",
-                  "group_key": "",
-                  "account_balance": 0,
-                  "donations": [],
-                  "loans": [],
-                  "notifications": [],
-                  "transactions": []
-                });
+              //  await value.user?.sendEmailVerification().then((value) async {
+              //     FirebaseFirestore.instance
+              //         .collection("users")
+              //         .doc(FirebaseAuth.instance.currentUser?.uid)
+              //         .set({
+              //       "username": username,
+              //       "email": email,
+              //       "location": "",
+              //       "description": "",
+              //       "followers": 0,
+              //       "friends": 0,
+              //       "following": 0,
+              //       "donated": 0,
+              //       "recieved": 0,
+              //       "followersList": [],
+              //       "followingList": [],
+              //       "friendsList": [],
+              //       "token": "",
+              //       "group_key": "",
+              //       "account_balance": 0,
+              //       "donations": [],
+              //       "loans": [],
+              //       "notifications": [],
+              //       "transactions": [],
+              //       "profilePic":""
+              //     });
 
-                final user = await FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(FirebaseAuth.instance.currentUser?.uid)
-                    .get();
+              //     final user = await FirebaseFirestore.instance
+              //         .collection("users")
+              //         .doc(FirebaseAuth.instance.currentUser?.uid)
+              //         .get();
 
-                final userRf = FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(FirebaseAuth.instance.currentUser
-                        ?.uid); //for get the currently registering user
+              //     final userRf = FirebaseFirestore.instance
+              //         .collection("users")
+              //         .doc(FirebaseAuth.instance.currentUser
+              //             ?.uid); //for get the currently registering user
 
-                // ignore: non_constant_identifier_names
-                final String group_key = await fcmApiInit
-                    .instance()
-                    .fcmCreateGroup(name: user.get("username"));
+              //     // ignore: non_constant_identifier_names
+              //     final String group_key = await fcmApiInit
+              //         .instance()
+              //         .fcmCreateGroup(name: user.get("username"));
 
-                userRf.update({"group_key": group_key});
+              //     userRf.update({"group_key": group_key});
 
-                // ignore: use_build_context_synchronously
-                Navigator.pushNamed(
-                    context, RouteGenerator.emailVerificationscreen);
+              //     // ignore: use_build_context_synchronously
+              //     Navigator.pushNamed(
+              //         context, RouteGenerator.emailVerificationscreen);
+              //   });
+
+              FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .set({
+                "username": username,
+                "email": email,
+                "location": "",
+                "description": "",
+                "followers": 0,
+                "friends": 0,
+                "following": 0,
+                "donated": 0,
+                "recieved": 0,
+                "followersList": [],
+                "followingList": [],
+                "friendsList": [],
+                "token": "",
+                "group_key": "",
+                "account_balance": 0,
+                "donations": [],
+                "loans": [],
+                "notifications": [],
+                "transactions": [],
+                "profilePic": ""
               });
+
+              final user = await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .get();
+
+              final userRf = FirebaseFirestore.instance.collection("users").doc(
+                  FirebaseAuth.instance.currentUser
+                      ?.uid); //for get the currently registering user
+
+              // ignore: non_constant_identifier_names
+              final String group_key = await fcmApiInit
+                  .instance()
+                  .fcmCreateGroup(name: user.get("username"));
+
+              userRf.update({"group_key": group_key});
+
+              // ignore: use_build_context_synchronously
+              Navigator.pushNamed(context, RouteGenerator.loginscreen);
+
+              ///------------
+              ///    /\
+              ///   /--\
+              ///
             }
           }
         });

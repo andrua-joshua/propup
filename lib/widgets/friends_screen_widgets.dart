@@ -83,10 +83,9 @@ class gridDataWidget extends StatelessWidget {
                               height: 110,
                               width: 110,
                               margin: const EdgeInsets.only(top: 10),
-                              child: const CircleAvatar(
+                              child: CircleAvatar(
                                   backgroundColor: Colors.grey,
-                                  backgroundImage: NetworkImage(
-                                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
+                                  backgroundImage: NetworkImage(snap.data?.get("profilePic"))),
                             ), // for holding the profile pic
 
                             const SizedBox(

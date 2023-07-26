@@ -22,7 +22,7 @@ class compaignOverviewScreen extends StatelessWidget {
       body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+          padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection(isLoan ? "loans" : "donations")

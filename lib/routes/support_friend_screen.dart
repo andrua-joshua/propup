@@ -15,7 +15,7 @@ class supportFriendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController(text: '0');
+    final TextEditingController controller = TextEditingController();
 
     return FutureBuilder(
       future: FirebaseFirestore.instance

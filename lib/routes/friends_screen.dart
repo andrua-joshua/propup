@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:propup/routes.dart';
 import 'package:propup/widgets/friends_screen_widgets.dart';
 
 ///
@@ -43,6 +44,11 @@ class friendScreen extends StatelessWidget {
                 friendsWidget(),
                 followingWidget()
               ])),
+
+              floatingActionButton: FloatingActionButton(
+                onPressed: ()=>Navigator
+                    .pushNamed(context, RouteGenerator.addFriendsscreen),
+                    child: const Icon(Icons.add),),
         ));
   }
 }

@@ -14,7 +14,6 @@ class friendsProfileScreen extends StatelessWidget {
 
   const friendsProfileScreen({required this.userID, super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final user = FirebaseFirestore.instance.collection("users").doc(userID);
@@ -44,13 +43,22 @@ class friendsProfileScreen extends StatelessWidget {
                       const SizedBox(
                         height: 15,
                       ),
-                      const SizedBox(
+                      SizedBox(
                         child: Center(
-                            child: CircleAvatar(
-                                radius: 90,
-                                backgroundColor: Colors.grey,
-                                backgroundImage: NetworkImage(
-                                    "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"))),
+                            child: StreamBuilder(
+                                stream: user.snapshots(),
+                                builder: (context, snap) {
+                                  if (snap.hasData) {
+                                    return CircleAvatar(
+                                        radius: 90,
+                                        backgroundColor: Colors.grey,
+                                        backgroundImage: NetworkImage(snap.data
+                                                ?.get("profilePic") ??
+                                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"));
+                                  }
+
+                                  return const CircleAvatar(radius: 80, backgroundColor: Colors.blueGrey,);
+                                })),
                       ),
                       Center(
                           child: StreamBuilder(
@@ -84,9 +92,11 @@ class friendsProfileScreen extends StatelessWidget {
                               builder: (context, snapx) {
                                 return snap.hasData
                                     ? Text(
-                                        snapx.hasData? snapx.data?.get("description")
-                                        :snapx.hasError?"there was an Error":""
-                                        ,
+                                        snapx.hasData
+                                            ? snapx.data?.get("description")
+                                            : snapx.hasError
+                                                ? "there was an Error"
+                                                : "",
                                         style: const TextStyle(
                                             color: Colors.black, fontSize: 18),
                                         textAlign: TextAlign.center,
@@ -116,86 +126,91 @@ class friendsProfileScreen extends StatelessWidget {
                       ),
                       Padding(
                           padding: const EdgeInsets.fromLTRB(15, 0, 15, 5),
-                          child: transfersWidget(user: user,)),
-                      Center(child: addFriendBtnWidget(uid: userID,)),
+                          child: transfersWidget(
+                            user: user,
+                          )),
+                      Center(
+                          child: addFriendBtnWidget(
+                        uid: userID,
+                      )),
                       const SizedBox(
                         height: 20,
                       ),
-                      const Center(
-                          child: Text(
-                        "Photos",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      )),
+                      // const Center(
+                      //     child: Text(
+                      //   "Photos",
+                      //   style: TextStyle(
+                      //       color: Colors.black,
+                      //       fontSize: 15,
+                      //       fontWeight: FontWeight.bold),
+                      // )),
                       const Padding(
                           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Divider(
                             thickness: 1,
                           )),
                     ])),
-                    SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 10,
-                              mainAxisExtent: 150),
-                      delegate: SliverChildListDelegate((snap.hasData)
-                          ? List.generate(
-                              snap.data?.docs
-                                      .where((element) =>
-                                          element.get("owner") == userID)
-                                      .length ??
-                                  0,
-                              (index) => FutureBuilder<String>(
-                                  future: storageRf
-                                      .child(
-                                          "posts/" + snap.data!.docs[index].id)
-                                      .getDownloadURL(),
-                                  builder: (context, value) {
-                                    if (value.hasData) {
-                                      return GestureDetector(
-                                          onTap: () {
-                                            RouteGenerator.src =
-                                                snap.data!.docs[index].id;
+                    // SliverGrid(
+                    //   gridDelegate:
+                    //       const SliverGridDelegateWithFixedCrossAxisCount(
+                    //           crossAxisCount: 3,
+                    //           crossAxisSpacing: 5,
+                    //           mainAxisSpacing: 10,
+                    //           mainAxisExtent: 150),
+                    //   delegate: SliverChildListDelegate((snap.hasData)
+                    //       ? List.generate(
+                    //           snap.data?.docs
+                    //                   .where((element) =>
+                    //                       element.get("owner") == userID)
+                    //                   .length ??
+                    //               0,
+                    //           (index) => FutureBuilder<String>(
+                    //               future: storageRf
+                    //                   .child(
+                    //                       "${snap.data!.docs[index].id}")
+                    //                   .getDownloadURL(),
+                    //               builder: (context, value) {
+                    //                 if (value.hasData) {
+                    //                   return GestureDetector(
+                    //                       onTap: () {
+                    //                         RouteGenerator.src =
+                    //                             snap.data!.docs[index].id;
 
-                                            Navigator.pushNamed(
-                                                context,
-                                                RouteGenerator
-                                                    .personalPostsReviewscreen);
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: NetworkImage(
-                                                        value.data ?? ""))),
-                                          ));
-                                    }
-                                    if (value.hasError) {
-                                      return const Text(
-                                        "(*_*)",
-                                        style: TextStyle(color: Colors.red),
-                                      );
-                                    }
+                    //                         Navigator.pushNamed(
+                    //                             context,
+                    //                             RouteGenerator
+                    //                                 .personalPostsReviewscreen);
+                    //                       },
+                    //                       child: Container(
+                    //                         decoration: BoxDecoration(
+                    //                             image: DecorationImage(
+                    //                                 image: NetworkImage(
+                    //                                     value.data ?? ""))),
+                    //                       ));
+                    //                 }
+                    //                 if (value.hasError) {
+                    //                   return const Text(
+                    //                     "(*_*)",
+                    //                     style: TextStyle(color: Colors.red),
+                    //                   );
+                    //                 }
 
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  }))
-                          : (snap.hasError)
-                              ? [
-                                  const Text(
-                                    "Error retriving photos",
-                                    style: TextStyle(color: Colors.redAccent),
-                                  )
-                                ]
-                              : [
-                                  const Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                ]),
-                    )
+                    //                 return const Center(
+                    //                     child: CircularProgressIndicator());
+                    //               }))
+                    //       : (snap.hasError)
+                    //           ? [
+                    //               const Text(
+                    //                 "Error retriving photos",
+                    //                 style: TextStyle(color: Colors.redAccent),
+                    //               )
+                    //             ]
+                    //           : [
+                    //               const Center(
+                    //                 child: CircularProgressIndicator(),
+                    //               )
+                    //             ]),
+                    // )
                   ],
                 );
               })),

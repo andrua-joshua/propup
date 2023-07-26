@@ -156,9 +156,10 @@ class gridDataWidget extends StatelessWidget {
                 Navigator.pushNamed(context, RouteGenerator.loanscreen)),
         gridData(
             title: "LeaderBoard",
-            callBack: () => Navigator.pushNamed(
-                context, RouteGenerator.leadersboardscreenportal)),
-        gridData(title: "Overview", callBack: () => Navigator.pushNamed(
+            callBack: () {},),
+            // => Navigator.pushNamed(
+            //     context, RouteGenerator.leadersboardscreenportal)),
+        gridData(title: "Overview Compaigns", callBack: () => Navigator.pushNamed(
             context, RouteGenerator.overviewscreen)
             ),
       ],
@@ -186,6 +187,7 @@ class gridData extends StatelessWidget {
             child: Center(
               child: Text(
                 title,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Colors.black,
                     fontSize: 22,

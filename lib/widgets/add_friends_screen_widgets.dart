@@ -14,7 +14,6 @@ class searchFriendWidget extends StatelessWidget {
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return SizedBox(
-        height: 30,
         width: 0.7 * width,
         child: const SearchBar(leading: Icon(Icons.search), hintText: "Search"),
       );
@@ -37,6 +36,7 @@ class possibleFriendsWidget extends StatelessWidget {
     return StreamBuilder(
       stream: currentUser.snapshots(),
       builder: (context, snap) {
+        saveList = [];
         if (snap.hasData) {
           return StreamBuilder(
               stream: allUsers.snapshots(),
@@ -67,7 +67,7 @@ class possibleFriendsWidget extends StatelessWidget {
                       (index) => Padding(
                             padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
                             child: possibleFriendWidget(
-                              user: saveList[index].id,
+                                user: saveList[index].id,
                                 name: saveList[index].get("username") ?? "",
                                 image:
                                     "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
@@ -110,20 +110,30 @@ class possibleFriendWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fuser = FirebaseFirestore.instance.collection("users").doc(user);
     return ListTile(
       onTap: () {
         RouteGenerator.user = user;
         followStateNotifier().editFollow(false);
         Navigator.pushNamed(context, RouteGenerator.friendprofilescreen);
       },
-      leading: CircleAvatar(
-          radius: 35,
-          child: Center(
-              child: CircleAvatar(
-            backgroundColor: Colors.grey,
-            radius: 35,
-            backgroundImage: NetworkImage(image),
-          ))),
+      leading: FutureBuilder(
+          future: fuser.get(),
+          builder: (context, snap) {
+            if (snap.hasData) {
+              return CircleAvatar(
+                  radius: 30,
+                  backgroundColor: Colors.blue,
+                  child: Center(
+                      child: CircleAvatar(
+                    backgroundColor: Colors.grey,
+                    radius: 26,
+                    backgroundImage: NetworkImage(snap.data?.get("profilePic")),
+                  )));
+            }
+
+            return const CircleAvatar();
+          }),
       title: Text(
         name,
         style: const TextStyle(

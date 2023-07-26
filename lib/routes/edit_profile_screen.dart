@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_data_update.dart';
 import 'package:propup/widgets/edit_profile_widgets.dart';
@@ -18,10 +20,14 @@ class _editProfileScreenState extends State<editProfileScreen> {
   late final TextEditingController _lastNameController;
   late final TextEditingController _locationController;
   late final TextEditingController _descriptionController;
+  final  userRf = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid);
 
   @override
   void initState() {
     super.initState();
+
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
     _locationController = TextEditingController();
@@ -105,32 +111,33 @@ class _editProfileScreenState extends State<editProfileScreen> {
                 ),
                 Center(
                   child: SizedBox(
-        width: 100,
-        child: TextButton(
-          onPressed: (){
-            userDataUpdate.editMyAccount(
-              firstName: _firstNameController.text,
-              lastName: _lastNameController.text,
-              location: _locationController.text,
-              description: _descriptionController.text);
+                      width: 100,
+                      child: TextButton(
+                        onPressed: () {
+                          userDataUpdate.editMyAccount(
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              location: _locationController.text,
+                              description: _descriptionController.text);
 
-              Navigator.pop(context);
-              },
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.blue),
-            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-            child: const Center(
-              child: Text(
-                "Save",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        )),
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.blue),
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: const Center(
+                            child: Text(
+                              "Save",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )),
                 )
               ],
             )),
