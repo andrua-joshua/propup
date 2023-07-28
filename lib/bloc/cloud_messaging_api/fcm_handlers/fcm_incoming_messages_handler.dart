@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_chat_message_model.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
+import 'package:propup/routes.dart';
+import 'package:propup/routes/home_screen/home_screen.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 //ignore:camel_case_types
@@ -52,7 +55,13 @@ class fcmIncomingMessagesHandler {
       final notificationsMessage notification = _toNotificationMessage(message);
 
       await updateNotifications(notification);
-      //librarshowTopSnackBar(Overlay.of(context), Text("hello world"));
+      //final BuildContext contxt =
+      // homeScreen.homeScreenKey.currentState?.context! as BuildContext;
+      //homeScreen.homeScreenKey.
+      showTopSnackBar(Overlay.of(homeScreen.getContext()),
+          CustomSnackBar.success(message: notification.message));
+      Navigator.pushNamed(homeScreen.cntxt, RouteGenerator.notificationscreen);
+      //showTopSnackBar(Overlay.of(contxt), Text("hello world2"));
     } else {
       //to handle all othe kinds of messages
     }
@@ -76,9 +85,27 @@ class fcmIncomingMessagesHandler {
       fcmChatMessagesNotifiers().addChatMessage(message: chat);
     } else if (message['type'] == 'notification') {
       //to handle notification messages
+
       final notificationsMessage notification = _toNotificationMessage(message);
 
       await updateNotifications(notification);
+      //final BuildContext contxt =
+      //  homeScreen.homeScreenKey.currentState!.context;
+      //homeScreen.homeScreenKey.
+      debugPrint("About to offer:>>>>>");
+      showTopSnackBar(
+          Overlay.of(homeScreen.getContext()),
+          GestureDetector(
+              onTap: () {
+                debugPrint("Its taped");
+                Navigator.pushNamed(
+                    homeScreen.getContext(), RouteGenerator.notificationscreen);
+              },
+              child: CustomSnackBar.info(
+                message: notification.message,
+                icon: Icon(Icons.sentiment_neutral,
+                    color: Color(0x15000000), size: 30),
+              )));
     } else {
       //to handle all othe kinds of messages
     }

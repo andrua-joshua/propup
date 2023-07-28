@@ -27,16 +27,16 @@ class addFriendsScreen extends StatelessWidget {
             SizedBox(
               height: 5,
             ),
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                "Discover",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.all(10),
+            //   child: Text(
+            //     "Discover",
+            //     style: TextStyle(
+            //         color: Colors.black,
+            //         fontWeight: FontWeight.bold,
+            //         fontSize: 16),
+            //   ),
+            // ),
             Center(child: searchFriendWidget()),
             possibleFriendsWidget()
           ],

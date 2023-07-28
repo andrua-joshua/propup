@@ -56,13 +56,53 @@ class paymentGateWay {
       {required int amount,
       required String reason,
       required String phone}) async {
+    final auth = FirebaseAuth.instance.currentUser;
+    final val = await FirebaseFirestore.instance
+        .collection("rates")
+        .doc("YojsvptcUqpsyCsCcHO1")
+        .get();
+    final fees = FirebaseFirestore.instance
+        .collection("fees")
+        .doc("onbwmX03juwvQoKce736");
+
+    double mult = val.get("withdrawRate") as double;
+
+    //    double mult =  val.get("")
     String url = "https://ugexportsolutions.com/drilloxpay.php";
     String result = "";
     // ignore: non_constant_identifier_names
-    double account_balance = await getAccountBalance();
+
+    debugPrint("::::>>> here in the Withdraw method");
+    int account_balance = await getAccountBalance();
+
+    double fee = 0.0;
+
+    if (amount < 15000) {
+      fee = 440 + (440 * mult);
+    } else if (amount < 30000) {
+      fee = 600 + (600 * mult);
+    } else if (amount < 45000) {
+      fee = 800 + (800 * mult);
+    } else if (amount < 60000) {
+      fee = 1000 + (1000 * mult);
+    } else if (amount < 125000) {
+      fee = 1300 + (1300 * mult);
+    } else if (amount < 250000) {
+      fee = 1500 + (1500 * mult);
+    } else if (amount < 500000) {
+      fee = 2000 + (2000 * mult);
+    } else if (amount < 1000000) {
+      fee = 5000 + (5000 * mult);
+    } else if (amount < 2000000) {
+      fee = 7000 + (7000 * mult);
+    } else if (amount < 5000000) {
+      fee = 9000 + (9000 * mult);
+    } else {
+      fee = 10000 + (10000 * mult);
+    }
 
     FormData payload = FormData.fromMap(
-        {"pay": true, "IDz": reason, "amnt": amount, "phone": phone});
+        {"pay": true, "IDz": reason, "amnt": amount - fee, "phone": phone});
 
     if (amount < account_balance) {
       try {
@@ -89,6 +129,17 @@ class paymentGateWay {
     final formatedResult = resultFormat(result: result);
 
     if (formatedResult == '1') {
+      FirebaseFirestore.instance.runTransaction(
+        (transaction) async {
+          final secureFee = await transaction.get(fees);
+          final allfees = secureFee.get("allfees") as List;
+          allfees.add({"source": "withdraw", "amount": fee.round()});
+
+          transaction.update(fees,{
+            "allfees":allfees
+          });
+        },
+      );
       await updateAccountBalance(amount: amount, isWithdraw: true);
     }
 
@@ -110,15 +161,15 @@ class paymentGateWay {
   }
 
   // for getting our current account balance
-  Future<double> getAccountBalance() async {
-    double balance = 0.0;
+  Future<int> getAccountBalance() async {
+    int balance = 0;
 
     final user = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get();
 
-    balance = user.get("account_balance") as double;
+    balance = user.get("account_balance") as int;
 
     return balance;
   }
@@ -153,8 +204,8 @@ class paymentGateWay {
 
       transaction.update(user, {
         "account_balance": updated_balance,
-        "transactions":usersTransactions
-        });
+        "transactions": usersTransactions
+      });
 
       balance = updated_balance;
     });

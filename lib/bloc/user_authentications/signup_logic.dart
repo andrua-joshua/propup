@@ -94,7 +94,7 @@ class signUpLogic {
                 "loans": [],
                 "notifications": [],
                 "transactions": [],
-                "profilePic": ""
+                "profilePic": "https://cdn.vectorstock.com/i/preview-1x/43/94/default-avatar-photo-placeholder-icon-grey-vector-38594394.jpg"
               });
 
               final user = await FirebaseFirestore.instance
@@ -190,7 +190,7 @@ class signUpLogic {
                 "loans": [],
                 "notifications": [],
                 "transactions": [],
-                "profilePic": ""
+                "profilePic": "https://cdn.vectorstock.com/i/preview-1x/43/94/default-avatar-photo-placeholder-icon-grey-vector-38594394.jpg"
               });
 
               final user = await FirebaseFirestore.instance

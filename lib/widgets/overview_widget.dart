@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_outgoing_message_handler.dart';
 
+import '../bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
 import '../routes.dart';
 
 ///
@@ -162,6 +164,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
   final int paidback;
   final String purpose;
   final bool isLoan;
+  final String compaingId;
   final bool isClosed;
 
   const compaignOverviewTopWidget(
@@ -171,6 +174,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
       required this.paidback,
       required this.purpose,
       required this.recieved,
+      required this.compaingId,
       super.key});
 
   @override
@@ -297,7 +301,8 @@ class compaignOverviewTopWidget extends StatelessWidget {
                       child: Column(
                         children: [
                           const Text("Recieved",
-                              style: TextStyle(color: Color.fromARGB(255, 255, 34, 218))),
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 34, 218))),
                           Text("Ugx $recieved",
                               style: TextStyle(color: Colors.blue))
                         ],
@@ -323,18 +328,56 @@ class compaignOverviewTopWidget extends StatelessWidget {
 
                     ////////----////////
                     ///
-                    
-                    Container(
-                      decoration: BoxDecoration(
-                          color:
-                              (isLoan && isClosed) ? Colors.blue : const Color.fromARGB(255, 185, 184, 184),
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.all(5),
-                      child: const Text(
-                        "pay back",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
+
+                    GestureDetector(
+                        onTap: () async {
+                          if (!isClosed) {
+                            if (isLoan) {
+                              //do the re-invitation
+
+                              final notificaton = notificationsMessage(
+                                  head: DateTime.now().microsecondsSinceEpoch,
+                                  messageID: compaingId,
+                                  message: purpose,
+                                  subType: "Loan");
+
+                              await fcmOutgoingMessages
+                                  .instance()
+                                  .sendNotificationMessage(
+                                      message: notificaton);
+                            } else {
+                              //do the re-invitation
+                              final notificaton = notificationsMessage(
+                                  head: DateTime.now().microsecondsSinceEpoch,
+                                  messageID: compaingId,
+                                  message: purpose,
+                                  subType: "Donation");
+
+                              await fcmOutgoingMessages
+                                  .instance()
+                                  .sendNotificationMessage(
+                                      message: notificaton);
+                            }
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: (!isClosed)
+                                  ? Colors.blue
+                                  :isLoan?Colors.blue: const Color.fromARGB(255, 185, 184, 184),
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.all(5),
+                          child: Text(
+                            isClosed
+                                ? isLoan
+                                    ? "Pay back"
+                                    : "Remind"
+                                : "Remind",
+                            style: TextStyle(color: (!isClosed)
+                                  ? Colors.black
+                                  :isLoan?Colors.black: Colors.grey),
+                          ),
+                        ))
                   ],
                 ),
               ))

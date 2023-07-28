@@ -1,11 +1,14 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_outgoing_message_handler.dart';
 import 'package:propup/bloc/follows_update.dart';
 import 'package:provider/provider.dart';
 
+import '../bloc/cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
 import '../state_managers/following_state.dart';
 
 ///
@@ -44,7 +47,7 @@ class locationWidget extends StatelessWidget {
                 );
               }
 
-              return const Center(child: LinearProgressIndicator());
+              return Center(child: Container());
             })
       ],
     );
@@ -238,33 +241,33 @@ class friendSummaryWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    snap.hasData
-                        ? Text(snap.data?.get("friends").toString() ?? "0",
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 9, 14, 17),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold))
-                        : snap.hasError
-                            ? const Text(
-                                "(*_*)",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                    const Text(
-                      "friends",
-                      style: TextStyle(),
-                    )
-                  ],
-                ),
-              ),
+              // SizedBox(
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.center,
+              //     children: [
+              //       snap.hasData
+              //           ? Text(snap.data?.get("friends").toString() ?? "0",
+              //               style: const TextStyle(
+              //                   color: Color.fromARGB(255, 9, 14, 17),
+              //                   fontSize: 18,
+              //                   fontWeight: FontWeight.bold))
+              //           : snap.hasError
+              //               ? const Text(
+              //                   "(*_*)",
+              //                   style: TextStyle(
+              //                       color: Colors.red,
+              //                       fontWeight: FontWeight.bold),
+              //                 )
+              //               : const Center(
+              //                   child: CircularProgressIndicator(),
+              //                 ),
+              //       const Text(
+              //         "friends",
+              //         style: TextStyle(),
+              //       )
+              //     ],
+              //   ),
+              // ),
               SizedBox(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -319,11 +322,31 @@ class addFriendBtnWidget extends StatelessWidget {
             return TextButton(
                 onPressed: () {
                   if (val.followingCurrentUser2) {
-                    followsUpdateBloc.drilloxUnfollow(uid: uid).then((value) =>
-                        val.editFollow2(value));
+                    val.editFollow2(false);
+                    followsUpdateBloc.drilloxUnfollow(uid: uid);
+                    //.then((value) => val.editFollow2(value ? false : true));
                   } else {
-                    followsUpdateBloc.drilloxFollow(uid: uid).then((value) =>
-                        val.editFollow2(value));
+                    val.editFollow2(true);
+                    followsUpdateBloc
+                        .drilloxFollow(uid: uid)
+                        //.then((value) => val.editFollow2(value))
+                        .then((value) async {
+                      final auth = FirebaseAuth.instance.currentUser;
+                      final user = await FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(auth?.uid)
+                          .get();
+                      final notificaton = notificationsMessage(
+                          head: DateTime.now().microsecondsSinceEpoch,
+                          messageID: uid,
+                          message:
+                              "${user.get("username")} started following you.",
+                          subType: "New follower");
+
+                      await fcmOutgoingMessages
+                          .instance()
+                          .sendNotificationMessage(message: notificaton);
+                    });
                   }
                 },
                 child: Text(

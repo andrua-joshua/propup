@@ -81,8 +81,8 @@ class customNotificationsListTileWidget extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     color: viewedStatus
-                                        ? Colors.black
-                                        : Colors.blue,
+                                        ? const Color.fromARGB(255, 130, 129, 129)
+                                        : Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold));
                           }
@@ -108,7 +108,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: viewedStatus ? Colors.black : Colors.blue,
+                            color: viewedStatus ? const Color.fromARGB(255, 130, 129, 129) : Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold)),
                 subtitle: SizedBox(

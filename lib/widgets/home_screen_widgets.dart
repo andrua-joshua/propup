@@ -183,13 +183,13 @@ class gridData extends StatelessWidget {
           onTap: callBack,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.grey),
+                borderRadius: BorderRadius.circular(10), color: const Color.fromARGB(255, 88, 94, 98),),
             child: Center(
               child: Text(
                 title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.bold),
               ),

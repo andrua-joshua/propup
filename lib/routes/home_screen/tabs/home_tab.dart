@@ -21,6 +21,7 @@ class homeTab extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 89, 176, 247),
         title: const helloTitleWidget(),
         actions: [
           IconButton(

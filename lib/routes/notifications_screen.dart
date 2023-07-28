@@ -86,6 +86,10 @@ class notificationsScreen extends StatelessWidget {
                               Navigator.pushNamed(context,
                                   RouteGenerator.compaignOverviewscreen,
                                   arguments: args);
+                            } else if (subtyp == "New follower") {
+                              RouteGenerator.user = id;
+                              Navigator.pushNamed(
+                                  context, RouteGenerator.friendprofilescreen);
                             }
                           },
                           subType: (snap.data?.get("notifications")

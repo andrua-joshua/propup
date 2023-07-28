@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -45,26 +46,25 @@ class friendsProfileScreen extends StatelessWidget {
                       ),
                       SizedBox(
                         child: Center(
-                            child: StreamBuilder(
+                            child:  (snap.hasData)?StreamBuilder(
                                 stream: user.snapshots(),
-                                builder: (context, snap) {
-                                  if (snap.hasData) {
+                                builder: (context, snapShot) {
+                                  if (snapShot.hasData) {
                                     return CircleAvatar(
                                         radius: 90,
                                         backgroundColor: Colors.grey,
-                                        backgroundImage: NetworkImage(snap.data
-                                                ?.get("profilePic") ??
-                                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"));
+                                        backgroundImage: CachedNetworkImageProvider(snapShot.data
+                                                ?.get("profilePic") ,maxHeight:360,maxWidth:360));
                                   }
 
                                   return const CircleAvatar(radius: 80, backgroundColor: Colors.blueGrey,);
-                                })),
+                                }):null),
                       ),
                       Center(
-                          child: StreamBuilder(
+                          child: snap.hasData? StreamBuilder(
                               stream: user.snapshots(),
                               builder: (context, snapd) {
-                                return snap.hasData
+                                return snapd.hasData
                                     ? Text(
                                         snapd.data?.get("username"),
                                         style: const TextStyle(
@@ -80,7 +80,7 @@ class friendsProfileScreen extends StatelessWidget {
                                                 fontWeight: FontWeight.bold),
                                           )
                                         : const LinearProgressIndicator();
-                              })),
+                              }):null),
                       locationWidget(user: user),
                       const SizedBox(
                         height: 30,

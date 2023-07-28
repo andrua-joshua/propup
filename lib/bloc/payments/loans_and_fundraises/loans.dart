@@ -103,6 +103,14 @@ class loans {
     final lentUserRf =
         FirebaseFirestore.instance.collection("users").doc(loan.get("user"));
     final lentUser = await lentUserRf.get();
+    final fees = FirebaseFirestore.instance
+        .collection("fees")
+        .doc("onbwmX03juwvQoKce736");
+
+    final val = await FirebaseFirestore.instance
+        .collection("rates")
+        .doc("YojsvptcUqpsyCsCcHO1")
+        .get();
 
     if ((user.get("account_balance") as int) > amount) {
       //to first check whether the current user has enough cash to lend
@@ -111,13 +119,14 @@ class loans {
         int balance =
             (loan.get("amount") as int) - (loan.get("recieved") as int);
 
-        if (balance < amount) {
+        if (balance <= amount) {
           //checks if the remainin balance is smaller than the amount to lend
 
           await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final loanSecureSnap = await transaction.get(loanRf);
             final lentUserSecureSnap = await transaction.get(lentUserRf);
+            final secureFee = await transaction.get(fees);
 
             ///updating the donation compaign status
             int totalLentAmount = loanSecureSnap.get("amount") as int;
@@ -132,26 +141,37 @@ class loans {
               "closed": true
             });
 
+
+            double mult = val.get("compaignRate") as double;
+            double fee = (loan.get("amount") as int) * mult;
+
             ///updating the user who owned the loan and transactions status
             // ignore: non_constant_identifier_names
+            double vl = 0.0;
             int lentUser_balance =
                 (lentUserSecureSnap.get("account_balance") as int) +
-                    totalLentAmount;
+                    (totalLentAmount-(fee.round()));
 
             final lentUserTransactions =
                 lentUserSecureSnap.get("transactions") as List;
 
             lentUserTransactions.add({
-              "id":loanId,
+              "id": loanId,
               "type": "loan-recieved",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": totalLentAmount,
-              "message":"You recieved a loan"
+              "amount": totalLentAmount - (fee.round()),
+              "message": "You recieved a loan"
             });
             transaction.update(lentUserRf, {
               "account_balance": lentUser_balance,
               "transactions": lentUserTransactions
             });
+
+
+            final allfees = secureFee.get("allfees") as List;
+            allfees.add({"source": "withdraw", "amount": fee.round()});
+
+            transaction.update(fees, {"allfees": allfees});
 
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,
@@ -171,11 +191,11 @@ class loans {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "id":loanId,
+              "id": loanId,
               "type": "Lent",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": balance,
-              "message":"You lent ${lentUserSecureSnap.get("username")}"
+              "message": "You lent ${lentUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {
@@ -211,11 +231,11 @@ class loans {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "id":loanId,
+              "id": loanId,
               "type": "Lent",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": amount,
-              "message":"You lent ${lentUserSecureSnap.get("username")}"
+              "message": "You lent ${lentUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {

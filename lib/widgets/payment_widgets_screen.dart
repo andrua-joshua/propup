@@ -71,7 +71,7 @@ class depositFormWidget extends StatefulWidget {
 class _depositFormWidgetState extends State<depositFormWidget> {
   late final TextEditingController _amountController;
   late final TextEditingController _contactController;
-  final GlobalKey _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -113,6 +113,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                 controller: _amountController,
                 maxLength: 7,
                 maxLines: 1,
+                validator: amountValidate,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                     counterText: "",
@@ -121,7 +122,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
               ),
             ),
             const Text(
-              "Min:500 And Max 4,000,000",
+              "Min:10000 And Max 4,000,000",
               style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
             const SizedBox(
@@ -147,6 +148,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                 controller: _contactController,
                 maxLength: 10,
                 maxLines: 1,
+                validator: phoneValidate,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
                     counterText: "",
@@ -161,9 +163,9 @@ class _depositFormWidgetState extends State<depositFormWidget> {
             GestureDetector(
                 onTap: () {
                   // ignore: unrelated_type_equality_checks
-                  if (_amountController != "" &&
-                      _contactController.text != "") {
+                  if (_key.currentState?.validate()??false) {
                     showDialog(
+                        barrierDismissible: false,
                         context: context,
                         builder: (context) {
                           return AlertDialog(
@@ -171,15 +173,14 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                             content: FutureBuilder<String>(
                               future: (!widget.isWithdraw)
                                   ? paymentGateWay.instance().depositToWallet(
-                                      amount:
-                                          int.parse(_amountController.text),
+                                      amount: int.parse(_amountController.text),
                                       reason: "Supporting each other",
                                       phone: _contactController.text)
                                   : paymentGateWay
                                       .instance()
                                       .withDrawFromWallet(
-                                          amount: int.parse(
-                                              _amountController.text),
+                                          amount:
+                                              int.parse(_amountController.text),
                                           reason: "Supporting each other",
                                           phone: _contactController.text),
                               builder: (context, snapshot) {
@@ -196,10 +197,10 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                                 }
 
                                 if (snapshot.hasError) {
-                                  return const Center(
+                                  return Center(
                                     child: Text(
-                                      "^(*_*)^",
-                                      style: TextStyle(
+                                      "^(*_*)^\nError ${snapshot.error}",
+                                      style: const TextStyle(
                                           color: Colors.red,
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -211,6 +212,7 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                                 );
                               },
                             ),
+                            actions: [],
                           );
                         });
                   }
@@ -231,5 +233,33 @@ class _depositFormWidgetState extends State<depositFormWidget> {
                 ))
           ],
         ));
+  }
+
+  String? amountValidate(String? txt) {
+    if (txt?.isEmpty ?? true) {
+      return "enter amount please";
+    } else {
+      try {
+        int amount = int.parse(txt ?? "");
+        if (amount < 10000 && widget.isWithdraw) {
+          return "min withdraw amount is 10000";
+        }
+      } catch (e) {
+        return "Enter valid amount";
+      }
+    }
+
+    return null;
+  }
+
+  String? phoneValidate(String? txt) {
+    if (txt?.isEmpty ?? true) {
+      return "enter contact please eg.0754734525";
+    } else {
+      if (txt?.length != 10) {
+        return "Enter a valid 10 digit phone";
+      }
+    }
+    return null;
   }
 }

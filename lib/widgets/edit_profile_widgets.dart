@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,9 +58,8 @@ class profilePicWidget extends StatelessWidget {
                       return CircleAvatar(
                         radius: 35,
                         backgroundColor: Colors.grey,
-                        backgroundImage: NetworkImage(snap.data
-                                ?.get("profilePic") ??
-                            "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+                        backgroundImage: CachedNetworkImageProvider(snap.data
+                                ?.get("profilePic") ??"",maxHeight: 140, maxWidth: 140 ),
                       );
                     }
 
@@ -122,8 +122,8 @@ class profilePicWidget extends StatelessWidget {
               //-----------------------------
             },
             child: const Text(
-              "Edit",
-              style: TextStyle(color: Colors.blue, fontSize: 18),
+              "Change profile picture",
+              style: TextStyle(color: Colors.blue, fontSize: 15),
             ))
       ],
     );

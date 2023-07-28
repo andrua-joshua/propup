@@ -36,6 +36,7 @@ class compaignOverviewScreen extends StatelessWidget {
                           amount: snap.data?.get("amount"),
                           isClosed: snap.data?.get("closed"),
                           isLoan: isLoan,
+                          compaingId: snap.data?.id??"",
                           paidback: isLoan ? snap.data?.get("paidback") : 0,
                           purpose: snap.data?.get("purpose"),
                           recieved: snap.data?.get("recieved")),

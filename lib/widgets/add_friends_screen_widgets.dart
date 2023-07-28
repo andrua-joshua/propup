@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/widgets/friends_screen_widgets.dart';
 
 import '../state_managers/following_state.dart';
 
@@ -11,11 +13,36 @@ class searchFriendWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+
     return LayoutBuilder(builder: (context, dimensions) {
       double width = dimensions.maxWidth;
       return SizedBox(
-        width: 0.7 * width,
-        child: const SearchBar(leading: Icon(Icons.search), hintText: "Search"),
+        width: 0.95 * width,
+        child: FutureBuilder(
+            future: user.get(),
+            builder: (context, snap) {
+              return Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromARGB(255, 241, 241, 241)),
+                  margin: const EdgeInsets.fromLTRB(0, 5, 5, 0),
+                  child: TextFormField(
+                    onTap: () => showSearch(
+                        context: context,
+                        delegate: searchFriendsDeleget(index: 3,currentUser: snap.data)),
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        hintText: "Search",
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black,
+                        )),
+                  ));
+            }),
       );
     });
   }
@@ -67,6 +94,7 @@ class possibleFriendsWidget extends StatelessWidget {
                       (index) => Padding(
                             padding: const EdgeInsets.fromLTRB(7, 3, 7, 3),
                             child: possibleFriendWidget(
+                                currentUser: snap.data,
                                 user: saveList[index].id,
                                 name: saveList[index].get("username") ?? "",
                                 image:
@@ -101,11 +129,13 @@ class possibleFriendWidget extends StatelessWidget {
   final String name;
   final String user;
   final String description;
+  final DocumentSnapshot? currentUser;
   const possibleFriendWidget(
       {required this.description,
       required this.name,
       required this.user,
       required this.image,
+      required this.currentUser,
       super.key});
 
   @override
@@ -113,8 +143,12 @@ class possibleFriendWidget extends StatelessWidget {
     final fuser = FirebaseFirestore.instance.collection("users").doc(user);
     return ListTile(
       onTap: () {
+        bool val = false;
+
+        val = (currentUser?.get("followingList") as List).contains(user);
+
         RouteGenerator.user = user;
-        followStateNotifier().editFollow(false);
+        followStateNotifier().editFollow(val);
         Navigator.pushNamed(context, RouteGenerator.friendprofilescreen);
       },
       leading: FutureBuilder(
@@ -128,7 +162,10 @@ class possibleFriendWidget extends StatelessWidget {
                       child: CircleAvatar(
                     backgroundColor: Colors.grey,
                     radius: 26,
-                    backgroundImage: NetworkImage(snap.data?.get("profilePic")),
+                    backgroundImage: CachedNetworkImageProvider(
+                        snap.data?.get("profilePic"),
+                        maxHeight: 104,
+                        maxWidth: 104),
                   )));
             }
 
@@ -141,7 +178,7 @@ class possibleFriendWidget extends StatelessWidget {
       ),
       subtitle: Text(
         description,
-        maxLines: 2,
+        maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.black),
       ),

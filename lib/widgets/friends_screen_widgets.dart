@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 import 'package:propup/state_managers/following_state.dart';
+
+import 'add_friends_screen_widgets.dart';
 
 ///
 ///this is where all the custom widgets of the friends screen are to be defined
@@ -66,9 +69,10 @@ class gridDataWidget extends StatelessWidget {
               //color: Colors.white,
               child: snap.hasData
                   ? GestureDetector(
-                      onTap: () { 
+                      onTap: () {
                         RouteGenerator.user = user;
-                        bool v =(snap.data?.get("followersList") as List).contains(currentUser.id);
+                        bool v = (snap.data?.get("followersList") as List)
+                            .contains(currentUser.id);
                         followStateNotifier().editFollow(v);
                         Navigator.pushNamed(
                             context, RouteGenerator.friendprofilescreen);
@@ -85,7 +89,10 @@ class gridDataWidget extends StatelessWidget {
                               margin: const EdgeInsets.only(top: 10),
                               child: CircleAvatar(
                                   backgroundColor: Colors.grey,
-                                  backgroundImage: NetworkImage(snap.data?.get("profilePic"))),
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      snap.data?.get("profilePic"),
+                                      maxHeight: 220,
+                                      maxWidth: 220)),
                             ), // for holding the profile pic
 
                             const SizedBox(
@@ -161,26 +168,46 @@ class followersWidget extends StatelessWidget {
     final user = FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid);
+    justStatic.index = 0;
+    debugPrint("@Drillox ::{}::> Followers");
 
     return StreamBuilder(
         stream: user.snapshots(),
-        builder: (context, snap) {
-          if (snap.hasData) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 200),
-                itemCount:
-                    (snap.data?.get("followersList") as List).length,
-                itemBuilder: (context, index) => gridDataWidget(
-                      user: (snap.data?.get("followersList")
-                          as List)[index],
-                    ));
-          }
+        builder: (context, snapx) {
+          if (snapx.hasData) {
+            return FutureBuilder(
+                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
+                    .getResult(queryUser: "", index: 0),
+                builder: (context, snap) {
+                  if (snap.hasData) {
+                    return ListView.builder(
+                        itemCount: snap.data?.length ?? 0,
+                        itemBuilder: (context, pos) => Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
+                              child: possibleFriendWidget(
+                                  currentUser: snapx.data,
+                                  user: snap.data![pos].id,
+                                  name: snap.data![pos].get("username") ?? "",
+                                  image:
+                                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                                  description: snap.data![pos]
+                                      .get("description")
+                                      .toString()),
+                            ));
+                  }
+                  if (snap.hasError) {
+                    return const Center(
+                      child: Text("check your network"),
+                    );
+                  }
 
-          if (snap.hasError) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                });
+          }
+          //(snap.data?.get("followersList") as List)[index]
+          if (snapx.hasError) {
             return const Center(
               child: Text(
                 "(*_*)\n Error retriving data\ncheck your network and try again",
@@ -208,25 +235,44 @@ class followingWidget extends StatelessWidget {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
+    justStatic.index = 2;
     return StreamBuilder(
         stream: user.snapshots(),
-        builder: (context, snap) {
-          if (snap.hasData) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 200),
-                itemCount:
-                    (snap.data?.get("followingList") as List).length,
-                itemBuilder: (context, index) => gridDataWidget(
-                      user: (snap.data?.get("followingList")
-                          as List)[index],
-                    ));
-          }
+        builder: (context, snapx) {
+          if (snapx.hasData) {
+            return FutureBuilder(
+                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
+                    .getResult(queryUser: "", index: 2),
+                builder: (context, snap) {
+                  if (snap.hasData) {
+                    return ListView.builder(
+                        itemCount: snap.data?.length ?? 0,
+                        itemBuilder: (context, pos) => Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
+                              child: possibleFriendWidget(
+                                  currentUser: snapx.data,
+                                  user: snap.data![pos].id,
+                                  name: snap.data![pos].get("username") ?? "",
+                                  image:
+                                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                                  description: snap.data![pos]
+                                      .get("description")
+                                      .toString()),
+                            ));
+                  }
+                  if (snap.hasError) {
+                    return const Center(
+                      child: Text("check your network"),
+                    );
+                  }
 
-          if (snap.hasError) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                });
+          }
+          //(snap.data?.get("followersList") as List)[index]
+          if (snapx.hasError) {
             return const Center(
               child: Text(
                 "(*_*)\n Error retriving data\ncheck your network and try again",
@@ -254,25 +300,45 @@ class friendsWidget extends StatelessWidget {
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
+    justStatic.index = 1;
+
     return StreamBuilder(
         stream: user.snapshots(),
-        builder: (context, snap) {
-          if (snap.hasData) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 200),
-                itemCount:
-                    (snap.data?.get("friendsList") as List).length,
-                itemBuilder: (context, index) => gridDataWidget(
-                      user: (snap.data?.get("friendsList")
-                          as List)[index],
-                    ));
-          }
+        builder: (context, snapx) {
+          if (snapx.hasData) {
+            return FutureBuilder(
+                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
+                    .getResult(queryUser: "", index: 1),
+                builder: (context, snap) {
+                  if (snap.hasData) {
+                    return ListView.builder(
+                        itemCount: snap.data?.length ?? 0,
+                        itemBuilder: (context, pos) => Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
+                              child: possibleFriendWidget(
+                                  currentUser: snapx.data,
+                                  user: snap.data![pos].id,
+                                  name: snap.data![pos].get("username") ?? "",
+                                  image:
+                                      "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                                  description: snap.data![pos]
+                                      .get("description")
+                                      .toString()),
+                            ));
+                  }
+                  if (snap.hasError) {
+                    return const Center(
+                      child: Text("check your network"),
+                    );
+                  }
 
-          if (snap.hasError) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                });
+          }
+          //(snap.data?.get("followersList") as List)[index]
+          if (snapx.hasError) {
             return const Center(
               child: Text(
                 "(*_*)\n Error retriving data\ncheck your network and try again",
@@ -287,5 +353,195 @@ class friendsWidget extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         });
+  }
+}
+
+//for searching throu all the friends or followers in friends screen
+class searchFriendsDeleget extends SearchDelegate {
+  final int index;
+  final DocumentSnapshot? currentUser;
+
+  searchFriendsDeleget({
+    required this.currentUser,
+    required this.index,
+  });
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: () {
+            query = "";
+          },
+          icon: const Icon(Icons.clear))
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          close(context, null);
+        },
+        icon: const Icon(Icons.arrow_back));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return FutureBuilder(
+        future: getResult(queryUser: query, index: index),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return ListView.builder(
+                itemCount: snap.data?.length ?? 0,
+                itemBuilder: (context, pos) => Padding(
+                      padding: const EdgeInsets.fromLTRB(7, 0, 7, 0),
+                      child: possibleFriendWidget(
+                          currentUser: currentUser,
+                          user: snap.data![pos].id,
+                          name: snap.data![pos].get("username") ?? "",
+                          image:
+                              "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                          description:
+                              snap.data![pos].get("description").toString()),
+                    ));
+          }
+          if (snap.hasError) {
+            return const Center(
+              child: Text("check your network"),
+            );
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    debugPrint("@Drillox: CurrentIndex:>> $index");
+    return FutureBuilder(
+        future: getResult(queryUser: query, index: index),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return ListView.builder(
+                itemCount: snap.data?.length ?? 0,
+                itemBuilder: (context, pos) => Padding(
+                      padding: const EdgeInsets.fromLTRB(7, 0, 7, 0),
+                      child: possibleFriendWidget(
+                          currentUser: currentUser,
+                          user: snap.data![pos].id,
+                          name: snap.data![pos].get("username") ?? "",
+                          image:
+                              "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
+                          description:
+                              snap.data![pos].get("description").toString()),
+                    ));
+          }
+          if (snap.hasError) {
+            return const Center(
+              child: Text("check your network"),
+            );
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+  }
+
+  Future<List<DocumentSnapshot>> getResult(
+      {required String queryUser, required int index}) async {
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(auth?.uid)
+        .get();
+
+    if (index == 0) {
+      if (user != null) {
+        final followers = user.get("followersList") as List;
+        final followersIds = <DocumentSnapshot>[];
+        for (var followerId in followers) {
+          final follower = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(followerId)
+              .get();
+          final followerName = follower.get("username") as String;
+
+          if (followerName.toLowerCase().contains(queryUser.toLowerCase())) {
+            followersIds.add(follower);
+          }
+        }
+        return followersIds;
+      }
+    } else if (index == 1) {
+      if (user != null) {
+        final friends = user.get("friendsList") as List;
+        final friendsIds = <DocumentSnapshot>[];
+        for (var friendId in friends) {
+          final friend = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(friendId)
+              .get();
+          final friendName = friend.get("username") as String;
+
+          if (friendName.toLowerCase().contains(queryUser.toLowerCase())) {
+            friendsIds.add(friend);
+          }
+        }
+        return friendsIds;
+      }
+    } else if (index == 2) {
+      if (user != null) {
+        final followingList = user.get("followingList") as List;
+        final followingsIds = <DocumentSnapshot>[];
+        for (var followingId in followingList) {
+          final follower = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(followingId)
+              .get();
+          final followerName = follower.get("username") as String;
+
+          if (followerName.toLowerCase().contains(queryUser.toLowerCase())) {
+            followingsIds.add(follower);
+          }
+        }
+        return followingsIds;
+      }
+    } else if (index == 3) {
+      if (user != null) {
+        final followingList = user.get("followingList") as List;
+        final allUsers =
+            await FirebaseFirestore.instance.collection("users").get();
+
+        final otherUsers = allUsers.docs.where((element) {
+          bool val = followingList.contains(element.id) ? false : true;
+
+          bool v2 = val
+              ? element.id != user.id
+                  ? true
+                  : false
+              : false;
+
+          //v2 ? saveList.add(element) : null;
+
+          return v2;
+        }).toList();
+
+        final otherUsersIds = <DocumentSnapshot>[];
+        for (var otherUser in otherUsers) {
+          final otherUserName = otherUser.get("username") as String;
+
+          if (otherUserName.toLowerCase().contains(queryUser.toLowerCase())) {
+            otherUsersIds.add(otherUser);
+          }
+        }
+        return otherUsersIds;
+      }
+    }
+
+    return [];
   }
 }

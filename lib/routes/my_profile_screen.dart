@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -60,8 +61,7 @@ class myProfileScreen extends StatelessWidget {
                         child: CircleAvatar(
                       backgroundColor: Colors.grey,
                       radius: 90,
-                      backgroundImage: NetworkImage(snap.data?.get("profilePic")??
-                          "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg"),
+                      backgroundImage:(snap.hasData)?CachedNetworkImageProvider(snap.data?.get("profilePic")??""):null,
                     )),
                     Center(
                         child: StreamBuilder(

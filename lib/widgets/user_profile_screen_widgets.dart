@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,15 +15,28 @@ class profileImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 75,
-      backgroundColor: Colors.white,
-      child: CircleAvatar(
-          radius: 72,
-          backgroundImage: NetworkImage(FirebaseAuth
-                  .instance.currentUser?.photoURL ??
-              "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg")),
-    );
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    return StreamBuilder(
+        stream: user.snapshots(),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            return CircleAvatar(
+              radius: 75,
+              backgroundColor: Colors.white,
+              child: CircleAvatar(
+                  radius: 72,
+                  backgroundImage:
+                      CachedNetworkImageProvider(snap.data?.get("profilePic"),maxHeight: 264, maxWidth: 264)),
+            );
+          }
+          if (snap.hasError) {
+            return const CircleAvatar();
+          }
+          return const CircleAvatar(
+            radius: 40,
+          );
+        });
   }
 }
 
@@ -80,13 +94,13 @@ class userInfoWidget extends StatelessWidget {
           userDataTileWidget(
             icon: Icons.logout,
             title: "Logout",
-            callback: () async{
+            callback: () async {
               String? id = FirebaseAuth.instance.currentUser?.uid;
               final user =
                   FirebaseFirestore.instance.collection("users").doc(id);
 
               await FirebaseAuth.instance.signOut().then((value) async {
-                user.update({"token":""});
+                user.update({"token": ""});
                 Navigator.pushNamed(context, RouteGenerator.welcomescreen);
               });
             },

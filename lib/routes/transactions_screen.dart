@@ -78,8 +78,10 @@ class transactionsScreen extends StatelessWidget {
                                 fontSize: 17),
                           ),
                           subtitle: Text(
-                            (snap.data?.get("transactions") as List)[index]
+                            (snap.data?.get("transactions") as List)[idx - (index + 1)]
                                 ['message'],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                             style: const TextStyle(color: Colors.grey),
                           ),
                           trailing: transactionDataWidget(

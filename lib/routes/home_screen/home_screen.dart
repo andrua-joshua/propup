@@ -5,6 +5,7 @@ import 'package:propup/routes/home_screen/tabs/chatsTab.dart';
 import 'package:propup/routes/home_screen/tabs/home_tab.dart';
 import 'package:propup/state_managers/home_tabs_state.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 ///propup-715a1
 ///this class is where the home screen page shall be placed
@@ -12,9 +13,15 @@ import 'package:provider/provider.dart';
 //ignore: camel_case_types
 class homeScreen extends StatelessWidget {
   const homeScreen({super.key});
+  static final homeScreenKey = GlobalKey<ScaffoldState>();
+  static late BuildContext cntxt;
+  static BuildContext getContext() => cntxt;
 
   @override
   Widget build(BuildContext context) {
+    cntxt = context;
+    // showTopSnackBar(Overlay.of(context), Text("Here bro"));
+
     Future<bool> _willPop() async {
       return (await showDialog(
           context: context,
@@ -49,6 +56,7 @@ class homeScreen extends StatelessWidget {
           }),
           bottomNavigationBar: Consumer<homeTabsChange>(
             builder: (context, value, child) => BottomNavigationBar(
+              backgroundColor: const Color.fromARGB(255, 89, 176, 247),
                 onTap: (val) => value.ChangeIndex(val),
                 currentIndex: value.currentIndex,
                 items: const [
@@ -66,3 +74,4 @@ class homeScreen extends StatelessWidget {
     );
   }
 }
+

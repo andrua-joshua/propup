@@ -103,6 +103,14 @@ class donations {
     final donatedUserRf = FirebaseFirestore.instance
         .collection("users")
         .doc(donation.get("user"));
+    final fees = FirebaseFirestore.instance
+        .collection("fees")
+        .doc("onbwmX03juwvQoKce736");
+
+    final val = await FirebaseFirestore.instance
+        .collection("rates")
+        .doc("YojsvptcUqpsyCsCcHO1")
+        .get();
 
     if ((user.get("account_balance") as int) > amount) {
       //to first check whether the current user has enough cash  to donate
@@ -113,13 +121,14 @@ class donations {
         int balance =
             (donation.get("amount") as int) - (donation.get("recieved") as int);
 
-        if (balance < amount) {
+        if (balance <= amount) {
           //checks if the remaining balance is smaller the amount about to donate
 
           await FirebaseFirestore.instance.runTransaction((transaction) async {
             final userSecureSnap = await transaction.get(userRf);
             final donationSecureSnap = await transaction.get(donationRf);
             final donationUserSecureSnap = await transaction.get(donatedUserRf);
+            final secureFee = await transaction.get(fees);
 
             ///updating the donation compaign status
             int totalDonationAmount = donationSecureSnap.get("amount") as int;
@@ -134,11 +143,14 @@ class donations {
               "closed": true
             });
 
+            double mult = val.get("compaignRate") as double;
+            double fee = (donation.get("amount") as int) * mult;
+
             ///updating the user who owned the donations and transactions status
             // ignore: non_constant_identifier_names
             int donationUser_balance =
                 (donationUserSecureSnap.get("account_balance") as int) +
-                    totalDonationAmount;
+                    (totalDonationAmount-(fee.round()));
             int recieved = (donationUserSecureSnap.get("recieved") as int) +
                 totalDonationAmount;
             final donationUserTransactions =
@@ -148,7 +160,7 @@ class donations {
               "id":donationId,
               "type": "donation-recieved",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": totalDonationAmount,
+              "amount": totalDonationAmount- (fee.round()),
               "message":"You recieved Fundraise"
             });
             transaction.update(donatedUserRf, {
@@ -156,6 +168,13 @@ class donations {
               "transactions": donationUserTransactions,
               "recieved": recieved
             });
+
+
+            final allfees = secureFee.get("allfees") as List;
+            allfees.add({"source": "withdraw", "amount": fee.round()});
+
+            transaction.update(fees, {"allfees": allfees});
+
 
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,

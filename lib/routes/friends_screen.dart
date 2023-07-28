@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/state_managers/following_state.dart';
 import 'package:propup/widgets/friends_screen_widgets.dart';
 
 ///
@@ -11,6 +14,11 @@ class friendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugInvertOversizedImages = true;
+
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+
     return DefaultTabController(
         length: 3,
         initialIndex: 1,
@@ -20,35 +28,57 @@ class friendScreen extends StatelessWidget {
             title: const Text(
               "Friends",
               style: TextStyle(
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-            bottom: const TabBar(tabs: [
+            actions: [
+              FutureBuilder(
+                  future: user.get(),
+                  builder: (context, snap) {
+                    return IconButton(
+                        onPressed: () {
+                          showSearch(
+                              context: context,
+                              delegate: searchFriendsDeleget(
+                                currentUser: snap.data,
+                                  index: justStatic.index));
+                        },
+                        icon: const Icon(Icons.search));
+                  }),
+                  IconButton(onPressed: ()=>Navigator.pushNamed(context, RouteGenerator.addFriendsscreen), 
+                  icon: const Icon(Icons.group_add))
+            ],
+            bottom: const TabBar(
+              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              unselectedLabelStyle: TextStyle(fontSize: 15),
+              tabs: [
               Text(
-                "followers",
+                "Followers",
                 style: TextStyle(),
               ),
               Text(
-                "friends",
+                "Friends",
                 style: TextStyle(),
               ),
               Text(
-                "following",
+                "Following",
                 style: TextStyle(),
               ),
             ]),
           ),
           body: const Padding(
-              padding: EdgeInsets.all(10), child: TabBarView(children: [
+              padding: EdgeInsets.only(top: 10, left: 2, right: 2),
+              child: TabBarView(children: [
                 followersWidget(),
                 friendsWidget(),
                 followingWidget()
               ])),
-
-              floatingActionButton: FloatingActionButton(
-                onPressed: ()=>Navigator
-                    .pushNamed(context, RouteGenerator.addFriendsscreen),
-                    child: const Icon(Icons.add),),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: () =>
+          //       Navigator.pushNamed(context, RouteGenerator.addFriendsscreen),
+          //   child: const Icon(Icons.add),
+          // ),
         ));
   }
 }
