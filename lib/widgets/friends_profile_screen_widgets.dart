@@ -310,6 +310,7 @@ class addFriendBtnWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
     return ChangeNotifierProvider(
       create: (context) => followStateNotifier2(),
       builder: (context, child) {
@@ -338,7 +339,7 @@ class addFriendBtnWidget extends StatelessWidget {
                           .get();
                       final notificaton = notificationsMessage(
                           head: DateTime.now().microsecondsSinceEpoch,
-                          messageID: uid,
+                          messageID: currentUser?.uid??"",
                           message:
                               "${user.get("username")} started following you.",
                           subType: "New follower");

@@ -87,6 +87,8 @@ class notificationsScreen extends StatelessWidget {
                                   RouteGenerator.compaignOverviewscreen,
                                   arguments: args);
                             } else if (subtyp == "New follower") {
+                              
+                              debugPrint('@Drillox {new follower}:::> $id');
                               RouteGenerator.user = id;
                               Navigator.pushNamed(
                                   context, RouteGenerator.friendprofilescreen);
