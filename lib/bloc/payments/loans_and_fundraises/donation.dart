@@ -171,7 +171,7 @@ class donations {
 
 
             final allfees = secureFee.get("allfees") as List;
-            allfees.add({"source": "withdraw", "amount": fee.round()});
+            allfees.add({"source": "Fundraise", "amount": fee.round()});
 
             transaction.update(fees, {"allfees": allfees});
 
