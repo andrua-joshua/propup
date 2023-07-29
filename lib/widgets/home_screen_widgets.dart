@@ -61,7 +61,7 @@ class helloTitleWidget extends StatelessWidget {
                 return const Center(child: CircularProgressIndicator());
               }),
           const Text(
-            "Good morning",
+            "",
             style: TextStyle(color: Colors.grey, fontSize: 14),
           )
         ],
