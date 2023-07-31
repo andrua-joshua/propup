@@ -210,7 +210,7 @@ class signUpLogic {
               userRf.update({"group_key": group_key});
 
               // ignore: use_build_context_synchronously
-              Navigator.pushNamed(context, RouteGenerator.loginscreen);
+              Navigator.pushNamed(context, RouteGenerator.emailVerificationscreen);
 
               ///------------
               ///    /\

@@ -93,6 +93,22 @@ class friendsData {
       yield "";
     }
   }
-}
 
+  Stream<List<DocumentSnapshot>> followingSnap() async* {
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    await for (var element in user.snapshots()) {
+      final followingList = element.get("followingList") as List;
+      final allFollowing = <DocumentSnapshot>[];
+      for (var followingId in followingList) {
+        final follower = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(followingId)
+            .get();
+        allFollowing.add(follower);
+      }
+      yield allFollowing;
+    }
+  }
+}
 //class Streamer {}

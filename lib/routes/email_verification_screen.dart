@@ -33,7 +33,18 @@ class _emailVerificationScreenState extends State<emailVerificationScreen> {
   Widget build(BuildContext context) {
     String gmail = FirebaseAuth.instance.currentUser?.email ?? "";
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: (){
+            final auth = FirebaseAuth.instance.currentUser;
+            if(auth!=null){
+              (auth.emailVerified)
+              ?Navigator.pushNamed(context, RouteGenerator.homescreen)
+              :Navigator.pushNamed(context, RouteGenerator.loginscreen);
+            }
+          }, 
+        icon: const Icon(Icons.arrow_back)),
+      ),
       body: const SafeArea(
           child: Column(
         children: [
