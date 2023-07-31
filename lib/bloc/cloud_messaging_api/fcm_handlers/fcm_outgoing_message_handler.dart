@@ -38,14 +38,15 @@ class fcmOutgoingMessages {
           cloudMessagingServerKey: server_key,
           title: "Propup chat",
           body: "New message from ${user.get("username").toString()}",
-          fcmTokens: [token],
+          fcmTokens: [
+            token
+          ],
           payload: <String, dynamic>{
             "type": "chat",
             "senderID": chatmessage.senderId,
             "message": chatmessage.message,
             "recieverID": chatmessage.recieverID
-          }
-          );
+          });
 
       debugPrint("Send Result:  ${response.body}");
     } catch (e) {
@@ -172,16 +173,35 @@ class fcmOutgoingMessages {
     }
 
     try {
-      Dio dio = Dio();
-      String url = "https://fcm.googleapis.com/fcm/send";
-      final response = await dio.post(url,
-          data: payload,
-          options: Options(headers: {
-            "Content-Type": "application/json",
-            "Authorization": "key=$server_key"
-          }));
+      // Dio dio = Dio();
+      // String url = "https://fcm.googleapis.com/fcm/send";
+      // final response = await dio.post(url,
+      //     data: payload,
+      //     options: Options(headers: {
+      //       "Content-Type": "application/json",
+      //       "Authorization": "key=$server_key"
+      //     }));
 
-      debugPrint("Send Result:  ${response.data.toString()}");
+      // debugPrint("Send Result:  ${response.data.toString()}");
+
+      final response = await FirebaseNotificationsHandler.sendNotification(
+          cloudMessagingServerKey: server_key,
+          title: "Propup social",
+          body: "${user.get("username")} started following you",
+          fcmTokens: [
+            userToken
+          ],
+          additionalHeaders: {
+            "Content-Type": "application/json"
+          },
+          payload: {
+            "type": "notification",
+            "messageID": message.messageID,
+            "message": message.message,
+            "subType": message.subType
+          });
+
+      debugPrint("Send Result:  ${response.body}");
     } catch (e) {
       debugPrint("@Drillox {Exception} :: $e");
     }

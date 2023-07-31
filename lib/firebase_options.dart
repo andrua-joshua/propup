@@ -67,8 +67,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '735495916641',
     projectId: 'propup-715a1',
     storageBucket: 'propup-715a1.appspot.com',
-    iosClientId: '735495916641-j11nb1r5qknf4e2tmv9dag0fqklg5nuk.apps.googleusercontent.com',
-    iosBundleId: 'com.example.propup',
+    iosClientId:
+        '735495916641-j11nb1r5qknf4e2tmv9dag0fqklg5nuk.apps.googleusercontent.com',
+    iosBundleId: 'com.drillox.propup',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '735495916641',
     projectId: 'propup-715a1',
     storageBucket: 'propup-715a1.appspot.com',
-    iosClientId: '735495916641-o0l3bfnikatf3tef31arcahip70svmir.apps.googleusercontent.com',
-    iosBundleId: 'com.example.propup.RunnerTests',
+    iosClientId:
+        '735495916641-o0l3bfnikatf3tef31arcahip70svmir.apps.googleusercontent.com',
+    iosBundleId: 'com.drillox.propup.RunnerTests',
   );
 }

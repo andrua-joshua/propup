@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_api_init.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_incoming_messages_handler.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/state_managers/friends_state_manager.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import 'bloc/cloud_messaging_api/fcm_handler_state_blocs/fcm_chat_messages_notifiers.dart';
@@ -31,7 +32,9 @@ void main() async {
       .then((value) => debugPrint("::::token ::> $value"));
 
   fcmChatMessagesNotifiers().deserializeFromJson();
+
   runApp(const MyApp());
+  //friendsData().listener();
 }
 
 Future<void> requestPermissions() async {
@@ -117,7 +120,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool v = FirebaseAuth.instance.currentUser != null;
-
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

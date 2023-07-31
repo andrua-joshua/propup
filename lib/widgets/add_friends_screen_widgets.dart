@@ -31,7 +31,8 @@ class searchFriendWidget extends StatelessWidget {
                   child: TextFormField(
                     onTap: () => showSearch(
                         context: context,
-                        delegate: searchFriendsDeleget(index: 3,currentUser: snap.data)),
+                        delegate: searchFriendsDeleget(
+                            index: 3, currentUser: snap.data)),
                     readOnly: true,
                     decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -140,7 +141,9 @@ class possibleFriendWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("@Drillox :{Current user}:::>> $user");
     final fuser = FirebaseFirestore.instance.collection("users").doc(user);
+    debugPrint("@Drillox :{Current user}:::>> $user");
     return ListTile(
       onTap: () {
         bool val = false;

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:735495916641:android:b790310cd769e75556ee20",
         "android_client_info": {
-          "package_name": "com.example.propup"
+          "package_name": "com.drillox.propup"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "735495916641-j11nb1r5qknf4e2tmv9dag0fqklg5nuk.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.propup"
+                "bundle_id": "com.drillox.propup"
               }
             }
           ]

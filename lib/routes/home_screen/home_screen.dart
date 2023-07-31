@@ -58,6 +58,8 @@ class homeScreen extends StatelessWidget {
             builder: (context, value, child) => BottomNavigationBar(
               backgroundColor: const Color.fromARGB(255, 89, 176, 247),
                 onTap: (val) => value.ChangeIndex(val),
+                selectedItemColor: Colors.white,
+                unselectedItemColor: Colors.black,
                 currentIndex: value.currentIndex,
                 items: const [
                   // BottomNavigationBarItem(

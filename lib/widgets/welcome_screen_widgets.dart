@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:propup/state_managers/friends_state_manager.dart';
 
 import '../routes.dart';
 
@@ -34,9 +35,15 @@ class salutationWidget extends StatelessWidget {
         TextButton(
             onPressed: () {
               bool v = FirebaseAuth.instance.currentUser != null;
-              v
-                  ? Navigator.pushNamed(context, RouteGenerator.homescreen)
-                  : Navigator.pushNamed(context, RouteGenerator.loginscreen);
+
+              if (v) {
+                friendsData().listener();
+                friendsData().initFriends();
+                //.then((value) =>
+                Navigator.pushNamed(context, RouteGenerator.homescreen); //);
+              } else {
+                Navigator.pushNamed(context, RouteGenerator.loginscreen);
+              }
             },
             child: Container(
               constraints: const BoxConstraints.expand(height: 50),

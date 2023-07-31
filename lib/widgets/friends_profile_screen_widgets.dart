@@ -346,7 +346,7 @@ class addFriendBtnWidget extends StatelessWidget {
 
                       await fcmOutgoingMessages
                           .instance()
-                          .sendNotificationMessage(message: notificaton);
+                          .sendFollowNotification(message: notificaton,userId: uid);
                     });
                   }
                 },

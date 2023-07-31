@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 import 'package:propup/state_managers/following_state.dart';
+import 'package:propup/state_managers/friends_state_manager.dart';
 
 import 'add_friends_screen_widgets.dart';
 
@@ -175,36 +176,21 @@ class followersWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snapx) {
           if (snapx.hasData) {
-            return FutureBuilder(
-                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
-                    .getResult(queryUser: "", index: 0),
-                builder: (context, snap) {
-                  if (snap.hasData) {
-                    return ListView.builder(
-                        itemCount: snap.data?.length ?? 0,
+            return ListView.builder(
+                        itemCount: friendsData().followers.length,
                         itemBuilder: (context, pos) => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
                               child: possibleFriendWidget(
                                   currentUser: snapx.data,
-                                  user: snap.data![pos].id,
-                                  name: snap.data![pos].get("username") ?? "",
+                                  user: friendsData().followers[pos].id,
+                                  name: friendsData().followers[pos].get("username") ?? "",
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                                  description: snap.data![pos]
+                                  description: friendsData().followers[pos]
                                       .get("description")
                                       .toString()),
                             ));
-                  }
-                  if (snap.hasError) {
-                    return const Center(
-                      child: Text("check your network"),
-                    );
-                  }
-
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                });
+                 
           }
           //(snap.data?.get("followersList") as List)[index]
           if (snapx.hasError) {
@@ -240,36 +226,21 @@ class followingWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snapx) {
           if (snapx.hasData) {
-            return FutureBuilder(
-                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
-                    .getResult(queryUser: "", index: 2),
-                builder: (context, snap) {
-                  if (snap.hasData) {
-                    return ListView.builder(
-                        itemCount: snap.data?.length ?? 0,
+            return ListView.builder(
+                        itemCount: friendsData().following.length,
                         itemBuilder: (context, pos) => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
                               child: possibleFriendWidget(
                                   currentUser: snapx.data,
-                                  user: snap.data![pos].id,
-                                  name: snap.data![pos].get("username") ?? "",
+                                  user: friendsData().following[pos].id,
+                                  name: friendsData().following[pos].get("username") ?? "",
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                                  description: snap.data![pos]
+                                  description: friendsData().following[pos]
                                       .get("description")
                                       .toString()),
                             ));
-                  }
-                  if (snap.hasError) {
-                    return const Center(
-                      child: Text("check your network"),
-                    );
-                  }
-
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                });
+                 
           }
           //(snap.data?.get("followersList") as List)[index]
           if (snapx.hasError) {
@@ -306,36 +277,21 @@ class friendsWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snapx) {
           if (snapx.hasData) {
-            return FutureBuilder(
-                future: searchFriendsDeleget(index: 0, currentUser: snapx.data)
-                    .getResult(queryUser: "", index: 1),
-                builder: (context, snap) {
-                  if (snap.hasData) {
-                    return ListView.builder(
-                        itemCount: snap.data?.length ?? 0,
+            return ListView.builder(
+                        itemCount: friendsData().friends.length,
                         itemBuilder: (context, pos) => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
                               child: possibleFriendWidget(
                                   currentUser: snapx.data,
-                                  user: snap.data![pos].id,
-                                  name: snap.data![pos].get("username") ?? "",
+                                  user: friendsData().friends[pos].id,
+                                  name: friendsData().friends[pos].get("username") ?? "",
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                                  description: snap.data![pos]
+                                  description: friendsData().friends[pos]
                                       .get("description")
                                       .toString()),
                             ));
-                  }
-                  if (snap.hasError) {
-                    return const Center(
-                      child: Text("check your network"),
-                    );
-                  }
-
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                });
+                 
           }
           //(snap.data?.get("followersList") as List)[index]
           if (snapx.hasError) {

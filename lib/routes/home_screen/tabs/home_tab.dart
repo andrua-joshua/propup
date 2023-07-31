@@ -14,20 +14,29 @@ class homeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
     final usersStore = FirebaseFirestore.instance.collection("users");
-    
+
     final auth = FirebaseAuth.instance;
 
     return Scaffold(
+      key: _key,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 89, 176, 247),
         title: const helloTitleWidget(),
+        leading: IconButton(
+            onPressed: ()=> _key.currentState?.openDrawer(),
+            icon: const Icon(
+              Icons.menu,
+              color: Colors.white,
+            )),
         actions: [
           IconButton(
               onPressed: () => Navigator.pushNamed(
                   context, RouteGenerator.notificationscreen),
-              icon: const Icon(Icons.notification_add_outlined)),
+              icon: const Icon(
+                  color: Colors.white, Icons.notification_add_outlined)),
         ],
       ),
       body: const SafeArea(

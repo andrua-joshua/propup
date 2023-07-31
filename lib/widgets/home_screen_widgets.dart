@@ -49,10 +49,10 @@ class helloTitleWidget extends StatelessWidget {
                     return GestureDetector(
                       onTap: ()=>Navigator.pushNamed(context,RouteGenerator.myProfilescreen),
                       child:Text(
-                      snap.data?.get("username"),
+                      (snap.data?.get("username") as String).toUpperCase(),
                       style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
+                          color: Colors.white,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ));
                   }

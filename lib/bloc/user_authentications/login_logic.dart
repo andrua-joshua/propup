@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_api_init.dart';
 import 'package:propup/bloc/user_authentications/user_repository.dart';
 import 'package:propup/routes.dart';
+import 'package:propup/state_managers/friends_state_manager.dart';
 
 ///
 ///this is where all the login and register logics shall be placed
@@ -36,7 +37,7 @@ class loginLogic {
   }
 
   static void login(GlobalKey<FormState> ky, BuildContext context, String email,
-      String password) async{
+      String password) async {
     if (ky.currentState?.validate() ?? false) {
       try {
         final provider = EmailUser(email: email, password: password);
@@ -49,10 +50,12 @@ class loginLogic {
                 .doc(value.user?.uid);
             await doc.update({"token": token});
 
-            // ignore: use_build_context_synchronously
-            Navigator.pushNamed(context, RouteGenerator.homescreen);
+            friendsData().listener();
+            friendsData().initFriends();
+            //.then((value) =>
+            Navigator.pushNamed(context, RouteGenerator.homescreen); //);
           } else {
-           await value.user?.sendEmailVerification().then((value) =>
+            await value.user?.sendEmailVerification().then((value) =>
                 Navigator.pushNamed(
                     context, RouteGenerator.emailVerificationscreen));
           }
@@ -60,11 +63,11 @@ class loginLogic {
       } on FirebaseAuthException catch (e) {
         debugPrint("Firebase exception {{{{{{{{}}}}}}}}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: Duration(seconds: 3),
+            duration: Duration(seconds: 3),
             content: Text(
-          "Error: " + e.code,
-          style: const TextStyle(color: Colors.redAccent),
-        )));
+              "Error: " + e.code,
+              style: const TextStyle(color: Colors.redAccent),
+            )));
         // if (e.code == 'weak-password') {
         //   ///task in case of week password
         // }

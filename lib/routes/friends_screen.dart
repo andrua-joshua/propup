@@ -14,7 +14,7 @@ class friendScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugInvertOversizedImages = true;
+    //debugInvertOversizedImages = true;
 
     final auth = FirebaseAuth.instance.currentUser;
     final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
