@@ -41,7 +41,7 @@ class lendFriendScreen extends StatelessWidget {
 
                       if (snapShot.hasError) {
                         return const Text(
-                          "Error, check your network plz",
+                          "Error, check your network please",
                           style: TextStyle(color: Colors.red),
                         );
                       }
@@ -98,9 +98,10 @@ class lendFriendScreen extends StatelessWidget {
                           height: 30,
                         ),
                         lendProgressWidget(
-                          loanId: snap.data?.id??"",
+                          loanId: snap.data?.id ?? "",
                         ),
-                        compaignsTextualProgress(compaignId: loanId, isLoan: true),
+                        compaignsTextualProgress(
+                            compaignId: loanId, isLoan: true),
                         const SizedBox(
                           height: 40,
                         ),

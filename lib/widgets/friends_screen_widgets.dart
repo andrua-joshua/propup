@@ -226,30 +226,21 @@ class followingWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snapx) {
           if (snapx.hasData) {
-            return StreamBuilder(
-              stream: friendsData().followingSnap(),
-              builder: (context, followingSnap){
-                if(followingSnap.hasData){
-                  return ListView.builder(
-                        itemCount: followingSnap.data?.length,
+            return  ListView.builder(
+                        itemCount: friendsData().following.length,
                         itemBuilder: (context, pos) => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
                               child: possibleFriendWidget(
                                   currentUser: snapx.data,
-                                  user: followingSnap.data![pos].id,
-                                  name: followingSnap.data![pos].get("username") ?? "",
+                                  user: friendsData().following[pos].id,
+                                  name: friendsData().following[pos].get("username") ?? "",
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                                  description: followingSnap.data![pos]
+                                  description: friendsData().following[pos]
                                       .get("description")
                                       .toString()),
                             ));
-                }
-                if(followingSnap.hasError){
-                  return const Center(child: Text("Check your network pliz"),);
-                }
-                return Container();
-              });
+                
                  
           }
           //(snap.data?.get("followersList") as List)[index]

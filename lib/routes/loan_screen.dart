@@ -29,15 +29,15 @@ class loanScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 20,
+              height: 24,
             ),
             const Text(
-              "Purpose of funds",
+              "PURPOSE OF FUNDS",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 22),
+                  fontSize: 18),
             ),
             Padding(
               padding: const EdgeInsets.all(20),
@@ -46,23 +46,23 @@ class loanScreen extends StatelessWidget {
               ),
             ),
             const Text(
-              "Amount",
+              "AMOUNT",
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 22),
+                  fontSize: 18),
             ),
             Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(18),
               child: loanAmountWidget(
                 controller: _amountController,
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 18,
             ),
             const Text(
-              "Return Date (5% interest rate)",
+              "Return Date (4% interest rate)",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: Colors.black,
@@ -127,11 +127,11 @@ class loanScreen extends StatelessWidget {
                 child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Colors.blue,
                         borderRadius: BorderRadius.circular(15)),
                     child: const Text(
-                      "Invite friends",
-                      style: TextStyle(color: Colors.white, fontSize: 19),
+                      "INVITE FRIENDS",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     )))
           ],
         ),

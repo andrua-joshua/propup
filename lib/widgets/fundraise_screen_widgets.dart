@@ -10,17 +10,17 @@ class transactionDataWidget extends StatelessWidget {
   final String type;
   final int date;
   final int amount;
-  const transactionDataWidget({
-    required this.type,
-    required this.amount,
-    required this.date,
-    super.key});
+  const transactionDataWidget(
+      {required this.type,
+      required this.amount,
+      required this.date,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
     bool add = false;
 
-    switch(type){
+    switch (type) {
       case 'Donation':
         add = false;
         break;
@@ -41,7 +41,6 @@ class transactionDataWidget extends StatelessWidget {
         break;
     }
 
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -55,7 +54,8 @@ class transactionDataWidget extends StatelessWidget {
                 style: const TextStyle(color: Colors.red, fontSize: 19),
               ),
         Text(
-          DateFormat("MM-dd-yyyy").format(DateTime.fromMicrosecondsSinceEpoch(date)),
+          DateFormat("MM-dd-yyyy")
+              .format(DateTime.fromMicrosecondsSinceEpoch(date)),
           style: const TextStyle(color: Colors.grey),
         )
       ],
@@ -69,8 +69,7 @@ class transactionDataWidget extends StatelessWidget {
 //ignore: camel_case_types
 class purposeWidget extends StatelessWidget {
   final TextEditingController controller;
-  const purposeWidget({required this.controller  ,super.key});
-
+  const purposeWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +78,7 @@ class purposeWidget extends StatelessWidget {
             color: const Color.fromARGB(255, 241, 240, 240),
             borderRadius: BorderRadius.circular(10)),
         child: TextField(
+          textAlign: TextAlign.center,
           maxLines: 5,
           controller: controller,
           decoration: const InputDecoration(
@@ -93,7 +93,7 @@ class purposeWidget extends StatelessWidget {
 //ignore: camel_case_types
 class amountWidget extends StatelessWidget {
   final TextEditingController controller;
-  const amountWidget({ required this.controller ,super.key});
+  const amountWidget({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +50,8 @@ class friendsData {
     }
     friends = allFriends;
 
-    //this is for the initisation ofthe following list initialization
+    Isolate.run(() async{
+      //this is for the initisation ofthe following list initialization
     final followingList = user.get("followingList") as List;
     final allFollowing = <DocumentSnapshot>[];
     for (var followingId in followingList) {
@@ -60,6 +63,9 @@ class friendsData {
     }
     following = allFollowing;
 
+    });
+
+    
     //this is for the initilisation of the unattached list
     final followingList2 = user.get("followingList") as List;
     final allUsers = await FirebaseFirestore.instance.collection("users").get();

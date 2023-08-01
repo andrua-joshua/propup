@@ -20,7 +20,8 @@ class loanPurposeWidget extends StatelessWidget {
             color: const Color.fromARGB(255, 241, 240, 240),
             borderRadius: BorderRadius.circular(10)),
         child: TextField(
-          maxLines: 5,
+          textAlign: TextAlign.center,
+          maxLines: 4,
           controller: controller,
           decoration: const InputDecoration(
               border: InputBorder.none, hintText: "Enter purpose"),
