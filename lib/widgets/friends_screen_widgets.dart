@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:propup/routes.dart';
 import 'package:propup/state_managers/following_state.dart';
 import 'package:propup/state_managers/friends_state_manager.dart';
+import 'package:provider/provider.dart';
 
 import 'add_friends_screen_widgets.dart';
 
@@ -241,7 +242,7 @@ class followingWidget extends StatelessWidget {
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
                                   description: followingSnap.data![pos]
-                                      .get("description")
+                                      .get("description") 
                                       .toString()),
                             ));
                 }
@@ -287,20 +288,24 @@ class friendsWidget extends StatelessWidget {
         stream: user.snapshots(),
         builder: (context, snapx) {
           if (snapx.hasData) {
-            return ListView.builder(
-                        itemCount: friendsData().friends.length,
+            return Consumer<friendsNotifier>(
+              builder: (context, value,child){
+                value.listener();
+                return ListView.builder(
+                        itemCount: value.getFriends().length,
                         itemBuilder: (context, pos) => Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 7, 0),
                               child: possibleFriendWidget(
                                   currentUser: snapx.data,
-                                  user: friendsData().friends[pos].id,
-                                  name: friendsData().friends[pos].get("username") ?? "",
+                                  user: value.getFriends()[pos].id,
+                                  name: value.getFriends()[pos].get("username") ?? "",
                                   image:
                                       "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/profile-photos-4.jpg",
-                                  description: friendsData().friends[pos]
+                                  description: value.getFriends()[pos]
                                       .get("description")
                                       .toString()),
                             ));
+              });
                  
           }
           //(snap.data?.get("followersList") as List)[index]

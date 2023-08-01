@@ -110,5 +110,55 @@ class friendsData {
       yield allFollowing;
     }
   }
+
+
 }
-//class Streamer {}
+
+
+//ignore:camel_case_types
+class friendsNotifier with ChangeNotifier{
+
+  void listener(){
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+
+    user.snapshots().listen((event) async{ 
+      debugPrint("@Drillox :Listener<Friends>:::>> ");
+    //this is for the friends list initialization
+    final Friends = event.get("friendsList") as List;
+    final allFriends = <DocumentSnapshot>[];
+    if(friendsData().friends!=Friends){
+      for (var friendId in Friends) {
+      final friend = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(friendId)
+          .get();
+      allFriends.add(friend);
+    }
+    friendsData().friends = allFriends;
+    notifyListeners();
+    }
+    });
+  }
+
+  List<DocumentSnapshot> getFriends()=> friendsData().friends;
+}
+
+//ignore:camel_case_types
+class followersNotifier with ChangeNotifier{
+   void listener(){
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    user.snapshots().listen((event) { });
+  } 
+}
+
+
+//ignore:camel_case_types
+class followingNotifier with ChangeNotifier{
+   void listener(){
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    user.snapshots().listen((event) { });
+  } 
+}
