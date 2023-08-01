@@ -81,34 +81,26 @@ class customNotificationsListTileWidget extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                     color: viewedStatus
-                                        ? const Color.fromARGB(255, 130, 129, 129)
+                                        ? const Color.fromARGB(
+                                            255, 130, 129, 129)
                                         : Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold));
                           }
 
-
                           if (snapShot.hasError) {
-                            return const Text(
-                              "Error, check your network plz",
-                              style: TextStyle(color: Colors.red),
-                            );
+                            return const SizedBox();
                           }
 
-                          return Container(
-                            constraints:
-                                const BoxConstraints.expand(height: 30),
-                            margin: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 219, 219, 219),
-                                borderRadius: BorderRadius.circular(10)),
-                          );
+                          return const SizedBox();
                         })
                     : Text(notificationMessage,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: viewedStatus ? const Color.fromARGB(255, 130, 129, 129) : Colors.black,
+                            color: viewedStatus
+                                ? const Color.fromARGB(255, 130, 129, 129)
+                                : Colors.black,
                             fontSize: 18,
                             fontWeight: FontWeight.bold)),
                 subtitle: SizedBox(
@@ -133,13 +125,17 @@ class customNotificationsListTileWidget extends StatelessWidget {
           }
 
           if (snap.hasError) {
-            return const Text(
-              "Error, check your network plz",
-              style: TextStyle(color: Colors.red),
-            );
+            return Container();
+            // Text(
+            //   "Error, check your network plz",
+            //   style: TextStyle(color: Colors.red),
+            // );
           }
 
-          return Container(
+          ///--------------------------------negotiable
+
+          return //SizedBox();
+          Container(
             constraints: const BoxConstraints.expand(height: 50),
             margin: const EdgeInsets.all(7),
             decoration: BoxDecoration(

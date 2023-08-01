@@ -14,15 +14,18 @@ class compaignOverviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
         title: const Text(
           "Compaign OverView",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
+          padding: const EdgeInsets.only(top: 0, right: 0, left: 0),
           child: StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection(isLoan ? "loans" : "donations")

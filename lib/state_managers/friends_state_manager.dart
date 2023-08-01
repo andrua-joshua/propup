@@ -10,6 +10,7 @@ class friendsData {
   List<DocumentSnapshot> friends = [];
   List<DocumentSnapshot> following = [];
   List<DocumentSnapshot> unAttached = [];
+  List<Map<String, dynamic>> notifications = [];
 
   friendsData._();
   static final _singleObj = friendsData._();
@@ -50,8 +51,7 @@ class friendsData {
     }
     friends = allFriends;
 
-    Isolate.run(() async{
-      //this is for the initisation ofthe following list initialization
+    //this is for the initisation ofthe following list initialization
     final followingList = user.get("followingList") as List;
     final allFollowing = <DocumentSnapshot>[];
     for (var followingId in followingList) {
@@ -63,9 +63,6 @@ class friendsData {
     }
     following = allFollowing;
 
-    });
-
-    
     //this is for the initilisation of the unattached list
     final followingList2 = user.get("followingList") as List;
     final allUsers = await FirebaseFirestore.instance.collection("users").get();
@@ -99,22 +96,85 @@ class friendsData {
       yield "";
     }
   }
+}
 
-  Stream<List<DocumentSnapshot>> followingSnap() async* {
+//ignore:camel_case_types
+class friendsNotifier with ChangeNotifier {
+  void listener() {
     final auth = FirebaseAuth.instance.currentUser;
     final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
-    await for (var element in user.snapshots()) {
-      final followingList = element.get("followingList") as List;
-      final allFollowing = <DocumentSnapshot>[];
-      for (var followingId in followingList) {
-        final follower = await FirebaseFirestore.instance
-            .collection("users")
-            .doc(followingId)
-            .get();
-        allFollowing.add(follower);
+
+    user.snapshots().listen((event) async {
+      debugPrint("@Drillox :Listener<Friends>:::>> ");
+      //this is for the friends list initialization
+      final Friends = event.get("friendsList") as List;
+      final allFriends = <DocumentSnapshot>[];
+      if (friendsData().friends.length != Friends.length) {
+        for (var friendId in Friends) {
+          final friend = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(friendId)
+              .get();
+          allFriends.add(friend);
+        }
+        friendsData().friends = allFriends;
+        notifyListeners();
       }
-      yield allFollowing;
-    }
+    });
   }
+
+  List<DocumentSnapshot> getFriends() => friendsData().friends;
 }
-//class Streamer {}
+
+//ignore:camel_case_types
+class followersNotifier with ChangeNotifier {
+  void listener() {
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    user.snapshots().listen((event) async {
+      //this is for the followers list initilization
+      final Followers = event.get("followersList") as List;
+      final allFollowers = <DocumentSnapshot>[];
+      if (friendsData().followers.length != Followers.length) {
+        for (var followerId in Followers) {
+          final follower = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(followerId)
+              .get();
+
+          allFollowers.add(follower);
+        }
+        friendsData().followers = allFollowers;
+        notifyListeners();
+      }
+    });
+  }
+
+  List<DocumentSnapshot> getFollowers() => friendsData().followers;
+}
+
+//ignore:camel_case_types
+class followingNotifier with ChangeNotifier {
+  void listener() {
+    final auth = FirebaseAuth.instance.currentUser;
+    final user = FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    user.snapshots().listen((event) async {
+      //this is for the initisation ofthe following list initialization
+      final followingList = event.get("followingList") as List;
+      final allFollowing = <DocumentSnapshot>[];
+      if (friendsData().following.length != followingList.length) {
+        for (var followingId in followingList) {
+          final follower = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(followingId)
+              .get();
+          allFollowing.add(follower);
+        }
+        friendsData().following = allFollowing;
+        notifyListeners();
+      }
+    });
+  }
+
+  List<DocumentSnapshot> getFollowing() => friendsData().following;
+}

@@ -13,10 +13,13 @@ class addFriendsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
         title: const Text(
           "Add Friends",
           style: TextStyle(
-              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       body: const SafeArea(

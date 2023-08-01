@@ -163,6 +163,7 @@ class fullNameRowWidget extends StatelessWidget {
                     controller: firstNameController,
                     maxLines: 1,
                     decoration: const InputDecoration(
+                      border: InputBorder.none,
                         hintText: "First name",
                         suffixIcon: Icon(Icons.cancel_rounded)),
                   ),
@@ -182,6 +183,7 @@ class fullNameRowWidget extends StatelessWidget {
                     controller: lastNameController,
                     maxLines: 1,
                     decoration: const InputDecoration(
+                      border: InputBorder.none,
                         hintText: "Last name",
                         suffixIcon: Icon(Icons.cancel_rounded)),
                   ),
@@ -219,6 +221,7 @@ class locationRowWidget extends StatelessWidget {
               controller: controller,
               maxLines: 1,
               decoration: const InputDecoration(
+                border: InputBorder.none,
                 hintText: "District",
               )),
         ),
@@ -253,6 +256,7 @@ class aboutRowWidget extends StatelessWidget {
               controller: controller,
               maxLines: 5,
               decoration: const InputDecoration(
+                border: InputBorder.none,
                 hintText: "Description",
               )),
         ),

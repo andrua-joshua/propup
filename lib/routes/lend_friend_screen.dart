@@ -22,6 +22,9 @@ class lendFriendScreen extends StatelessWidget {
         if (snap.hasData) {
           return Scaffold(
             appBar: AppBar(
+              backgroundColor:  const Color.fromARGB(255, 8, 92, 181),
+              leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+              icon: const Icon(Icons.arrow_back, color: Colors.white,)),
                 centerTitle: true,
                 title: FutureBuilder(
                     future: FirebaseFirestore.instance
@@ -33,7 +36,7 @@ class lendFriendScreen extends StatelessWidget {
                         return Text(
                           snapShot.data?.get("username"),
                           style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 25),
                         );

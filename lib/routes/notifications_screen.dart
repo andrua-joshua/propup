@@ -26,14 +26,17 @@ class notificationsScreen extends StatelessWidget {
 
           return CustomScrollView(
             slivers: [
-              const SliverAppBar(
+              SliverAppBar(
                 pinned: true,
                 expandedHeight: 100,
-                flexibleSpace: FlexibleSpaceBar(
+                backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+                leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+                icon:const Icon(Icons.arrow_back, color: Colors.white,)),
+                flexibleSpace: const FlexibleSpaceBar(
                   title: Text(
                     "Notifications",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
@@ -45,7 +48,7 @@ class notificationsScreen extends StatelessWidget {
                       ? (idx = (snap.data?.get("notifications") as List).length)
                       : 0,
                   itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.all(2),
                         child: customNotificationsListTileWidget(
                           callback: () {
                             String subtyp = (snap.data?.get("notifications")

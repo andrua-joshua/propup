@@ -17,10 +17,13 @@ class fundRaiseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
         title: const Text(
           "FUND RAISE",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
+        backgroundColor: Color.fromARGB(255, 8, 92, 181),
       ),
       body: SingleChildScrollView(
         child: Column(

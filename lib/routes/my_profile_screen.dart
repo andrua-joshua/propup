@@ -35,19 +35,21 @@ class myProfileScreen extends StatelessWidget {
     final List myPosts = [];
 
     return Scaffold(
-      body: SafeArea(
-        child: StreamBuilder(
+      body: StreamBuilder(
             stream: usersStore.doc(auth.currentUser?.uid).snapshots(),
             builder: (context, snap) {
               return CustomScrollView(
                 slivers: [
-                  const SliverAppBar(
+                  SliverAppBar(
                     centerTitle: true,
+                    backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+                    leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+                    icon: const Icon(Icons.arrow_back, color: Colors.white,)),
                     pinned: true,
-                    title: Text(
+                    title: const Text(
                       "My profile",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 23),
                     ),
@@ -215,7 +217,7 @@ class myProfileScreen extends StatelessWidget {
                   // )
                 ],
               );
-            }),
+            },
       ),
       floatingActionButton: FloatingActionButton(
         elevation: 4,

@@ -150,7 +150,7 @@ class compaignsTextualProgress extends StatelessWidget {
 
           return Text(
             "$recieved/$amount collected so-far.",
-            style: const TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.green),
           );
         }
 

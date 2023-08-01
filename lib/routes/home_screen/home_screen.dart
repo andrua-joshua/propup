@@ -46,6 +46,7 @@ class homeScreen extends StatelessWidget {
       builder: (context, child) => WillPopScope(
         onWillPop: _willPop,
         child: Scaffold(
+          backgroundColor: Colors.green,
           body: Consumer<homeTabsChange>(builder: (context, value, child) {
             // if(value.currentIndex == 0){
             //   return const postsTab();}
@@ -56,7 +57,7 @@ class homeScreen extends StatelessWidget {
           }),
           bottomNavigationBar: Consumer<homeTabsChange>(
             builder: (context, value, child) => BottomNavigationBar(
-              backgroundColor: const Color.fromARGB(255, 89, 176, 247),
+              backgroundColor: Color.fromARGB(255, 8, 92, 181),
                 onTap: (val) => value.ChangeIndex(val),
                 selectedItemColor: Colors.white,
                 unselectedItemColor: Colors.black,

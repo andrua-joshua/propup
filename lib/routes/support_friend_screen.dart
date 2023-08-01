@@ -27,6 +27,9 @@ class supportFriendScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
                 centerTitle: true,
+                backgroundColor:  const Color.fromARGB(255, 8, 92, 181),
+                leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+                icon: const Icon(Icons.arrow_back, color: Colors.white,)),
                 title: FutureBuilder(
                     future: FirebaseFirestore.instance
                         .collection("users")
@@ -37,7 +40,7 @@ class supportFriendScreen extends StatelessWidget {
                         return Text(
                           snapShot.data?.get("username"),
                           style: const TextStyle(
-                              color: Colors.black,
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 25),
                         );
@@ -108,7 +111,6 @@ class supportFriendScreen extends StatelessWidget {
                         const SizedBox(
                           height: 40,
                         ),
-
                         SizedBox(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,12 +136,28 @@ class supportFriendScreen extends StatelessWidget {
                                   onPressed: () {
                                     showDialog(
                                         context: context,
+                                        barrierDismissible: false,
                                         builder: (context) => AlertDialog(
-                                              title: const Text(
+                                          backgroundColor: const Color.fromARGB(255, 24, 24, 24),
+                                          actionsPadding: const EdgeInsets.only(bottom: 10),
+                                          //titlePadding: const EdgeInsets.only(top: 4,left: 5),
+                                          //contentPadding: const EdgeInsets.symmetric(horizontal:10),
+                                              actions: [
+                                                Center(child:GestureDetector(
+                                                    onTap: () {
+                                                      for (int i = 0; i < 3;i++) {
+                                                        Navigator.pop(context);
+                                                      }
+                                                    },
+                                                    child: const Text("Ok", style: TextStyle(color: Colors.white),)))
+                                                ],
+                                              title: const Center(child:Text(
                                                 "Processing..",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    color: Colors.black),
-                                              ),
+                                                    color: Colors.white),
+                                              )),
                                               content: FutureBuilder(
                                                   future: donations
                                                       .instance()
@@ -151,15 +169,35 @@ class supportFriendScreen extends StatelessWidget {
                                                   builder: (context, snap) {
                                                     if (snap.hasData) {
                                                       return (snap.data == 1)
-                                                          ? const Text(
-                                                              "Funding succesful.",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green),
-                                                            )
+                                                          ? SizedBox(
+                                                            height: 65,
+                                                            child:Column(
+                                                              children: [
+                                                                const Text(
+                                                                  "Funding succesful.",
+                                                                  style: TextStyle(
+                                                                    fontSize: 20,
+                                                                      color: Colors
+                                                                          .green),
+                                                                ),
+                                                                SizedBox(height: 4,),
+                                                                compaignsTextualProgress(
+                                                                    compaignId:
+                                                                        donationId,
+                                                                    isLoan:
+                                                                        false),
+                                                                        // const Expanded(child: SizedBox()),
+                                                                        // const SizedBox(height: 3,),
+                                                                        // const Divider(
+                                                                        //   thickness: 1,
+                                                                        //   color: Colors.grey,
+                                                                        // )
+                                                              ],
+                                                            ))
                                                           : (snap.data == 2)
                                                               ? const Text(
                                                                   "Fund compaign is closed.",
+                                                                  textAlign: TextAlign.center,
                                                                   style: TextStyle(
                                                                       color: Colors
                                                                           .red),
@@ -167,12 +205,14 @@ class supportFriendScreen extends StatelessWidget {
                                                               : (snap.data == 0)
                                                                   ? const Text(
                                                                       "Your acount balance is low to make this funding, top-up your account and try again.",
+                                                                      textAlign: TextAlign.center,
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.red),
                                                                     )
                                                                   : const Text(
-                                                                      "Funding failed.\n",
+                                                                      "Funding failed.",
+                                                                      textAlign: TextAlign.center,
                                                                       style: TextStyle(
                                                                           color:
                                                                               Colors.red),

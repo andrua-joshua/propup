@@ -47,14 +47,15 @@ class helloTitleWidget extends StatelessWidget {
                 if (snap.hasData) {
                   if (snap.data != null) {
                     return GestureDetector(
-                      onTap: ()=>Navigator.pushNamed(context,RouteGenerator.myProfilescreen),
-                      child:Text(
-                      (snap.data?.get("username") as String).toUpperCase(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ));
+                        onTap: () => Navigator.pushNamed(
+                            context, RouteGenerator.myProfilescreen),
+                        child: Text(
+                          (snap.data?.get("username") as String).toUpperCase(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ));
                   }
                 }
 
@@ -92,9 +93,9 @@ class accountBalanceWidget extends StatelessWidget {
               Text(
                 "UGX ${snap.data?.get("account_balance")}",
                 style: const TextStyle(
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 0, 11, 94),
                     fontSize: 24,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.w900),
               ),
               Text(
                 DateFormat("MM-dd-yyyy").format(DateTime.now()),
@@ -114,9 +115,10 @@ class accountBalanceWidget extends StatelessWidget {
 
         return Center(
             child: Container(
-                width: 130,
-                height: 50,
-                color: const Color.fromARGB(155, 179, 177, 177)));
+          width: 130,
+          height: 50,
+          //color: const Color.fromARGB(155, 179, 177, 177)
+        ));
       },
     );
   }
@@ -155,13 +157,15 @@ class gridDataWidget extends StatelessWidget {
             callBack: () =>
                 Navigator.pushNamed(context, RouteGenerator.loanscreen)),
         gridData(
-            title: "LeaderBoard",
-            callBack: () {},),
-            // => Navigator.pushNamed(
-            //     context, RouteGenerator.leadersboardscreenportal)),
-        gridData(title: "Overview Compaigns", callBack: () => Navigator.pushNamed(
-            context, RouteGenerator.overviewscreen)
-            ),
+          title: "LeaderBoard",
+          callBack: () {},
+        ),
+        // => Navigator.pushNamed(
+        //     context, RouteGenerator.leadersboardscreenportal)),
+        gridData(
+            title: "Overview Compaigns",
+            callBack: () =>
+                Navigator.pushNamed(context, RouteGenerator.overviewscreen)),
       ],
     );
   }
@@ -183,7 +187,9 @@ class gridData extends StatelessWidget {
           onTap: callBack,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: const Color.fromARGB(255, 88, 94, 98),),
+              borderRadius: BorderRadius.circular(10),
+              color: Color.fromARGB(255, 8, 92, 181),
+            ),
             child: Center(
               child: Text(
                 title,
@@ -611,7 +617,6 @@ class _chatSearchWidgetState extends State<chatSearchWidget> {
               ))),
       TextButton(
           onPressed: () {
-            
             showBottomSheet(
                 elevation: 10,
                 context: context,
@@ -650,9 +655,17 @@ class allFriendsListWidget extends StatelessWidget {
         constraints: const BoxConstraints.expand(height: 65),
         child: const Column(
           children: [
-            SizedBox(height: 30,),
-            Divider(thickness: 2, color: Colors.white,),
-            Divider(thickness: 2, color: Colors.white,)
+            SizedBox(
+              height: 30,
+            ),
+            Divider(
+              thickness: 2,
+              color: Colors.white,
+            ),
+            Divider(
+              thickness: 2,
+              color: Colors.white,
+            )
           ],
         ),
       ),
@@ -672,7 +685,8 @@ class allFriendsListWidget extends StatelessWidget {
                         (index) => FutureBuilder(
                             future: FirebaseFirestore.instance
                                 .collection("users")
-                                .doc((snap.data?.get("friendsList") as List)[index])
+                                .doc((snap.data?.get("friendsList")
+                                    as List)[index])
                                 .get(),
                             builder: (context, value) {
                               if (value.hasData) {
@@ -713,9 +727,9 @@ class allFriendsListWidget extends StatelessWidget {
                               return Container(
                                 constraints:
                                     const BoxConstraints.expand(height: 50),
-                               
                                 decoration: BoxDecoration(
-                                   color: const Color.fromARGB(255, 241, 241, 241),
+                                    color: const Color.fromARGB(
+                                        255, 241, 241, 241),
                                     borderRadius: BorderRadius.circular(10)),
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
@@ -768,10 +782,8 @@ class chatUserWidget extends StatelessWidget {
     return ListTile(
       onTap: () {
         //sending it to the messaging screen
-        Navigator.pushNamed(
-          context, 
-          RouteGenerator.messagingscreen,
-          arguments: userId);
+        Navigator.pushNamed(context, RouteGenerator.messagingscreen,
+            arguments: userId);
       },
       leading: CircleAvatar(
         backgroundColor: Colors.black,

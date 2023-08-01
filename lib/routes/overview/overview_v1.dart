@@ -15,9 +15,12 @@ class overviewScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
+        backgroundColor: const Color.fromARGB(255, 8, 92, 181),
         title: const Text(
           "My Compaigns",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: SafeArea(

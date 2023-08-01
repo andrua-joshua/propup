@@ -18,9 +18,14 @@ class loanScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+        leading: IconButton(
+          onPressed: ()=> Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back, color: Colors.white,),
+        ),
         title: const Text(
           "LOAN",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: SafeArea(

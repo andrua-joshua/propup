@@ -22,19 +22,21 @@ class friendsProfileScreen extends StatelessWidget {
     final storageRf = FirebaseStorage.instance.ref("posts");
 
     return Scaffold(
-      body: SafeArea(
-          child: StreamBuilder(
+      body: StreamBuilder(
               stream: postsStore.snapshots(),
               builder: (context, snap) {
                 return CustomScrollView(
                   slivers: [
-                    const SliverAppBar(
+                    SliverAppBar(
                       centerTitle: true,
                       pinned: true,
-                      title: Text(
+                      backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+                      leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+                      icon: const Icon(Icons.arrow_back, color: Colors.white,) ),
+                      title: const Text(
                         "User's Profile",
                         style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 23),
                       ),
@@ -213,7 +215,7 @@ class friendsProfileScreen extends StatelessWidget {
                     // )
                   ],
                 );
-              })),
+              }),
     );
   }
 }

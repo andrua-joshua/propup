@@ -24,15 +24,18 @@ class transactionsScreen extends StatelessWidget {
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
+                  backgroundColor: const Color.fromARGB(255, 8, 92, 181),
                   floating: true,
                   pinned: true,
                   centerTitle: true,
                   expandedHeight: 120,
                   collapsedHeight: 80,
+                  leading: IconButton(onPressed: ()=>Navigator.pop(context), 
+                  icon: const Icon(Icons.arrow_back, color: Colors.white,)),
                   title: const Text(
                     "Transactions",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 25),
                   ),
@@ -40,7 +43,7 @@ class transactionsScreen extends StatelessWidget {
                     centerTitle: true,
                     title: Text(
                       DateFormat("MMMM-dd-yyyy").format(DateTime.now()),
-                      style: const TextStyle(color: Colors.grey, fontSize: 15),
+                      style: const TextStyle(color: Color.fromARGB(255, 198, 198, 198), fontSize: 15),
                     ),
                   ),
                 ),

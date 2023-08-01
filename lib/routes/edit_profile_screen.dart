@@ -49,10 +49,13 @@ class _editProfileScreenState extends State<editProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 92, 181),
+        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
+        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
         title: const Text(
           "Account Info",
           style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
         ),
       ),
       body: SafeArea(

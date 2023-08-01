@@ -22,11 +22,11 @@ class homeTab extends StatelessWidget {
     return Scaffold(
       key: _key,
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 8, 92, 181),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 89, 176, 247),
         title: const helloTitleWidget(),
         leading: IconButton(
-            onPressed: ()=> _key.currentState?.openDrawer(),
+            onPressed: () => _key.currentState?.openDrawer(),
             icon: const Icon(
               Icons.menu,
               color: Colors.white,
@@ -39,25 +39,42 @@ class homeTab extends StatelessWidget {
                   color: Colors.white, Icons.notification_add_outlined)),
         ],
       ),
-      body: const SafeArea(
+      body: SafeArea(
         //child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: accountBalanceWidget()),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-                child: Padding(
-                    padding: EdgeInsets.all(10), child: gridDataWidget()))
-          ],
-        ),
+        child: Container(
+            decoration: const BoxDecoration(
+                gradient:
+                    LinearGradient(transform: GradientRotation(145), colors: [
+              Colors.white,
+              Color.fromARGB(255, 145, 143, 143),
+              Color.fromARGB(255, 67, 57, 57),
+              Color.fromARGB(255, 61, 59, 59),
+              Color.fromARGB(255, 39, 39, 39),
+              Color.fromARGB(255, 145, 143, 143),
+              Colors.white,
+
+              // Color.fromARGB(255, 63, 65, 111),
+              // Color.fromARGB(255, 48, 51, 109),
+              // Color.fromARGB(255, 45, 50, 149),
+              // Color.fromARGB(255, 56, 65, 233),
+            ])),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: accountBalanceWidget()),
+                SizedBox(
+                  height: 10,
+                ),
+                Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(10), child: gridDataWidget()))
+              ],
+            )),
       ),
       drawer: SafeArea(
           child: Container(

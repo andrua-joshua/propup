@@ -181,23 +181,34 @@ class compaignOverviewTopWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Color.fromARGB(255, 216, 216, 216),
-          borderRadius: BorderRadius.circular(20)),
+          color: const Color.fromARGB(255, 216, 216, 216),
+          borderRadius: BorderRadius.circular(0)),
       //padding: const EdgeInsets.all(5),
       child: Column(
         children: [
           LayoutBuilder(builder: (context, dimensions) {
             return Container(
-              width: dimensions.maxWidth,
+              width: dimensions.maxWidth * 0.9,
               decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              padding: const EdgeInsets.all(15),
+                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(top: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                       child: Row(
                     children: [
+                      Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            isLoan ? "Loan" : "Fundraise",
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          )),
                       Expanded(child: Container()),
                       Container(
                         decoration: BoxDecoration(
@@ -205,7 +216,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10)),
                         padding: const EdgeInsets.all(5),
                         child: Text(
-                          isClosed ? "closed" : "open",
+                          isClosed ? "Closed" : "Open",
                           style: TextStyle(
                               color: isClosed ? Colors.grey : Colors.green),
                         ),
@@ -213,39 +224,12 @@ class compaignOverviewTopWidget extends StatelessWidget {
                     ],
                   )),
                   const SizedBox(
-                    height: 1,
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Text(
-                        isLoan ? "Loan" : "Fundraise",
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
-                      )),
-                  const SizedBox(
-                    height: 40,
+                    height: 50,
                   ),
                   SizedBox(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // const SizedBox(
-                        //   width: 10,
-                        // ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(5),
-                          child: Text(
-                            "Ugx $amount",
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 17),
-                          ),
-                        ),
                         Container(
                           decoration: const BoxDecoration(
                               color: Colors.white, shape: BoxShape.circle),
@@ -253,7 +237,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
                           child: Container(
                             decoration: const BoxDecoration(
                                 color: Colors.blue, shape: BoxShape.circle),
-                            padding: const EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(15),
                             child: Text(
                               "${((recieved / amount) * 100).toStringAsFixed(0)}%",
                               style: const TextStyle(
@@ -291,46 +275,81 @@ class compaignOverviewTopWidget extends StatelessWidget {
                 thickness: 1,
                 color: Colors.white,
               )),
+
+          ////-------------------amount ----------------------////
+
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      child: Column(
-                        children: [
-                          const Text("Recieved",
-                              style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 34, 218))),
-                          Text("Ugx $recieved",
-                              style: TextStyle(color: Colors.blue))
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      child: Column(
-                        children: [
-                          const Text("Loan balance",
-                              style: TextStyle(color: Colors.green)),
-                          Text(
-                            (isLoan && isClosed)
-                                ? "Ugx ${amount - paidback}"
-                                : "Ugx 0",
+                    const Text("Compaign Amount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: Color.fromARGB(255, 0, 0, 0))),
+                    Text("UGX $amount", style: TextStyle(color: Colors.blue)),
+                  ],
+                ),
+              )),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Total Recieved",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: Color.fromARGB(255, 0, 0, 0))),
+                    Text("UGX $recieved", style: TextStyle(color: Colors.blue)),
+                  ],
+                ),
+              )),
+
+          const SizedBox(
+            height: 10,
+          ),
+
+          isLoan
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: SizedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Loan balance",
                             style: TextStyle(
-                                color: (isLoan && isClosed)
-                                    ? Colors.red
-                                    : Colors.grey),
-                          )
-                        ],
-                      ),
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontWeight: FontWeight.w900)),
+                        Text(
+                          (isLoan && isClosed)
+                              ? "Ugx ${amount - paidback}"
+                              : "Ugx 0",
+                          style: TextStyle(
+                              color: (isLoan && isClosed)
+                                  ? Colors.red
+                                  : Colors.grey),
+                        )
+                      ],
                     ),
+                  ))
+              : Container(),
 
-                    ////////----////////
-                    ///
-
-                    GestureDetector(
-                        onTap: () async {
+          ///----------------amount -----------------///
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: () async {
                           if (!isClosed) {
                             if (isLoan) {
                               //do the re-invitation
@@ -364,18 +383,24 @@ class compaignOverviewTopWidget extends StatelessWidget {
                           decoration: BoxDecoration(
                               color: (!isClosed)
                                   ? Colors.blue
-                                  :isLoan?Colors.blue: const Color.fromARGB(255, 185, 184, 184),
+                                  : isLoan
+                                      ? Colors.blue
+                                      : const Color.fromARGB(
+                                          255, 185, 184, 184),
                               borderRadius: BorderRadius.circular(10)),
                           padding: const EdgeInsets.all(5),
                           child: Text(
                             isClosed
                                 ? isLoan
                                     ? "Pay back"
-                                    : "Remind"
-                                : "Remind",
-                            style: TextStyle(color: (!isClosed)
-                                  ? Colors.black
-                                  :isLoan?Colors.black: Colors.grey),
+                                    : "Remind Friends"
+                                : "Remind Friends",
+                            style: TextStyle(
+                                color: (!isClosed)
+                                    ? Colors.white
+                                    : isLoan
+                                        ? Colors.white
+                                        : Colors.grey),
                           ),
                         ))
                   ],
