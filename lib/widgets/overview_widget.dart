@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_outgoing_message_handler.dart';
 
@@ -32,6 +33,7 @@ class customCompaignWidget extends StatelessWidget {
                 onTap: () {
                   Map<String, dynamic> args = {
                     "isLoan": isLoan,
+                    "isPublic": false,
                     "compaignId": compaignId
                   };
 
@@ -163,7 +165,9 @@ class compaignOverviewTopWidget extends StatelessWidget {
   final int recieved;
   final int paidback;
   final String purpose;
+  final String owner;
   final bool isLoan;
+  final bool isPublic;
   final String compaingId;
   final bool isClosed;
 
@@ -171,7 +175,9 @@ class compaignOverviewTopWidget extends StatelessWidget {
       {required this.amount,
       required this.isClosed,
       required this.isLoan,
+      required this.isPublic,
       required this.paidback,
+      required this.owner,
       required this.purpose,
       required this.recieved,
       required this.compaingId,
@@ -187,82 +193,100 @@ class compaignOverviewTopWidget extends StatelessWidget {
       child: Column(
         children: [
           LayoutBuilder(builder: (context, dimensions) {
-            return Container(
-              width: dimensions.maxWidth * 0.9,
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(top: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                      child: Row(
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(
-                            isLoan ? "Loan" : "Fundraise",
-                            textAlign: TextAlign.start,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          )),
-                      Expanded(child: Container()),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.all(5),
-                        child: Text(
-                          isClosed ? "Closed" : "Open",
-                          style: TextStyle(
-                              color: isClosed ? Colors.grey : Colors.green),
-                        ),
-                      )
-                    ],
-                  )),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  SizedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            return isPublic
+                ? const Text("Purpose of funds", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)
+                : Container(
+                    width: dimensions.maxWidth * 0.9,
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                              color: Colors.white, shape: BoxShape.circle),
-                          padding: const EdgeInsets.all(5),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                color: Colors.blue, shape: BoxShape.circle),
-                            padding: const EdgeInsets.all(15),
-                            child: Text(
-                              "${((recieved / amount) * 100).toStringAsFixed(0)}%",
-                              style: const TextStyle(
+                        SizedBox(
+                            child: Row(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  isLoan ? "Loan" : "Fundraise",
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                )),
+                            Expanded(child: Container()),
+                            Container(
+                              decoration: BoxDecoration(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            ),
-                          ),
+                                  borderRadius: BorderRadius.circular(10)),
+                              padding: const EdgeInsets.all(5),
+                              child: Text(
+                                isClosed ? "Closed" : "Open",
+                                style: TextStyle(
+                                    color:
+                                        isClosed ? Colors.grey : Colors.green),
+                              ),
+                            )
+                          ],
+                        )),
+                        const SizedBox(
+                          height: 50,
                         ),
-                        // const SizedBox(
-                        //   width: 10,
-                        // ),
+                        SizedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle),
+                                padding: const EdgeInsets.all(5),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle),
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "${((recieved / amount) * 100).toStringAsFixed(0)}%",
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              // const SizedBox(
+                              //   width: 10,
+                              // ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  )
-                ],
-              ),
-            );
+                  );
           }),
           const SizedBox(
             height: 5,
           ),
           Padding(
               padding: const EdgeInsets.all(10),
-              child: Text(
+              child:isPublic? 
+              SizedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                purpose,
+                style: const TextStyle(color: Colors.black, fontSize: 15),
+              )
+                  ],
+                ),
+              )
+              :Text(
                 purpose,
                 style: const TextStyle(color: Colors.black, fontSize: 17),
               )),
@@ -279,7 +303,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
           ////-------------------amount ----------------------////
 
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: SizedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -288,7 +312,7 @@ class compaignOverviewTopWidget extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.w900,
                             color: Color.fromARGB(255, 0, 0, 0))),
-                    Text("UGX $amount", style: TextStyle(color: Colors.blue)),
+                    Text("UGX $amount", style: const TextStyle(color: Colors.blue)),
                   ],
                 ),
               )),
@@ -351,31 +375,38 @@ class compaignOverviewTopWidget extends StatelessWidget {
                     TextButton(
                         onPressed: () async {
                           if (!isClosed) {
-                            if (isLoan) {
-                              //do the re-invitation
-
-                              final notificaton = notificationsMessage(
-                                  head: DateTime.now().microsecondsSinceEpoch,
-                                  messageID: compaingId,
-                                  message: purpose,
-                                  subType: "Loan");
-
-                              await fcmOutgoingMessages
-                                  .instance()
-                                  .sendNotificationMessage(
-                                      message: notificaton);
+                            if (isPublic) {
+                              if (FirebaseAuth.instance.currentUser?.uid != owner) {
+                                isLoan?Navigator.pushNamed(context, RouteGenerator.lendfriendscreen, arguments: compaingId )
+                                :Navigator.pushNamed(context, RouteGenerator.supportscreen, arguments: compaingId);
+                              }
                             } else {
-                              //do the re-invitation
-                              final notificaton = notificationsMessage(
-                                  head: DateTime.now().microsecondsSinceEpoch,
-                                  messageID: compaingId,
-                                  message: purpose,
-                                  subType: "Donation");
+                              if (isLoan) {
+                                //do the re-invitation
 
-                              await fcmOutgoingMessages
-                                  .instance()
-                                  .sendNotificationMessage(
-                                      message: notificaton);
+                                final notificaton = notificationsMessage(
+                                    head: DateTime.now().microsecondsSinceEpoch,
+                                    messageID: compaingId,
+                                    message: purpose,
+                                    subType: "Loan");
+
+                                await fcmOutgoingMessages
+                                    .instance()
+                                    .sendNotificationMessage(
+                                        message: notificaton);
+                              } else {
+                                //do the re-invitation
+                                final notificaton = notificationsMessage(
+                                    head: DateTime.now().microsecondsSinceEpoch,
+                                    messageID: compaingId,
+                                    message: purpose,
+                                    subType: "Donation");
+
+                                await fcmOutgoingMessages
+                                    .instance()
+                                    .sendNotificationMessage(
+                                        message: notificaton);
+                              }
                             }
                           }
                         },
@@ -390,11 +421,15 @@ class compaignOverviewTopWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10)),
                           padding: const EdgeInsets.all(5),
                           child: Text(
-                            isClosed
-                                ? isLoan
-                                    ? "Pay back"
-                                    : "Remind Friends"
-                                : "Remind Friends",
+                            isPublic
+                                ? isClosed
+                                    ? "closed"
+                                    : "Support"
+                                : isClosed
+                                    ? isLoan
+                                        ? "Pay back"
+                                        : "Remind Friends"
+                                    : "Remind Friends",
                             style: TextStyle(
                                 color: (!isClosed)
                                     ? Colors.white

@@ -74,7 +74,8 @@ class notificationsScreen extends StatelessWidget {
                             } else if (subtyp == 'loan-compaign') {
                               Map<String, dynamic> args = {
                                 "isLoan": true,
-                                "compaignId": id
+                                "compaignId": id,
+                                "isPublic":false
                               };
 
                               Navigator.pushNamed(context,

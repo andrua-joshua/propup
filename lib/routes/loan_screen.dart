@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/payments/loans_and_fundraises/loans.dart';
 import 'package:propup/widgets/loan_screen_widgets.dart';
+import 'package:provider/provider.dart';
+
+import '../state_managers/compaign_publi.dart';
 
 ///
 ///this class will be responsible for the loan page
@@ -14,14 +17,18 @@ class loanScreen extends StatelessWidget {
     final TextEditingController _purposeController = TextEditingController();
     final TextEditingController _amountController = TextEditingController();
     final TextEditingController _dateController = TextEditingController();
+    bool isPublic = false;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 8, 92, 181),
         leading: IconButton(
-          onPressed: ()=> Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.white,),
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
         ),
         title: const Text(
           "LOAN",
@@ -80,6 +87,26 @@ class loanScreen extends StatelessWidget {
                 dateController: _dateController,
               ),
             ),
+            ChangeNotifierProvider<loanCompaign>(
+              create: (context) => loanCompaign(),
+              builder: (context, child) {
+                return SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Consumer<loanCompaign>(builder: (_, value, child) {
+                        isPublic = value.currentState;
+                        return Checkbox(
+                            value: value.currentState,
+                            onChanged: (state) =>
+                                value.currentStateSet(state ?? false));
+                      }),
+                      const Text("public compaign", style: TextStyle(fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                );
+              },
+            ),
             TextButton(
                 onPressed: () {
                   showDialog(
@@ -93,6 +120,7 @@ class loanScreen extends StatelessWidget {
                                 future: loans.instance().requestLoan(
                                     amount: int.parse(_amountController.text),
                                     interestRate: 5,
+                                    isPublic: isPublic,
                                     paybackTime:
                                         DateTime.parse(_dateController.text),
                                     purpose: _purposeController.text),

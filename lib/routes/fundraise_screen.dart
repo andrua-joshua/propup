@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/payments/loans_and_fundraises/donation.dart';
+import 'package:propup/state_managers/compaign_publi.dart';
 import 'package:propup/widgets/fundraise_screen_widgets.dart';
+import 'package:provider/provider.dart';
 
 ///this is where the fundraise route is created from
 ///
@@ -14,11 +16,17 @@ class fundRaiseScreen extends StatelessWidget {
 
     final TextEditingController _amountController = TextEditingController();
 
+    bool isPublic = false;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
-        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: const Text(
           "FUND RAISE",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
@@ -64,6 +72,26 @@ class fundRaiseScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: amountWidget(controller: _amountController),
             ),
+            ChangeNotifierProvider<fundRaiseCompaign>(
+              create: (context) => fundRaiseCompaign(),
+              builder: (context, child) {
+                return SizedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Consumer<fundRaiseCompaign>(builder: (_, value, child) {
+                        isPublic = value.currentState;
+                        return Checkbox(
+                            value: value.currentState,
+                            onChanged: (state) =>
+                                value.currentStateSet(state ?? false));
+                      }),
+                      const Text("public compaign", style: TextStyle(fontWeight: FontWeight.bold),)
+                    ],
+                  ),
+                );
+              },
+            ),
             TextButton(
                 onPressed: () {
                   debugPrint(":::::::@Drilloxc");
@@ -76,6 +104,7 @@ class fundRaiseScreen extends StatelessWidget {
                             ),
                             content: FutureBuilder(
                                 future: donations.instance().requestDonation(
+                                  isPublic: isPublic,
                                     amount: int.parse(_amountController.text),
                                     purpose: _purposeController.text),
                                 builder: (context, snap) {

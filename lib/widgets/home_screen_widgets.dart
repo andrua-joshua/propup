@@ -157,8 +157,8 @@ class gridDataWidget extends StatelessWidget {
             callBack: () =>
                 Navigator.pushNamed(context, RouteGenerator.loanscreen)),
         gridData(
-          title: "LeaderBoard",
-          callBack: () {},
+          title: "Open Compaigns",
+          callBack: ()=> Navigator.pushNamed(context, RouteGenerator.publicCompaignsscreen),
         ),
         // => Navigator.pushNamed(
         //     context, RouteGenerator.leadersboardscreenportal)),

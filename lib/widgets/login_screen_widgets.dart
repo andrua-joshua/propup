@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_authentications/login_logic.dart';
+import 'package:propup/bloc/user_authentications/user_repository.dart';
 import 'package:propup/routes.dart';
 import 'package:propup/state_managers/passwords_notifier.dart';
 import 'package:provider/provider.dart';
@@ -93,6 +95,33 @@ class _loginFormWidgetState extends State<loginFormWidget> {
             const SizedBox(
               height: 20,
             ),
+            TextButton(
+                onPressed: () {
+                  
+                },
+                child: const Card(
+                    color: Colors.blue,
+                    elevation: 8,
+                    child: SizedBox(
+                    height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(Icons.phone),
+                          Text(
+                            "SignIn using phone",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold),
+                          ),SizedBox(width: 10,)
+                        ],
+                      ),
+                    ))),
+                    const Text("Or"),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
                 decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 236, 235, 235),
@@ -133,7 +162,9 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                                       visibility:
                                           value.visibile ? false : true);
                                 },
-                                icon: Icon(value.visibile?Icons.visibility: Icons.visibility_off),
+                                icon: Icon(value.visibile
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
                               )),
                           obscureText: value.visibile,
                           validator: loginLogic.passwordValidate,
@@ -171,6 +202,9 @@ class _loginFormWidgetState extends State<loginFormWidget> {
                   ),
                 ),
               ),
+            ),
+            optionsRowWidget(
+              emailUser: emailController,
             )
           ],
         ));
@@ -179,7 +213,8 @@ class _loginFormWidgetState extends State<loginFormWidget> {
 
 //ignore:camel_case_types
 class optionsRowWidget extends StatelessWidget {
-  const optionsRowWidget({super.key});
+  final TextEditingController emailUser;
+  const optionsRowWidget({required this.emailUser, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +237,43 @@ class optionsRowWidget extends StatelessWidget {
           ),
         ),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              final passwordReset = FirebaseAuth.instance
+                  .sendPasswordResetEmail(email: emailUser.text);
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                        content: SizedBox(
+                          height: 100,
+                          child: FutureBuilder(
+                            future: passwordReset,
+                            builder: (context, snap) {
+                              if (snap.hasError) {
+                                return Center(
+                                    child: Text(
+                                  "Error: ${(snap.error as FirebaseAuthException).code}",
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ));
+                              }
+                              return const Center(
+                                  child: Text(
+                                "Check your the link in gmail to reset the password.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ));
+                            },
+                          ),
+                        ));
+                  });
+            },
             child: const Text(
               "Forgot password?",
               style: TextStyle(color: Colors.black),

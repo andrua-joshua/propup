@@ -18,6 +18,7 @@ class loans {
 
   Future<bool> requestLoan(
       {required int amount,
+      required bool isPublic,
       required int interestRate,
       required DateTime paybackTime,
       required String purpose}) async {
@@ -27,10 +28,14 @@ class loans {
     final loans = FirebaseFirestore.instance.collection("loans");
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
+    final publicLoans = FirebaseFirestore.instance
+        .collection("public-compaigns")
+        .doc("O8DnKgq2bN8QcKJifrca");
 
     //updating the users current loan compaigns status
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final secureSnap = await transaction.get(currentUser);
+      final securePublicLoan = await transaction.get(publicLoans);
       final userLoans = secureSnap.get("loans") as List;
 
       bool val = await hasNoOpenLoans(secureSnap);
@@ -50,6 +55,17 @@ class loans {
 
         userLoans.add(newLoan.id);
         transaction.update(currentUser, {"loans": userLoans});
+
+        //checking if is public loan
+        if (isPublic) {
+          final loans = securePublicLoan.get("loans") as List;
+          loans.add(newLoan.id);
+
+          transaction.update(
+            publicLoans,
+            {"loans":loans}
+          );
+        }
 
         //code to send the request friends
         final notificaton = notificationsMessage(
@@ -102,6 +118,9 @@ class loans {
     final user = await userRf.get();
     final lentUserRf =
         FirebaseFirestore.instance.collection("users").doc(loan.get("user"));
+    final publicLoans = FirebaseFirestore.instance
+        .collection("public-compaigns")
+        .doc("O8DnKgq2bN8QcKJifrca");
     final lentUser = await lentUserRf.get();
     final fees = FirebaseFirestore.instance
         .collection("fees")
@@ -127,6 +146,7 @@ class loans {
             final loanSecureSnap = await transaction.get(loanRf);
             final lentUserSecureSnap = await transaction.get(lentUserRf);
             final secureFee = await transaction.get(fees);
+            final securePublicLoan = await transaction.get(publicLoans);
 
             ///updating the donation compaign status
             int totalLentAmount = loanSecureSnap.get("amount") as int;
@@ -141,7 +161,6 @@ class loans {
               "closed": true
             });
 
-
             double mult = val.get("compaignRate") as double;
             double fee = (loan.get("amount") as int) * mult;
 
@@ -150,7 +169,7 @@ class loans {
             double vl = 0.0;
             int lentUser_balance =
                 (lentUserSecureSnap.get("account_balance") as int) +
-                    (totalLentAmount-(fee.round()));
+                    (totalLentAmount - (fee.round()));
 
             final lentUserTransactions =
                 lentUserSecureSnap.get("transactions") as List;
@@ -167,11 +186,20 @@ class loans {
               "transactions": lentUserTransactions
             });
 
-
             final allfees = secureFee.get("allfees") as List;
             allfees.add({"source": "Loan compaign", "amount": fee.round()});
 
             transaction.update(fees, {"allfees": allfees});
+
+
+             final loans = securePublicLoan.get("loans") as List;
+          loans.remove(loanId);
+
+          transaction.update(
+            publicLoans,
+            {"loans":loans}
+          );
+
 
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,

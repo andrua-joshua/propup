@@ -48,7 +48,10 @@ class customNotificationsListTileWidget extends StatelessWidget {
           if (snap.hasData) {
             debugPrint("here we are :::: $subType:::${snap.data?.exists}");
             if (snap.data != null) {
-              return ListTile(
+              return Container(
+                color: viewedStatus? Colors.white:const Color.fromARGB(255, 219, 218, 218),
+                child:ListTile(
+                
                 onTap: () => callback(),
                 leading: Card(
                     elevation: 8,
@@ -120,7 +123,7 @@ class customNotificationsListTileWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-              );
+              ));
             }
           }
 

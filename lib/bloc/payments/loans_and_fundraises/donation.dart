@@ -17,7 +17,9 @@ class donations {
   factory donations.instance() => _singleObj;
 
   Future<bool> requestDonation(
-      {required int amount, required String purpose}) async {
+      {required int amount,
+      required bool isPublic,
+      required String purpose}) async {
     bool returnedValue = false;
 
     final auth = FirebaseAuth.instance.currentUser;
@@ -25,9 +27,14 @@ class donations {
     final currentUser =
         FirebaseFirestore.instance.collection("users").doc(auth?.uid);
 
+    final publicdonations = FirebaseFirestore.instance
+        .collection("public-compaigns")
+        .doc("CzMnBYOmkuIcS1FX0B4Y");
+
     //updating the users current donations status
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final secureSnap = await transaction.get(currentUser);
+      final securePublicdonations = await transaction.get(publicdonations);
 
       final userDonations = secureSnap.get("donations") as List;
 
@@ -48,6 +55,14 @@ class donations {
         userDonations.add(newDonation.id);
 
         transaction.update(currentUser, {"donations": userDonations});
+
+        //checking if is public fundraise
+        if (isPublic) {
+          final donations = securePublicdonations.get("fundraises") as List;
+          donations.add(newDonation.id);
+
+          transaction.update(publicdonations, {"fundraises": donations});
+        }
 
         //code to send the request friends
         final notificaton = notificationsMessage(
@@ -111,6 +126,9 @@ class donations {
         .collection("rates")
         .doc("YojsvptcUqpsyCsCcHO1")
         .get();
+    final publicdonations = FirebaseFirestore.instance
+        .collection("public-compaigns")
+        .doc("CzMnBYOmkuIcS1FX0B4Y");
 
     if ((user.get("account_balance") as int) > amount) {
       //to first check whether the current user has enough cash  to donate
@@ -129,6 +147,8 @@ class donations {
             final donationSecureSnap = await transaction.get(donationRf);
             final donationUserSecureSnap = await transaction.get(donatedUserRf);
             final secureFee = await transaction.get(fees);
+            final securePublicdonations =
+                await transaction.get(publicdonations);
 
             ///updating the donation compaign status
             int totalDonationAmount = donationSecureSnap.get("amount") as int;
@@ -150,18 +170,18 @@ class donations {
             // ignore: non_constant_identifier_names
             int donationUser_balance =
                 (donationUserSecureSnap.get("account_balance") as int) +
-                    (totalDonationAmount-(fee.round()));
+                    (totalDonationAmount - (fee.round()));
             int recieved = (donationUserSecureSnap.get("recieved") as int) +
                 totalDonationAmount;
             final donationUserTransactions =
                 donationUserSecureSnap.get("transactions") as List;
 
             donationUserTransactions.add({
-              "id":donationId,
+              "id": donationId,
               "type": "donation-recieved",
               "date": DateTime.now().microsecondsSinceEpoch,
-              "amount": totalDonationAmount- (fee.round()),
-              "message":"You recieved Fundraise"
+              "amount": totalDonationAmount - (fee.round()),
+              "message": "You recieved Fundraise"
             });
             transaction.update(donatedUserRf, {
               "account_balance": donationUser_balance,
@@ -169,12 +189,15 @@ class donations {
               "recieved": recieved
             });
 
-
             final allfees = secureFee.get("allfees") as List;
             allfees.add({"source": "Fundraise", "amount": fee.round()});
 
             transaction.update(fees, {"allfees": allfees});
 
+            final donations = securePublicdonations.get("fundraises") as List;
+            donations.remove(donationId);
+
+            transaction.update(publicdonations, {"fundraises": donations});
 
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,
@@ -194,11 +217,11 @@ class donations {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "id":donationId,
+              "id": donationId,
               "type": "Donation",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": balance,
-              "message":"You funded ${donationUserSecureSnap.get("username")}"
+              "message": "You funded ${donationUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {
@@ -236,11 +259,11 @@ class donations {
             final userTransactions = userSecureSnap.get("transactions") as List;
 
             userTransactions.add({
-              "id":donationId,
+              "id": donationId,
               "type": "Donation",
               "date": DateTime.now().microsecondsSinceEpoch,
               "amount": amount,
-              "message":"You funded ${donationUserSecureSnap.get("username")}"
+              "message": "You funded ${donationUserSecureSnap.get("username")}"
             });
 
             transaction.update(userRf, {

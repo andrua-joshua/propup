@@ -63,6 +63,11 @@ class friendsData {
     }
     following = allFollowing;
 
+
+    
+
+
+
     //this is for the initilisation of the unattached list
     final followingList2 = user.get("followingList") as List;
     final allUsers = await FirebaseFirestore.instance.collection("users").get();

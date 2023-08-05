@@ -91,7 +91,7 @@ class progressWidget extends StatelessWidget {
                       color: Colors.green,
                       child: Center(
                           child: Text(
-                        "${(recieved / amount) * 100}%",
+                        "${((recieved / amount) * 100).round()}%",
                         style: const TextStyle(
                             color: Colors.white,
                             fontSize: 17,

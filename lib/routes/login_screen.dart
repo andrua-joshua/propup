@@ -8,6 +8,7 @@ class loginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
         body: SafeArea(
       child: Column(children: [
@@ -26,7 +27,7 @@ class loginScreen extends StatelessWidget {
               child: Column(
                 children: [
                   loginFormWidget(),
-                  optionsRowWidget(),
+                  //optionsRowWidget(),
                   SizedBox(
                     height: 30,
                   ),

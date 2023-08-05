@@ -152,67 +152,10 @@ class friendsProfileScreen extends StatelessWidget {
                             thickness: 1,
                           )),
                     ])),
-                    // SliverGrid(
-                    //   gridDelegate:
-                    //       const SliverGridDelegateWithFixedCrossAxisCount(
-                    //           crossAxisCount: 3,
-                    //           crossAxisSpacing: 5,
-                    //           mainAxisSpacing: 10,
-                    //           mainAxisExtent: 150),
-                    //   delegate: SliverChildListDelegate((snap.hasData)
-                    //       ? List.generate(
-                    //           snap.data?.docs
-                    //                   .where((element) =>
-                    //                       element.get("owner") == userID)
-                    //                   .length ??
-                    //               0,
-                    //           (index) => FutureBuilder<String>(
-                    //               future: storageRf
-                    //                   .child(
-                    //                       "${snap.data!.docs[index].id}")
-                    //                   .getDownloadURL(),
-                    //               builder: (context, value) {
-                    //                 if (value.hasData) {
-                    //                   return GestureDetector(
-                    //                       onTap: () {
-                    //                         RouteGenerator.src =
-                    //                             snap.data!.docs[index].id;
+                    
+                    ///-----------
 
-                    //                         Navigator.pushNamed(
-                    //                             context,
-                    //                             RouteGenerator
-                    //                                 .personalPostsReviewscreen);
-                    //                       },
-                    //                       child: Container(
-                    //                         decoration: BoxDecoration(
-                    //                             image: DecorationImage(
-                    //                                 image: NetworkImage(
-                    //                                     value.data ?? ""))),
-                    //                       ));
-                    //                 }
-                    //                 if (value.hasError) {
-                    //                   return const Text(
-                    //                     "(*_*)",
-                    //                     style: TextStyle(color: Colors.red),
-                    //                   );
-                    //                 }
 
-                    //                 return const Center(
-                    //                     child: CircularProgressIndicator());
-                    //               }))
-                    //       : (snap.hasError)
-                    //           ? [
-                    //               const Text(
-                    //                 "Error retriving photos",
-                    //                 style: TextStyle(color: Colors.redAccent),
-                    //               )
-                    //             ]
-                    //           : [
-                    //               const Center(
-                    //                 child: CircularProgressIndicator(),
-                    //               )
-                    //             ]),
-                    // )
                   ],
                 );
               }),

@@ -22,13 +22,14 @@ import 'package:propup/routes/payments_screen/deposit_option_screen.dart';
 import 'package:propup/routes/payments_screen/payment_options_screen.dart';
 import 'package:propup/routes/payments_screen/withdraw_option_screen.dart';
 import 'package:propup/routes/personal_posts_review.dart';
+import 'package:propup/routes/public_compaigns_screen.dart';
+import 'package:propup/routes/registration_by_phone.dart';
 import 'package:propup/routes/support_friend_screen.dart';
 import 'package:propup/routes/transactions_screen.dart';
 import 'package:propup/routes/user_profile_screen.dart';
 import 'package:propup/routes/welcome_screen.dart';
 
 import 'routes/signup_screen.dart';
-
 
 ///
 ///this is for managing the routings through the application
@@ -58,11 +59,13 @@ class RouteGenerator {
   static const String paymentOptionsscreen = "/paymentOptionsScreen";
   static const String depositOptionscreen = "/deposteOptionScreen";
   static const String withdrawOptionscreen = "/withdrawOptionScreen";
-  static const String postsCommentscreen ="/postsCommentscreen";
+  static const String postsCommentscreen = "/postsCommentscreen";
   static const String emailVerificationscreen = "/emailVerification";
   static const String personalPostsReviewscreen = "/personalPostsReviewPage";
   static const String overviewscreen = "/overviewScreen";
   static const String compaignOverviewscreen = "/compaignOverviewScreen";
+  static const String registrationByPhone = "/registrationByPhone";
+  static const String publicCompaignsscreen = "/publicCoimpaignsscreen";
 
   static bool led = true;
   static bool isFollowing = false;
@@ -71,8 +74,13 @@ class RouteGenerator {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case registrationByPhone:
+        return MaterialPageRoute(
+            builder: (context) => const registrationByPhoneScreen());
       case homescreen:
         return MaterialPageRoute(builder: (context) => const homeScreen());
+      case publicCompaignsscreen:
+        return MaterialPageRoute(builder: (context) => const publicCompaignScreen());
       case friendscreen:
         return MaterialPageRoute(builder: (context) => const friendScreen());
       case transactionsscreen:
@@ -93,23 +101,28 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => const editProfileScreen());
       case myProfilescreen:
-        return MaterialPageRoute(
-            builder: (context) => const myProfileScreen());
+        return MaterialPageRoute(builder: (context) => const myProfileScreen());
       case friendrequestscreen:
         return MaterialPageRoute(
             builder: (context) => const friendRequestScreen());
       case supportscreen:
-      final String args = settings.arguments as String;
+        final String args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => supportFriendScreen(donationId: args,));
+            builder: (context) => supportFriendScreen(
+                  donationId: args,
+                ));
       case lendfriendscreen:
         final String args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (context) => lendFriendScreen(loanId: args,));
+            builder: (context) => lendFriendScreen(
+                  loanId: args,
+                ));
       case compaignOverviewscreen:
         final args = settings.arguments as Map;
         return MaterialPageRoute(
-            builder: (context) => compaignOverviewScreen(args: args,));
+            builder: (context) => compaignOverviewScreen(
+                  args: args,
+                ));
       case userProfilescreen:
         return MaterialPageRoute(
             builder: (context) => const userProfileScreen());
@@ -118,16 +131,13 @@ class RouteGenerator {
         return MaterialPageRoute(
             builder: (context) => messagingScreen(chatId: args));
       case overviewscreen:
-        return MaterialPageRoute(
-            builder: (context) => const overviewScreen());
+        return MaterialPageRoute(builder: (context) => const overviewScreen());
       case friendprofilescreen:
         return MaterialPageRoute(
-            builder: (context) =>
-                friendsProfileScreen(userID: user));
+            builder: (context) => friendsProfileScreen(userID: user));
       case addFriendsscreen:
         return MaterialPageRoute(
-            builder: (context) =>
-                const addFriendsScreen());
+            builder: (context) => const addFriendsScreen());
       case leadersboardscreenportal:
         return MaterialPageRoute(
             builder: (context) => const leardersBoardPortalScreen());
@@ -148,10 +158,12 @@ class RouteGenerator {
             builder: (context) => const emailVerificationScreen());
       case personalPostsReviewscreen:
         return MaterialPageRoute(
-            builder: (context) => personalPostsReview(src: src,));
+            builder: (context) => personalPostsReview(
+                  src: src,
+                ));
       case leadersboardScreen:
         return MaterialPageRoute(
-            builder: (context) =>  leadersBoardScreen(
+            builder: (context) => leadersBoardScreen(
                   receivers: led,
                 ));
       default:

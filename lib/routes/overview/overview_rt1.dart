@@ -10,15 +10,22 @@ class compaignOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isLoan = args['isLoan'] as bool;
     final String compaignId = args['compaignId'];
+    final bool isPublic = args['isPublic'] as bool;
+
+    debugPrint("::::::@Drillox ::<:<:<:(*^*): '$compaignId'");
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 8, 92, 181),
-        leading: IconButton(onPressed: ()=> Navigator.pop(context), 
-        icon: const Icon(Icons.arrow_back, color: Colors.white,)),
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         title: const Text(
-          "Compaign OverView",
+          "Compaign Overview",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
@@ -39,7 +46,9 @@ class compaignOverviewScreen extends StatelessWidget {
                           amount: snap.data?.get("amount"),
                           isClosed: snap.data?.get("closed"),
                           isLoan: isLoan,
-                          compaingId: snap.data?.id??"",
+                          isPublic: isPublic,
+                          owner: snap.data?.get("user"),
+                          compaingId: snap.data?.id ?? "", ////<<<<<<<
                           paidback: isLoan ? snap.data?.get("paidback") : 0,
                           purpose: snap.data?.get("purpose"),
                           recieved: snap.data?.get("recieved")),

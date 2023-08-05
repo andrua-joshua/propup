@@ -57,7 +57,9 @@ class loginLogic {
                         final doc = FirebaseFirestore.instance
                             .collection("users")
                             .doc(value.user?.uid);
+                            
                         await doc.update({"token": token});
+
 
                         friendsData().listener();
                         friendsData().initFriends();
