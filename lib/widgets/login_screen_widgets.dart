@@ -95,33 +95,33 @@ class _loginFormWidgetState extends State<loginFormWidget> {
             const SizedBox(
               height: 20,
             ),
-            TextButton(
-                onPressed: () {
+            // TextButton(
+            //     onPressed: () {
                   
-                },
-                child: const Card(
-                    color: Colors.blue,
-                    elevation: 8,
-                    child: SizedBox(
-                    height: 50,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Icon(Icons.phone),
-                          Text(
-                            "SignIn using phone",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold),
-                          ),SizedBox(width: 10,)
-                        ],
-                      ),
-                    ))),
-                    const Text("Or"),
-            const SizedBox(
-              height: 20,
-            ),
+            //     },
+            //     child: const Card(
+            //         color: Colors.blue,
+            //         elevation: 8,
+            //         child: SizedBox(
+            //         height: 50,
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //             children: [
+            //               Icon(Icons.phone),
+            //               Text(
+            //                 "SignIn using phone",
+            //                 style: TextStyle(
+            //                     color: Colors.white,
+            //                     fontSize: 19,
+            //                     fontWeight: FontWeight.bold),
+            //               ),SizedBox(width: 10,)
+            //             ],
+            //           ),
+            //         ))),
+            //         const Text("Or"),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             Container(
                 decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 236, 235, 235),

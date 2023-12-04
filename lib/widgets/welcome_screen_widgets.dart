@@ -42,7 +42,7 @@ class salutationWidget extends StatelessWidget {
                 //.then((value) =>
                 Navigator.pushNamed(context, RouteGenerator.homescreen); //);
               } else {
-                Navigator.pushNamed(context, RouteGenerator.loginscreen);
+                Navigator.pushNamed(context, RouteGenerator.signupscreen);
               }
             },
             child: Container(

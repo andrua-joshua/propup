@@ -493,9 +493,11 @@ class searchFriendsDeleget extends SearchDelegate {
                   : false
               : false;
 
+          bool val2 = element.get("verified") as bool;
+
           //v2 ? saveList.add(element) : null;
 
-          return v2;
+          return v2&&val2;
         }).toList();
 
         final otherUsersIds = <DocumentSnapshot>[];

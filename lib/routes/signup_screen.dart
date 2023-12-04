@@ -20,40 +20,40 @@ class signUpScreen extends StatelessWidget {
               color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ),
-      body: SafeArea(
+      body:const  SafeArea(
           child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Column(
             children: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                        context, RouteGenerator.registrationByPhone);
-                  },
-                  child: const Card(
-                      color: Colors.blue,
-                      elevation: 8,
-                      child: SizedBox(
-                        height: 50,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Icon(Icons.phone),
-                            Text(
-                              "Register using phone",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            )
-                          ],
-                        ),
-                      ))),
-              const Text("Or"),
+              // TextButton(
+              //     onPressed: () {
+              //       Navigator.pushNamed(
+              //           context, RouteGenerator.registrationByPhone);
+              //     },
+              //     child: const Card(
+              //         color: Colors.blue,
+              //         elevation: 8,
+              //         child: SizedBox(
+              //           height: 50,
+              //           child: Row(
+              //             mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //             children: [
+              //               Icon(Icons.phone),
+              //               Text(
+              //                 "Register using phone",
+              //                 style: TextStyle(
+              //                     color: Colors.white,
+              //                     fontSize: 19,
+              //                     fontWeight: FontWeight.bold),
+              //               ),
+              //               SizedBox(
+              //                 width: 10,
+              //               )
+              //             ],
+              //           ),
+              //         ))),
+              // const Text("Or"),
               const Text(
                 "Create your account",
                 style: TextStyle(

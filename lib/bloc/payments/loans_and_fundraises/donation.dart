@@ -195,7 +195,8 @@ class donations {
             transaction.update(fees, {"allfees": allfees});
 
             final donations = securePublicdonations.get("fundraises") as List;
-            donations.remove(donationId);
+            final rvd = donations.remove(donationId);
+            debugPrint(":::::::::::>>>@Drillox :: Removed: >>> $rvd");
 
             transaction.update(publicdonations, {"fundraises": donations});
 

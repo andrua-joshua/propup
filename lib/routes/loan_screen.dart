@@ -101,7 +101,7 @@ class loanScreen extends StatelessWidget {
                             onChanged: (state) =>
                                 value.currentStateSet(state ?? false));
                       }),
-                      const Text("public compaign", style: TextStyle(fontWeight: FontWeight.bold),)
+                      const Text("Only friends", style: TextStyle(fontWeight: FontWeight.bold),)
                     ],
                   ),
                 );
@@ -120,7 +120,7 @@ class loanScreen extends StatelessWidget {
                                 future: loans.instance().requestLoan(
                                     amount: int.parse(_amountController.text),
                                     interestRate: 5,
-                                    isPublic: isPublic,
+                                    isPublic: isPublic?false:true,
                                     paybackTime:
                                         DateTime.parse(_dateController.text),
                                     purpose: _purposeController.text),

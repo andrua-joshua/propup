@@ -69,6 +69,7 @@ class possibleFriendsWidget extends StatelessWidget {
           return StreamBuilder(
               stream: allUsers.snapshots(),
               builder: (context, snapd) {
+                debugPrint("Helloooooooooo");
                 return Column(
                   children: List.generate(
                       snapd.data?.docs
@@ -85,9 +86,11 @@ class possibleFriendsWidget extends StatelessWidget {
                                         : false
                                     : false;
 
-                                v2 ? saveList.add(element) : null;
-
-                                return v2;
+                                bool val2 = element.get("verified") as bool;
+                                //bool val2 = true;
+                                v2 && val2 ? saveList.add(element) : null;
+                                debugPrint("@Hello:: > $element");
+                                return v2 && val2;
                               })
                               .toList()
                               .length ??

@@ -196,6 +196,7 @@ class signUpLogic {
                   "loans": [],
                   "notifications": [],
                   "transactions": [],
+                  "verified":true,
                   "profilePic":
                       "https://cdn.vectorstock.com/i/preview-1x/43/94/default-avatar-photo-placeholder-icon-grey-vector-38594394.jpg"
                 });
@@ -244,6 +245,7 @@ class signUpLogic {
                   "loans": [],
                   "notifications": [],
                   "transactions": [],
+                  "verified":false,
                   "profilePic":
                       "https://cdn.vectorstock.com/i/preview-1x/43/94/default-avatar-photo-placeholder-icon-grey-vector-38594394.jpg"
                 });
@@ -266,8 +268,9 @@ class signUpLogic {
                 userRf.update({"group_key": group_key});
 
                 // ignore: use_build_context_synchronously
-                Navigator.pushNamed(
-                    context, RouteGenerator.emailVerificationscreen);
+                await value.user?.sendEmailVerification().then(
+                            (value) => Navigator.pushNamed(context,
+                                RouteGenerator.emailVerificationscreen));
 
                 ///------------
                 ///    /\

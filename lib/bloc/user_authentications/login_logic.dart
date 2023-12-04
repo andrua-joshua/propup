@@ -47,25 +47,35 @@ class loginLogic {
           context: context,
           builder: (context) {
             return AlertDialog(
-              backgroundColor: Color.fromARGB(255, 17, 17, 17),
+              backgroundColor: const Color.fromARGB(255, 17, 17, 17),
               content: SizedBox(
                   height: 45,
                   child: Center(
                     child: FutureBuilder(future: user.then((value) async {
                       if (value.user?.emailVerified ?? false) {
+                        debugPrint(">>>>>>>>>>>><><><><Got something ---->");
+                        final currentAccount = FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(value.user?.uid);
+
+                        await currentAccount.get().then((value2) {
+                          currentAccount.update({
+                            "verified": true,
+                          });
+                        });
+
                         final token = await fcmApiInit.instance().fcmToken();
                         final doc = FirebaseFirestore.instance
                             .collection("users")
                             .doc(value.user?.uid);
-                            
-                        await doc.update({"token": token});
 
+                        await doc.update({"token": token});
 
                         friendsData().listener();
                         friendsData().initFriends();
                         //.then((value) =>
                         // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
+                        //Navigator.pop(context);
                         // ignore: use_build_context_synchronously
                         Navigator.pushNamed(
                             context, RouteGenerator.homescreen); //);
@@ -80,7 +90,10 @@ class loginLogic {
                             FirebaseAuth.instance.currentUser == null) {
                           return Text(
                             "Error: ${(snap.error as FirebaseAuthException).code.replaceAll('-', " ")}",
-                            style: const TextStyle(fontSize: 20,color: Colors.white, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           );
                         }
                       }
@@ -98,12 +111,6 @@ class loginLogic {
               "Error: " + e.code,
               style: const TextStyle(color: Colors.redAccent),
             )));
-        // if (e.code == 'weak-password') {
-        //   ///task in case of week password
-        // }
-        // if (e.code == 'email-alread-in-use') {
-        //   ///task in case of week password
-        // }
       } catch (e) {
         ///task in case something different is wrong
         debugPrint("Firebase exception {{{{{{{{}}}}}}}}<<<>>>>>>>>>>>>>");

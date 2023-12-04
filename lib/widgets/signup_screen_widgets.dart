@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:propup/bloc/user_authentications/signup_logic.dart';
 import 'package:propup/state_managers/passwords_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:propup/routes.dart';
 
 ///
 ///this is where all the custom widgets of the signUp screen
@@ -230,7 +231,7 @@ class logInOptionRowWidget extends StatelessWidget {
           style: TextStyle(color: Colors.grey),
         ),
         TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushNamed(context, RouteGenerator.loginscreen),
             child: const Text(
               "Login",
               style: TextStyle(color: Colors.orange),

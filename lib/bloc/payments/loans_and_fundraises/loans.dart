@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:propup/bloc/cloud_messaging_api/fcm_handlers/fcm_outgoing_message_handler.dart';
 
 import '../../cloud_messaging_api/fcm_models/fcm_notifiaction_messae_modal.dart';
@@ -61,10 +62,7 @@ class loans {
           final loans = securePublicLoan.get("loans") as List;
           loans.add(newLoan.id);
 
-          transaction.update(
-            publicLoans,
-            {"loans":loans}
-          );
+          transaction.update(publicLoans, {"loans": loans});
         }
 
         //code to send the request friends
@@ -191,15 +189,12 @@ class loans {
 
             transaction.update(fees, {"allfees": allfees});
 
+            final loans = securePublicLoan.get("loans") as List;
+            final rmvd = loans.remove(loanId);
 
-             final loans = securePublicLoan.get("loans") as List;
-          loans.remove(loanId);
+            debugPrint(":::::::@Drillox >>>Removed:>  $rmvd");
 
-          transaction.update(
-            publicLoans,
-            {"loans":loans}
-          );
-
+            transaction.update(publicLoans, {"loans": loans});
 
             final notificaton = notificationsMessage(
                 head: DateTime.now().microsecondsSinceEpoch,

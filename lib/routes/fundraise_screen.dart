@@ -86,7 +86,7 @@ class fundRaiseScreen extends StatelessWidget {
                             onChanged: (state) =>
                                 value.currentStateSet(state ?? false));
                       }),
-                      const Text("public compaign", style: TextStyle(fontWeight: FontWeight.bold),)
+                      const Text("Only friends", style: TextStyle(fontWeight: FontWeight.bold),)
                     ],
                   ),
                 );
@@ -104,7 +104,7 @@ class fundRaiseScreen extends StatelessWidget {
                             ),
                             content: FutureBuilder(
                                 future: donations.instance().requestDonation(
-                                  isPublic: isPublic,
+                                  isPublic: isPublic?false:true,
                                     amount: int.parse(_amountController.text),
                                     purpose: _purposeController.text),
                                 builder: (context, snap) {
